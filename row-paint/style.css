@@ -9,12 +9,39 @@ body {
     height: 100vh;
 }
 
+#container {
+    display: grid;
+    flex-direction: column;
+    height: 90vh;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    
+}
+
 .row {
-    border-bottom: 1px solid #eeeeee;
+    border: 1px solid #eeeeee;
+    margin: 0;
+
     flex-basis: 100%;
+    box-sizing: border-box;
 }
 
 #toolbar {
-    border-bottom: 1px solid #eeeeee;
-    flex-basis: 100%;
+    border-bottom: 1px solid #0e0e0e;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#color-input {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: 20%;
+}
+
+#grid-input {
+    margin-left: 1rem;
+    margin-right: 0.5rem;
 }

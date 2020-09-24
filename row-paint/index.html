@@ -7,17 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="wrapper">
-        <div id="toolbar"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div> 
+        <div id="toolbar">
+            <label for="color-input">Choose color:</label>
+            <input type="color" name="color" id="color-input">
+    
+            <label for="grid-input">Choose grid resolution</label>
+            <input type="range" min="2" max="16" step="1" name="grid" id="grid-input" value="1">
+            <p id="number-display">2</p>
+        </div>  
+    
+        <div id="container">
+
+        </div>
     </div>
 
     <script src="app.js"></script>
