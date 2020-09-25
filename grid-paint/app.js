@@ -12,6 +12,7 @@ setInterval(() => {
 }, 50);
 
 createEventListenerFunction();
+gridConstructor();
 
 gridInput.addEventListener('change', gridConstructor);
 
