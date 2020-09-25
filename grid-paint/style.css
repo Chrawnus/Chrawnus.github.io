@@ -23,7 +23,7 @@ body {
 .row {
     border: 1px solid #eeeeee;
     margin: 0;
-
+    background-color: #ffffff;
     flex-basis: 100%;
     box-sizing: border-box;
 }
