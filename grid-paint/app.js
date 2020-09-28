@@ -77,7 +77,7 @@ function createEventListenerFunction() {
 
     Array.from(rows).forEach(element => {
         element.style.backgroundColor = '#ffffff';
-        element.addEventListener('mouseleave', changeColorFunction);
+        element.addEventListener('mouseenter', changeColorFunction);
     });
 
 
