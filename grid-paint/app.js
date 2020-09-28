@@ -36,7 +36,8 @@ function changeColorFunction(e) {
     if (isMouseDown) {
         const color = colorInput.value;
         const target = e.target.style;
-        target.backgroundColor = target.backgroundColor != 'rgb(255, 255, 255)' ? 'rgb(255, 255, 255)' : `${color}`;
+        target.backgroundColor = target.backgroundColor === color? 
+        'rgb(255, 255, 255)' : color;
     }
 
 }
