@@ -6,8 +6,6 @@ const gridInput = document.getElementById('grid-input');
 
 let color = 'rgb(0, 0, 0)';
 
-
-
 setInterval(() => {
     numberDisplay.textContent = `${gridInput.value}`;
     container.style.width = `${container.getBoundingClientRect().height}px`;
@@ -32,8 +30,6 @@ function changeColorFunction(e) {
     (e.buttons === 1 && e.ctrlKey) ? e.target.style.backgroundColor = "rgb(255, 255, 255)" : (e.buttons === 1) ? e.target.style.backgroundColor = color :  null;
 }
 
-
-
 function gridConstructor() {
 
     while (container.firstChild) {
@@ -50,10 +46,6 @@ function gridConstructor() {
         container.appendChild(div);
     }
 
-
-
-
-
     container.style.gridTemplateColumns = `repeat(${gridInput.value}, 1fr)`;
     container.style.gridTemplateRows = `repeat(${gridInput.value}, 1fr)`;
     container.style.gridAutoRows = `1fr`;
@@ -61,7 +53,6 @@ function gridConstructor() {
     container.style.gridRowGap = "0px";
 
     createEventListenerFunction();
-
 }
 
 function createEventListenerFunction() {
@@ -70,8 +61,6 @@ function createEventListenerFunction() {
     Array.from(rows).forEach(element => {
         element.style.backgroundColor = '#ffffff';
         element.addEventListener('mouseenter', changeColorFunction);
-
     });
-
 
 }
