@@ -60,7 +60,7 @@ function createEventListenerFunction() {
 
     Array.from(rows).forEach(element => {
         element.style.backgroundColor = '#ffffff';
-        element.addEventListener('mouseenter', changeColorFunction);
+        element.addEventListener('mousemove', changeColorFunction);
     });
 
 }
