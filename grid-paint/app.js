@@ -4,7 +4,9 @@ const colorInput = document.getElementById('color-input');
 const numberDisplay = document.getElementById('number-display');
 const gridInput = document.getElementById('grid-input');
 
-let isMouseDown = false;
+let color = 'rgb(0, 0, 0)';
+
+
 
 setInterval(() => {
     numberDisplay.textContent = `${gridInput.value}`;
@@ -16,31 +18,20 @@ gridConstructor();
 
 gridInput.addEventListener('change', gridConstructor);
 
-window.addEventListener("mousedown", () => {
-    if (isMouseDown === false) {
-        isMouseDown = true;
-    }
 
-});
+colorInput.addEventListener("change", hexToRgbConverter);
 
 
-window.addEventListener("mouseup", () => {
-    if (isMouseDown === true) {
-        isMouseDown = false;
-    }
-
-});
+function hexToRgbConverter()  {
+    colorArr = colorInput.value.split(/(\w\w)/).filter(x => /\w\w/.test(x)).map(x => parseInt(x, 16));
+    return color = `rgb(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]})`;
+}
 
 function changeColorFunction(e) {
 
-    if (isMouseDown) {
-        const color = colorInput.value;
-        const target = e.target.style;
-        target.backgroundColor = target.backgroundColor === color? 
-        'rgb(255, 255, 255)' : color;
-    }
-
+    (e.buttons === 1 && e.ctrlKey) ? e.target.style.backgroundColor = "rgb(255, 255, 255)" : (e.buttons === 1) ? e.target.style.backgroundColor = color :  null;
 }
+
 
 
 function gridConstructor() {
@@ -79,6 +70,7 @@ function createEventListenerFunction() {
     Array.from(rows).forEach(element => {
         element.style.backgroundColor = '#ffffff';
         element.addEventListener('mouseenter', changeColorFunction);
+
     });
 
 
