@@ -41,8 +41,8 @@ function gameLogic() {
         scoreElem.textContent = `Exakthet: ${(score*100).toFixed(1)}%`;
         avgScoreElem.textContent = `Genomsnittlig Exakthet: ${(avgScore*100).toFixed(1)}%`;
 
-        scoreElem.style.color = score < 0.75 ? 'rgb(255, 0, 0)' : score < 0.875 ? 'rgb(255,165,0)' : 'rgb(0, 255, 0)';
-        avgScoreElem.style.color = avgScore < 0.75 ? 'rgb(255, 0, 0)' : avgScore < 0.875 ? 'rgb(255,165,0)' : 'rgb(0, 255, 0)';
+        scoreElem.style.color = score < 0.8 ? 'rgb(255, 0, 0)' : score < 0.9 ? 'rgb(255,165,0)' : 'rgb(0, 255, 0)';
+        avgScoreElem.style.color = avgScore < 0.8 ? 'rgb(255, 0, 0)' : avgScore < 0.9 ? 'rgb(255,165,0)' : 'rgb(0, 255, 0)';
 
         playButtonElem.textContent = 'START';
         playButtonElem.style.backgroundColor = 'rgb(0, 255, 0)';
