@@ -25,9 +25,11 @@ function hexToRgbConverter()  {
     return color = `rgb(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]})`;
 }
 
-function changeColorFunction(e) {
 
-    (e.buttons === 1 && e.ctrlKey) ? e.target.style.backgroundColor = "rgb(255, 255, 255)" : (e.buttons === 1) ? e.target.style.backgroundColor = color :  null;
+function changeColorFunction(e) {
+    (e.buttons === 1 && e.ctrlKey) ?
+        e.target.style.backgroundColor = "rgb(255, 255, 255)" : (e.buttons === 1) ? 
+            e.target.style.backgroundColor = color :  null;
 }
 
 function gridConstructor() {
