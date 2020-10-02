@@ -9,4 +9,62 @@ body {
     height: 100vh;
     align-items: center;
     justify-content: center;
+
+}
+
+
+
+.search-bar-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+    width: 100%;
+    border-bottom: 1rem solid #000000;
+}
+
+.search-bar-container h1 {
+    color: #ffcc03;
+    font-size: 6rem;
+    text-shadow: rgb(53, 83, 155) 5px 0px 0px, rgb(53, 83, 155) 4.90033px 0.993347px 0px, rgb(53, 83, 155) 4.60531px 1.94709px 0px, rgb(53, 83, 155) 4.12668px 2.82321px 0px, rgb(53, 83, 155) 3.48353px 3.58678px 0px, rgb(53, 83, 155) 2.70151px 4.20735px 0px, rgb(53, 83, 155) 1.81179px 4.6602px 0px, rgb(53, 83, 155) 0.849836px 4.92725px 0px, rgb(53, 83, 155) -0.145998px 4.99787px 0px, rgb(53, 83, 155) -1.13601px 4.86924px 0px, rgb(53, 83, 155) -2.08073px 4.54649px 0px, rgb(53, 83, 155) -2.94251px 4.04248px 0px, rgb(53, 83, 155) -3.68697px 3.37732px 0px, rgb(53, 83, 155) -4.28444px 2.57751px 0px, rgb(53, 83, 155) -4.71111px 1.67494px 0px, rgb(53, 83, 155) -4.94996px 0.7056px 0px, rgb(53, 83, 155) -4.99147px -0.291871px 0px, rgb(53, 83, 155) -4.83399px -1.27771px 0px, rgb(53, 83, 155) -4.48379px -2.2126px 0px, rgb(53, 83, 155) -3.95484px -3.05929px 0px, rgb(53, 83, 155) -3.26822px -3.78401px 0px, rgb(53, 83, 155) -2.4513px -4.35788px 0px, rgb(53, 83, 155) -1.53666px -4.75801px 0px, rgb(53, 83, 155) -0.560763px -4.96846px 0px, rgb(53, 83, 155) 0.437495px -4.98082px 0px, rgb(53, 83, 155) 1.41831px -4.79462px 0px, rgb(53, 83, 155) 2.34258px -4.41727px 0px, rgb(53, 83, 155) 3.17346px -3.86382px 0px, rgb(53, 83, 155) 3.87783px -3.15633px 0px, rgb(53, 83, 155) 4.4276px -2.32301px 0px, rgb(53, 83, 155) 4.80085px -1.39708px 0px, rgb(53, 83, 155) 4.98271px -0.415447px 0px;
+    font-style: italic;
+}
+
+.search-bar-container input {
+    margin: 0.5rem;
+    min-width: 24vw;
+}
+
+.search-bar-container button {
+    margin: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.info-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+}
+
+.info-container p {
+    flex-basis: 100%;
+    font-size: 1.5rem;
+    
+}
+
+#name {
+    flex-basis: auto;
+}
+
+.info-container img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
