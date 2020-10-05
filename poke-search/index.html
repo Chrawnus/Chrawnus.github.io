@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Lookup</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/autoComplete.css">
 </head>
 <body>
     <div id="wrapper">
 
         <div class="search-bar-container">
             <h1>PokéSearch</h1>
-            <input type="text" name="search-bar" id="search-bar" placeholder="Input name of pokémon here...">
+            <input type="text" name="search-bar" id="autoComplete">
 
             <button type="submit" id="search-button">Search</button>
         </div>
@@ -20,11 +21,11 @@
             <img src="" alt="" id="front-sprite">
             <p id="name"></p>
             <img src="" alt="" id="back-sprite">
-            
-            
+            <p id="type"></p> 
+            <p id="abilities"></p>
             <p id="height"></p>
             <p id="weight"></p>
-            <p id="type"></p>
+
 
 
 
@@ -33,6 +34,8 @@
 
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
     <script src="app.js"></script>
+
 </body>
 </html>
