@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-output-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 100%;
+    background-color: silver;
+}
+
+#word-display {
+    font-size: 4rem;
+}
+
+#word-input-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 100%;
+    background-color: slateblue;
+}
+
+#word-input {
+    margin: 0.5rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+#submit-word {
+    margin: 0.5rem;
+    font-size: 2rem;
+}
