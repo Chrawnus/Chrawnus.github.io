@@ -85,7 +85,6 @@ requirejs(['words_dictionary'],
         function clearInput() {
             wordInputElem.value = "";
             charIndex = 0;
-            console.log(scoreArr.reduce((a, b) => a + b, 0))
 
             if (currWord < wordArr.length - 1) {
                 currWord++;
