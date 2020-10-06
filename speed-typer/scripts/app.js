@@ -9,15 +9,22 @@ requirejs(['words_dictionary'],
 
         let charIndex = 0;
         let scoreArr = [];
-        wordInputElem.focus();
         let wordArr = Array(10).fill(" ");
 
-        wordInputElem.addEventListener('keyup', gameLogic);
-        wordInputElem.addEventListener('keydown', repeatCheck);
+
+        wordInputElem.value = "";
+        wordInputElem.focus();
+
+        scoreArr = [];
+        charIndex = 0;
+
+        wordInputElem.addEventListener('keyup', keyUpEventsHandler);
+        wordInputElem.addEventListener('keydown', keyDownEventsHandler);
 
         submitWordElem.addEventListener('click', clearInput);
 
         const addSpan = x => x = x.split("").map((x, i) => x = `<span class="letters" id="${i}">${x}</span>`).join("");
+        
         wordArr = wordArr.map(() => addSpan(Object.keys(words)[getRandomInt(0, 370100)]));
         currWord = 0;
 
@@ -39,17 +46,25 @@ requirejs(['words_dictionary'],
                         } */
         }, 16);
 
-        function gameLogic(e) {
-
+        function keyUpEventsHandler(e) {
             const targ = e.target
             const letter = document.getElementById(`${charIndex}`);
 
+
+
             let text = wordDisplayElem.textContent;
-            console.log(charIndex === text.length - 1)
+
+
+
 
             if (charIndex < text.length) {
+                console.log(e.key)
+                if (e.key.length > 1 || wordInputElem.value === "") {
+                    if (wordInputElem.value === "") {
+                        charIndex = 0;
+                        wordDisplayElem.innerHTML = wordArr[currWord];
+                    }
 
-                if (e.code === 'Enter') {
                     return
                 }
 
@@ -59,39 +74,77 @@ requirejs(['words_dictionary'],
 
 
             function letterValidation() {
+
                 if (targ.value.substring(charIndex, charIndex + 1) === text.substring(charIndex, charIndex + 1)) {
                     charIndex++;
                     letter.style.color = `green`;
                     scoreArr.push(1);
-                    
-                    if (charIndex === text.length) {
-                        clearInput();
-                    }
-
                 } else {
                     charIndex++;
                     letter.style.color = `red`;
                     scoreArr.push(-1);
-
-                    if (charIndex === text.length) {
-                        clearInput();
-                    }
                 }
             }
+            if (charIndex === text.length) {
+                clearInput();
+            }
+
+
+
+
+
 
         }
 
 
+        function keyDownEventsHandler(e) {
+            const letter = document.getElementById(`${charIndex - 1}`);
+
+            if (currWord === wordArr.length) {
+                wordInputElem.disabled = true;
+            }
+
+            if (e.repeat && e.key !== 'Backspace') {
+                wordInputElem.disabled = true;
+            }
+
+            if (e.key === 'Backspace' && !(charIndex - 1 < 0)) {
+                letter.style.color = 'black';
+                if (charIndex > 0) {
+                    charIndex--;
+                }
+
+            }
+        }
+
+
         function clearInput() {
-            wordInputElem.value = "";
-            charIndex = 0;
+
+
 
             if (currWord < wordArr.length - 1) {
-                currWord++;
                 
+                charIndex = 0;
+                console.log(scoreArr);
+                currWord++;
+
+                wordInputElem.value = "";
                 wordDisplayElem.innerHTML = wordArr[currWord];
             } else if (currWord === wordArr.length - 1) {
-                getWords();
+                console.log("done");
+                console.log(wordArr.length);
+                
+                
+                charIndex = 0;
+
+                
+                
+                wordArr = wordArr.map(() => addSpan(Object.keys(words)[getRandomInt(0, 370100)]));
+                currWord = 0;
+
+                scoreArr = [];
+                wordInputElem.value = "";
+                wordDisplayElem.innerHTML = wordArr[currWord];
             }
         }
 
@@ -102,14 +155,6 @@ requirejs(['words_dictionary'],
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min) + min);
         }
-
-        function repeatCheck(e) {
-            if (e.repeat && e.key !== "Backspace") {
-                wordInputElem.disabled = true;
-            }
-        }
-
-
     }
 );
 
