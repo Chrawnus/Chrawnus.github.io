@@ -83,15 +83,15 @@ requirejs(['words_dictionary'],
 
 
         function clearInput() {
-            wordInputElem.value = null;
+            wordInputElem.value = "";
             charIndex = 0;
             console.log(scoreArr.reduce((a, b) => a + b, 0))
-            
+
             if (currWord < wordArr.length - 1) {
                 currWord++;
                 
                 wordDisplayElem.innerHTML = wordArr[currWord];
-            } else if (currWord = wordArr.length - 1) {
+            } else if (currWord === wordArr.length - 1) {
                 getWords();
             }
         }
