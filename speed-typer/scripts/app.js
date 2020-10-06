@@ -4,16 +4,18 @@ const wordDisplayElem = document.getElementById('word-display');
 const wordInputElem = document.getElementById('word-input');
 const submitWordElem = document.getElementById('submit-word');
 
-let charIndex = 0;
-let scoreArr = [];
-let wordArr = Array(10).fill(" ");
-let currWord = 0;
+
 
 programLogic();
 
 
 function programLogic() {
 
+    let score = 0;
+    let charIndex = 0;
+    let scoreArr = [];
+    let wordArr = Array(10).fill(" ");
+    let currWord = 0;
 
 
     wordInputElem.value = "";
@@ -130,6 +132,11 @@ function programLogic() {
 
             charIndex = 0;
             console.log(scoreArr);
+            score = score + scoreArr.reduce((acc, letterScore) => acc + letterScore, 0);
+            
+            console.log(score);
+
+            scoreArr = [];
             currWord++;
 
             wordInputElem.value = "";
@@ -138,14 +145,14 @@ function programLogic() {
             console.log("done");
             console.log(wordArr.length);
 
+            score = score + scoreArr.reduce((acc, letterScore) => acc + letterScore, 0);
 
-            charIndex = 0;
-
-
+            console.log(score);
 
             wordArr = wordArr.map(() => addSpan(Object.keys(words)[getRandomInt(0, 370100)]));
-            currWord = 0;
 
+            charIndex = 0;
+            currWord = 0;
             scoreArr = [];
             wordInputElem.value = "";
             wordDisplayElem.innerHTML = wordArr[currWord];
