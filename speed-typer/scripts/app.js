@@ -40,24 +40,17 @@ window.addEventListener("keypress", clickStartButton);
 
 wordInputElem.addEventListener("keyup", keyUpEventsHandler);
 wordInputElem.addEventListener("keydown", keyDownEventsHandler);
-
 startButtonElem.addEventListener("click", startSession);
 
-
-
-
 function startSession() {
-
     ms = 0;
     sec = 0;
     min = 0;
 
     timerElem.textContent = resetTimerStr;
 
-
     wordInputElem.disabled = false;
     wordInputElem.focus();
-    
     isRunning = true;
 
     function addSpan(word) {
@@ -65,16 +58,13 @@ function startSession() {
     }
 
     wordArr = wordArr.map(() => addSpan(Object.keys(words)[getRandomInt(0, 370100)]));
-    
     wordDisplayElem.innerHTML = wordArr[currWord];
-
 }
 
 
 function keyUpEventsHandler(e) {
     const targ = e.target
     const letter = document.getElementById(`${charIndex}`);
-
     let text = wordDisplayElem.textContent;
 
     if (charIndex < text.length) {
@@ -123,16 +113,13 @@ function keyDownEventsHandler(e) {
 
 function clearInput() {
     if (currWord < wordArr.length - 1) {
-        
         charIndex = 0;
         score = score + scoreArr.reduce((acc, letterScore) => acc + letterScore, 0);
         scoreArr = [];
         currWord++;
         wordInputElem.value = "";
         wordDisplayElem.innerHTML = wordArr[currWord];
-
     } else if (currWord === wordArr.length - 1) {
-        
         score = score + scoreArr.reduce((acc, letterScore) => acc + letterScore, 0);
         isRunning = false;
         charIndex = 0;
@@ -142,7 +129,6 @@ function clearInput() {
         wordInputElem.disabled = true;
         startButtonElem.disabled = false;
         startButtonElem.textContent = newWordsButtonStr;
-
     }
 }
 
