@@ -11,13 +11,13 @@ body {
     justify-content: center;
 }
 
-#game-output-container {
+.game-output-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: center;
-    flex-basis: 100%;
+    flex-basis: 65%;
     background-color: silver;
 }
 
@@ -29,13 +29,36 @@ body {
     font-size: 3rem;
 }
 
-#word-input-container {
+.total-keys {
+    font-size: 2.5rem;
+}
+
+#key-amount {
+    font-size: 2rem;
+}
+
+#correct-keys {
+    margin: 0;
+    font-size: 2rem;
+    color: green;
+}
+#incorrect-keys {
+    margin: 0;
+    font-size: 2rem;
+    color: red;
+}
+
+#next-word{
+    font-size: 2rem;
+}
+
+.word-input-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: center;
-    flex-basis: 100%;
+    flex-basis: 35%;
     background-color: slateblue;
 }
 
