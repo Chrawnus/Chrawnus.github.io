@@ -52,10 +52,13 @@ function startSession() {
     sec = 0;
     min = 0;
 
-    isRunning = true;
+    timerElem.textContent = resetTimerStr;
+
+
     wordInputElem.disabled = false;
     wordInputElem.focus();
-    timerElem.textContent = resetTimerStr;
+    
+    isRunning = true;
 
     function addSpan(word) {
         return word = word.split("").map((letter, i) => letter = `<span class="letters" id="${i}">${letter}</span>`).join("");
