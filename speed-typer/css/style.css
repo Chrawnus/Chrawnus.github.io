@@ -25,6 +25,10 @@ body {
     font-size: 4rem;
 }
 
+#timer {
+    font-size: 3rem;
+}
+
 #word-input-container {
     display: flex;
     flex-direction: column;
