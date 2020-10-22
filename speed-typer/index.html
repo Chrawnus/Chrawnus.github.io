@@ -9,18 +9,26 @@
 </head>
 <body>
     <div class="wrapper">
-        <div id="game-output-container">
+        <div class="game-output-container">
+            
+            <p id="timer">00:00:000</p>
+            <p id="next-word">Next word: </p>
             <p id="word-display"></p>
+            <p class="total-keys">Total number of keys pressed <span id="key-amount">0</span></p>
+            <p id="correct-keys">Correct keypresses: 0</p>
+            <p id="incorrect-keys">Incorrect keypresses: 0</p>
+            <p id="wpm">WPM: </p>
         </div>
 
-        <div id="word-input-container">
-            <input type="text" name="word-input" id="word-input">
+        <div class="word-input-container">
+            <input type="text" name="word-input" id="word-input" disabled="true">
 
-            <button type="submit" id="submit-word">Press Enter</button>
+            <button type="submit" id="submit-word">Start typing or press ENTER to start!</button>
         </div>
     </div>
 
-<!--     <script type="text/javascript" src="db/words_dictionary.json"></script> -->
-    <script data-main="scripts/app.js" src="scripts/require.js"></script>
+    <span id=""></span>
+
+    <script src="scripts/app.js" type="module"></script>
 </body>
 </html>
