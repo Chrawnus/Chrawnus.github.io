@@ -12,6 +12,7 @@ let player = new Player(canvasElem.width/2, canvasElem.height/2, 15);
 let coin = new Coin(5);
 let enemy = new Enemy(15);
 
+
 let objMovement = {
     "Up": -player.velocity,
     "Down": player.velocity,
@@ -21,6 +22,8 @@ let objMovement = {
 
 
 
+
+    
 
 
 
@@ -35,7 +38,6 @@ requestAnimationFrame(gameLoop);
 
 
 function gameLoop() {
-
     update();
     draw();
 
