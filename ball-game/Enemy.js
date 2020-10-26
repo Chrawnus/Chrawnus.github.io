@@ -11,10 +11,10 @@ class Enemy {
 
     collisionDetectionPlayer() {
         if (collisionDetection(player.x, this.x, player.y, this.y)) {
-/*             this.x += (this.x - player.x) * 0.08;
-            this.y += (this.y - player.y) * 0.08; */
-            this.x = getRandomInt(1, canvasElem.width);
-            this.y = getRandomInt(1, canvasElem.height);
+            this.x += (this.x - player.x) * 0.08;
+            this.y += (this.y - player.y) * 0.08;
+/*             this.x = getRandomInt(1, canvasElem.width);
+            this.y = getRandomInt(1, canvasElem.height); */
         } else {
             this.x -= (this.x - player.x) * 0.08;
             this.y -= (this.y - player.y) * 0.08;
