@@ -1,48 +1,28 @@
 import { canvasElem } from "/physics-sandbox/scripts/app.js";
+import { keyArr } from "/physics-sandbox/scripts/app.js";
+import { platform1 } from "/physics-sandbox/scripts/app.js";
+
 
 export class Ball {
     constructor(x, y, rad) {
         this.x = x;
         this.y = y;
         this.rad = rad;
-        this.then = Date.now();
-        this.time = Date.now();
-        this.g = 0.5;
-        this.vel = 0;
-        this.bounced = 0;
-        this.prevBounced = 0;
+        this.g = 3;
+        this.vy = 0;
+        this.vx = 0;
+        this.velocity = 150;
+        this.drag = 1;
     }
 
+    physics(delta) {
+        this.gravity(delta);
 
-    physics() {
-        let delta = this.setDelta();
-        
-
-        if (!(this.collisionDetection(this.x, canvasElem.height))) {
-            let elapsedTime = this.getTime(this.time);
-            if (this.bounced > this.prevBounced) {
-                elapsedTime = this.getTime(Date.now());
-                this.y += this.g * elapsedTime * delta;
-                console.log(this.bounced, this.prevBounced);
-            } else {
-                elapsedTime = this.getTime(this.time)
-                this.y += this.g * elapsedTime * delta;
-            }
-            
-            //console.log(elapsedTime);   
-        }
-
-        else if ((this.collisionDetection(this.x, canvasElem.height))) {
-            this.y += (this.g) * -0.8 * delta;
-            this.prevBounced = this.bounced;
-            this.bounced += 1;
-            console.log(this.bounced, this.prevBounced);
-
-        }
     }
 
-
-    update() {
+    update(delta) {
+        this.movementHandler(delta);
+        this.movement(delta);
 
     }
 
@@ -54,24 +34,83 @@ export class Ball {
         ctx.stroke();
     }
 
+    gravity(delta) {
+        this.vy += this.g;
+        this.y += this.vy * delta;
 
-    collisionDetection(x, y) {
-        let a = Math.abs(this.x - x);
-        let b = Math.abs(this.y - y);
 
-        return (Math.sqrt(a * a + b * b) <= this.rad);
+        if (this.y + this.rad > canvasElem.height) {
+            this.vy *= -0.2;
+            this.y = canvasElem.height - this.rad;
+        }
+        if (this.y - this.rad < 0) {
+            this.vy *= -0.2;
+            this.y = this.rad;
+        }
+        if (this.collisionDetectionFloor(platform1)) {
+            this.vy *= -0.2;
+            this.y = platform1.y - this.rad;
+        }
+        if (this.collisionDetectionRoof(platform1)) {
+            this.vy *= -0.2;
+            this.y = (platform1.y + platform1.height) + this.rad;
+        }
     }
 
-    setDelta() {
-        let now = Date.now();
-        let delta = (now - this.then) / 1000; // seconds since last frame
-        this.then = now;
-        return delta;
+    movement(delta) {
+        this.x += this.vx * delta;
+        this.vx *= 1 - delta * this.drag *0.01;
+
+        if (this.y === canvasElem.height - this.rad || this.collisionDetectionFloor(platform1) ) {
+            this.vx *= 1 - delta * this.drag
+        }
+
+        
+        if (this.x + this.rad > canvasElem.width) {
+            this.vx *= -0.2;
+            this.x = canvasElem.width - this.rad;
+        } else if (this.x - this.rad <= 0) {
+            this.vx *= -0.2;
+            this.x = this.rad;
+        }
     }
 
-    getTime(then) {
-        let now = Date.now();
-        let elapsedTime = now - then;
-        return elapsedTime;
+    movementHandler() {
+        if (keyArr.includes("ArrowUp")) {
+            if ((this.y >= canvasElem.height - this.rad - 1) || this.collisionDetectionFloor(platform1)) {
+                this.vy = -150;
+            } 
+        }
+
+        if (keyArr.includes("ArrowLeft") && (this.x > this.rad)) {
+            if ((this.y == canvasElem.height - this.rad)) {
+                this.vx = -50;
+            } else {
+                this.vx = -25;
+            }
+        }
+        if (keyArr.includes("ArrowRight") && (this.x < (canvasElem.width - this.rad))) {
+            if ((this.y == canvasElem.height - this.rad)) {
+                this.vx = 50;
+            } else {
+                this.vx = 25;
+            }
+        }
+    }
+
+
+    collisionDetectionFloor(platform) {
+        return !(
+            ((this.y + this.rad) < (platform.y)) ||
+            (this.y > (platform.y)) ||
+            ((this.x + this.rad/2) < platform.x) ||
+            (this.x > (platform.x + platform.width))
+        );
+    }
+
+    collisionDetectionRoof(platform) {
+        return !(
+            ((this.y - this.rad) > (platform.y + platform.height))
+        );
     }
 }
