@@ -3,13 +3,16 @@ class Player {
         this.x = x;
         this.y = y;
         this.rad = rad;
-        this.velocity = Math.hypot(canvasElem.height, canvasElem.width) * 0.004;
+        this.velocity = 250;
         this.maxVelocity = this.velocity*2;
+        this.then = Date.now();
     }
 
     update() {
+
+        let delta = this.setDelta();
         this.collisionDetectionEnemy();
-        this.movementHandler();
+        this.movementHandler(delta);
     }
 
     collisionDetectionEnemy() {
@@ -30,18 +33,25 @@ class Player {
     }
 
     
-    movementHandler() {
+    movementHandler(delta) {
         if (keyArr.includes("ArrowUp") && (this.y > this.rad)) {
-            this.y += objMovement.Up;
+            this.y += objMovement.Up * delta;
         }
         if (keyArr.includes("ArrowDown") && (this.y < (canvasElem.height - this.rad))) {
-            this.y += objMovement.Down;
+            this.y += objMovement.Down * delta;
         }
         if (keyArr.includes("ArrowLeft") && (this.x > this.rad)) {
-            this.x += objMovement.Left;
+            this.x += objMovement.Left * delta;
         }
         if (keyArr.includes("ArrowRight") && (this.x < (canvasElem.width - this.rad))) {
-            this.x += objMovement.Right;
+            this.x += objMovement.Right * delta;
         }
+    }
+
+    setDelta() {
+        let now = Date.now();
+        let delta = (now - this.then) / 1000; // seconds since last frame
+        this.then = now;
+        return delta;
     }
 }
