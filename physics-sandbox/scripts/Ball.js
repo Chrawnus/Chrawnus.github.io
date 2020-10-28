@@ -15,10 +15,11 @@ export class Ball {
         this.drag = 10;
         this.gracePeriod;
         this.wallGrabPeriod;
+        this.pdt = 0.01;
     }
 
-    physics(delta) {
-        this.gravity(delta);
+    physics() {
+        this.gravity(this.pdt);
 
     }
 
@@ -69,6 +70,19 @@ export class Ball {
             this.vy *= -0.2;
             this.y = this.rad;
         }
+
+        this.vx *= 1 - delta * this.drag * 0.01;
+
+        this.wallGrabPeriod -= delta;
+
+        if (this.y === canvasElem.height - this.rad) {
+            this.wallGrabPeriod = delta * 8;
+        }
+
+        if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
+            this.wallGrabPeriod -= delta;
+
+        }
     }
 
     movement(delta) {
@@ -77,23 +91,7 @@ export class Ball {
         this.y += distance;
         
         this.x += this.vx * delta;
-        this.vx *= 1 - delta * this.drag * 0.01;
 
-        this.wallGrabPeriod -= delta;
-
-        if (this.y === canvasElem.height - this.rad) {
-
-            this.wallGrabPeriod = delta * 8;
-
-
-
-        
-        }
-
-        if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
-            this.wallGrabPeriod -= delta;
-
-        }
 
         if (this.x + this.rad > canvasElem.width) {
  

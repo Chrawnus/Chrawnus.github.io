@@ -101,7 +101,7 @@ function getDelta(now) {
     prevTime = now;
     accumulator += dt;
     while (accumulator >= dt) {
-        accumulator -= dt;
         return dt;
     }   
+    accumulator -= dt;
 }
