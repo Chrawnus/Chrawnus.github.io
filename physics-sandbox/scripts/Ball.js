@@ -15,11 +15,10 @@ export class Ball {
         this.drag = 10;
         this.gracePeriod;
         this.wallGrabPeriod;
-        this.pdt = 0.01;
     }
 
-    physics() {
-        this.gravity(this.pdt);
+    physics(delta) {
+        this.gravity(delta);
 
     }
 

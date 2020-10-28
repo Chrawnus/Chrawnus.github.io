@@ -3,7 +3,7 @@ import { Platform } from "/physics-sandbox/scripts/Platform.js";
 
 export const canvasElem = document.getElementById('canvas');
 
-
+let pdt = 0.01;
 let prevTime;
 let accumulator = 0;
 
@@ -27,7 +27,7 @@ function gameLoop(now) {
 
     let dt = getDelta(now);
 
-    physics(dt);
+    physics(pdt);
     update(dt);
     draw(dt);
 
@@ -94,6 +94,9 @@ function keyUpEventsHandler(e) {
         }
     }
 }
+
+
+
 
 function getDelta(now) {
     if(!prevTime){prevTime=now;}
