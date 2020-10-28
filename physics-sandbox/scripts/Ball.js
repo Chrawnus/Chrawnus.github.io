@@ -52,15 +52,15 @@ export class Ball {
 
             if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
                 this.vx *= 1 - delta * this.drag;
-                if (this.speedMult > 100 * delta) {
-                    this.speedMult = 100 * delta;
+                if (this.speedMult > 50 * delta) {
+                    this.speedMult = 50 * delta;
                     console.log(this.speedMult)
                 }
             } else {
                 this.vx *= 1 - delta * this.drag;
-                if (this.speedMult < delta * 500) {
+                if (this.speedMult < delta * 300) {
                     console.log(this.speedMult)
-                    this.speedMult += delta * 25;
+                    this.speedMult += delta * 15;
                 }
             }
 

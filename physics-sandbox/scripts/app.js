@@ -3,7 +3,7 @@ import { Platform } from "/physics-sandbox/scripts/Platform.js";
 
 export const canvasElem = document.getElementById('canvas');
 
-let pdt = 0.01;
+
 let prevTime;
 let accumulator = 0;
 
@@ -27,7 +27,7 @@ function gameLoop(now) {
 
     let dt = getDelta(now);
 
-    physics(pdt);
+    physics(dt);
     update(dt);
     draw(dt);
 
@@ -35,8 +35,8 @@ function gameLoop(now) {
 }
 
 
-function physics(dt) {
-    ball1.physics(dt);
+function physics(now) {
+    getPhysicsDelta(now);
 }
 
 
@@ -102,9 +102,15 @@ function getDelta(now) {
     if(!prevTime){prevTime=now;}
     let dt = (now - prevTime)/1000;
     prevTime = now;
+    return dt;
+
+}
+
+function getPhysicsDelta(dt) {
+    let pdt = 0.01;
     accumulator += dt;
-    while (accumulator >= dt) {
-        return dt;
-    }   
-    accumulator -= dt;
+    while (accumulator >= pdt) {
+        ball1.physics(pdt);
+        accumulator -=pdt;
+    }
 }
