@@ -14,10 +14,10 @@ export class Ball {
         this.speedMult = 0;
         this.drag = 10;
         this.gracePeriod;
+        this.wallGrabPeriod;
     }
 
     physics(delta) {
-        console.log(`Delta: ${delta}`)
         this.gravity(delta);
 
     }
@@ -39,17 +39,17 @@ export class Ball {
     gravity(delta) {
         this.vy += this.g;
         this.y += this.vy * delta;
-        
+
         if (this.gracePeriod > 0) {
             this.gracePeriod -= delta;
-            console.log(this.gracePeriod);
+
         }
 
         if (this.y + this.rad > canvasElem.height) {
             this.vy *= -0.2;
             this.y = canvasElem.height - this.rad;
-            this.gracePeriod = delta*8;
-            console.log(this.gracePeriod);
+            this.gracePeriod = delta * 8;
+
         }
         if (this.y - this.rad < 0) {
             this.vy *= -0.2;
@@ -58,55 +58,78 @@ export class Ball {
     }
 
     movement(delta) {
+        this.wallGrabPeriod -= delta;
         this.x += this.vx * delta;
-        this.vx *= 1 - delta * this.drag *0.01;
+        this.vx *= 1 - delta * this.drag * 0.01;
 
         if (this.y === canvasElem.height - this.rad) {
+
+            this.wallGrabPeriod = delta * 8;
+            console.log(this.wallGrabPeriod);
+
             if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
                 this.vx *= 1 - delta * this.drag
-                if (this.speedMult > 0) {
-                    this.speedMult -= delta*2;
-                    console.log(`speed multiplier: ${this.speedMult}`);
+                if (this.speedMult > 0.5) {
+                    this.speedMult = 0.5;
                 }
             } else {
-                if (this.speedMult < 1.5) {
-                    this.speedMult += delta*4;
-                    console.log(`speed multiplier: ${this.speedMult}`);
+                if (this.speedMult < delta * 125) {
+                    this.speedMult += delta * 4;
                 }
             }
-            
+
         }
 
-        
+        if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
+            this.wallGrabPeriod -= delta;
+            console.log(this.wallGrabPeriod);
+        }
+
         if (this.x + this.rad > canvasElem.width) {
-            this.vx *= -0.2;
+ 
             this.x = canvasElem.width - this.rad;
+
+            this.speedMult = 1;
+            
         } else if (this.x - this.rad <= 0) {
-            this.vx *= -0.2;
+
             this.x = this.rad;
+            
+            this.speedMult = 1;
         }
     }
 
-    movementHandler() {
+    movementHandler(delta) {
         if (keyArr.includes("ArrowUp")) {
-            if (this.gracePeriod > 0) {
-                this.vy = -500;
-            } 
+            if (this.gracePeriod > 0 || this.wallGrabPeriod > 0) {
+                this.vy = -250;
+            }
         }
 
         if (keyArr.includes("ArrowLeft") && (this.x > this.rad)) {
-            
+            if ((this.y === canvasElem.height - this.rad)) {
                 this.vx = -200 * this.speedMult;
-        
-        } 
+            } else if (this.wallGrabPeriod > 0) {
+                this.vx = -200 * this.speedMult;
+            }  else if (this.vx > -250) {
+                this.vx -= 25;
+            }
+
+
+
+        }
 
         if (keyArr.includes("ArrowRight") && (this.x < (canvasElem.width - this.rad))) {
-            //if ((this.y == canvasElem.height - this.rad)) {
+            if ((this.y === canvasElem.height - this.rad)) {
                 this.vx = 200 * this.speedMult;
-            //}
+            } else if (this.wallGrabPeriod > 0) {
+                this.vx = 200 * this.speedMult;
+            } else if (this.vx < 250) {
+                this.vx += 25;
+            }
         }
     }
 
 
- 
+
 }

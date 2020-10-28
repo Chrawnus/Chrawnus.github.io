@@ -25,7 +25,7 @@ function gameLoop(now) {
 
 
     let dt = getDelta(now);
-    console.log(dt);
+
     physics(dt);
     update(dt);
     draw(dt);
