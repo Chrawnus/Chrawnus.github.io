@@ -38,7 +38,10 @@ export class Ball {
 
     gravity(delta) {
         this.vy += this.g;
-
+        let distance = this.vy * delta;
+        this.y += distance;
+        
+        this.x += this.vx * delta;
 
         if (this.gracePeriod > 0) {
             this.gracePeriod -= delta;
@@ -86,10 +89,8 @@ export class Ball {
 
     movement(delta) {
 
-        let distance = this.vy * delta;
-        this.y += distance;
         
-        this.x += this.vx * delta;
+
 
 
         if (this.x + this.rad > canvasElem.width) {
