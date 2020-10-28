@@ -23,7 +23,7 @@ export class Ball {
     }
 
     update(delta) {
-        this.movementHandler(delta);
+        this.movementHandler();
         this.movement(delta);
 
     }
@@ -65,7 +65,7 @@ export class Ball {
         if (this.y === canvasElem.height - this.rad) {
 
             this.wallGrabPeriod = delta * 8;
-            console.log(this.wallGrabPeriod);
+
 
             if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
                 this.vx *= 1 - delta * this.drag
@@ -82,7 +82,7 @@ export class Ball {
 
         if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
             this.wallGrabPeriod -= delta;
-            console.log(this.wallGrabPeriod);
+
         }
 
         if (this.x + this.rad > canvasElem.width) {
@@ -99,10 +99,10 @@ export class Ball {
         }
     }
 
-    movementHandler(delta) {
+    movementHandler() {
         if (keyArr.includes("ArrowUp")) {
             if (this.gracePeriod > 0 || this.wallGrabPeriod > 0) {
-                this.vy = -250;
+                this.vy = -600;
             }
         }
 
