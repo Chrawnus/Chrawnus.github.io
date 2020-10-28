@@ -78,11 +78,8 @@ function keyDownEventsHandler(e) {
     if (e.key.startsWith('Arrow')) {
         if (!(keyArr.includes(e.key))) {
             keyArr.push(e.key);
-            console.log(keyArr);
             if ((keyArr.length > 2)) {
-                console.log(`removing ${keyArr[0]} from keyArr...`)
                 keyArr.shift();
-                
             }
         }
     }

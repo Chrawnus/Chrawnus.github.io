@@ -12,7 +12,7 @@ export class Ball {
         this.vy = 0;
         this.vx = 0;
         this.speedMult = 0;
-        this.drag = 25;
+        this.drag = 10;
         this.gracePeriod;
     }
 
@@ -39,6 +39,11 @@ export class Ball {
         this.vy += this.g;
         this.vx *= 1 - delta * this.drag * 0.01;
 
+        
+        if (this.speedMult > 50 * delta) {
+            this.speedMult = 50 * delta;
+        }
+
         if (this.gracePeriod > 0) {
             this.gracePeriod -= delta;
 
@@ -49,18 +54,12 @@ export class Ball {
             this.vy *= -0.2;
             this.y = canvasElem.height - this.rad;
             this.gracePeriod = delta * 8;
+            this.vx *= 1 - delta * this.drag;
 
-
-            if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
-                this.vx *= 1 - delta * this.drag;
-                if (this.speedMult > 50 * delta) {
-                    this.speedMult = 50 * delta;
-                    console.log(this.speedMult)
-                }
-            } else {
+            if (!(keyArr.includes("ArrowLeft")) != !(keyArr.includes("ArrowRight"))) {
+                
                 this.vx *= 1 - delta * this.drag * 0.25;
                 if (this.speedMult < delta * 300) {
-                    console.log(this.speedMult)
                     this.speedMult += delta * 15;
                 }
             }
@@ -89,21 +88,23 @@ export class Ball {
 
         let distance = this.vy * delta;
         this.y += distance;
-        
+
         this.x += this.vx * delta;
 
 
 
         if (this.x + this.rad > canvasElem.width) {
- 
+
             this.x = canvasElem.width - this.rad;
             this.speedMult = 1;
-            
+
         } else if (this.x - this.rad <= 0) {
 
             this.x = this.rad;
             this.speedMult = 1;
         }
+
+        console.log(`x vel: ${this.vx}, y vel: ${this.vy}`);
     }
 
 
@@ -115,7 +116,7 @@ export class Ball {
             }
         }
 
-        if (keyArr.includes("ArrowLeft") && (this.x > this.rad)) {
+        if (keyArr.includes("ArrowLeft") && !(keyArr.includes("ArrowRight")) && (this.x > this.rad)) {
             if ((this.y === canvasElem.height - this.rad)) {
                 this.vx = -200 * this.speedMult;
             } else if (this.vx > -250) {
@@ -126,7 +127,7 @@ export class Ball {
 
         }
 
-        if (keyArr.includes("ArrowRight") && (this.x < (canvasElem.width - this.rad))) {
+        if (keyArr.includes("ArrowRight") && !(keyArr.includes("ArrowLeft")) && (this.x < (canvasElem.width - this.rad))) {
             if ((this.y === canvasElem.height - this.rad)) {
                 this.vx = 200 * this.speedMult;
             } else if (this.vx < 250) {
