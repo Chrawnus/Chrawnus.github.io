@@ -97,7 +97,6 @@ function keyUpEventsHandler(e) {
 function getDelta(now) {
     if(!prevTime){prevTime=now;}
     let dt = (now - prevTime)/1000;
-    console.log(`Delta: ${dt}`);
     prevTime = now;
     return dt;    
 }
