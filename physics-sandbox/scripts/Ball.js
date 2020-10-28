@@ -50,6 +50,20 @@ export class Ball {
             this.y = canvasElem.height - this.rad;
             this.gracePeriod = delta * 8;
 
+            if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
+                this.vx *= 1 - delta * this.drag;
+                if (this.speedMult > 0.5) {
+                    this.speedMult = 0.5;
+                    console.log(this.speedMult)
+                }
+            } else {
+                this.vx *= 1 - delta * this.drag;
+                if (this.speedMult < delta * 125) {
+                    console.log(this.speedMult)
+                    this.speedMult += delta * 4;
+                }
+            }
+
         }
         if (this.y - this.rad < 0) {
             this.vy *= -0.2;
@@ -59,7 +73,7 @@ export class Ball {
 
     movement(delta) {
 
-        let distance = this.vy  * delta;
+        let distance = this.vy * delta;
         this.y += distance;
         
         this.x += this.vx * delta;
@@ -72,18 +86,8 @@ export class Ball {
             this.wallGrabPeriod = delta * 8;
 
 
-            if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
-                this.vx *= 1 - delta * this.drag
-                
-                if (this.speedMult > 0.5) {
-                    this.speedMult = 0.5;
-                }
-            } else {
-                if (this.speedMult < delta * 125) {
-                    this.speedMult += delta * 4;
-                }
-            }
 
+        
         }
 
         if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
@@ -94,16 +98,16 @@ export class Ball {
         if (this.x + this.rad > canvasElem.width) {
  
             this.x = canvasElem.width - this.rad;
-
             this.speedMult = 1;
             
         } else if (this.x - this.rad <= 0) {
 
             this.x = this.rad;
-            
             this.speedMult = 1;
         }
     }
+
+
 
     movementHandler(delta) {
         if (keyArr.includes("ArrowUp")) {
