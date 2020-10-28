@@ -44,7 +44,7 @@ function update(dt) {
     ball1.update(dt);
 }
 
-function draw(dt) {
+function draw() {
 
     const ctx = canvasElem.getContext('2d');
     
@@ -78,8 +78,11 @@ function keyDownEventsHandler(e) {
     if (e.key.startsWith('Arrow')) {
         if (!(keyArr.includes(e.key))) {
             keyArr.push(e.key);
+            console.log(keyArr);
             if ((keyArr.length > 2)) {
+                console.log(`removing ${keyArr[0]} from keyArr...`)
                 keyArr.shift();
+                
             }
         }
     }
@@ -91,6 +94,7 @@ function keyUpEventsHandler(e) {
     if (e.key.startsWith('Arrow')) {
         if ((keyArr.includes(e.key))) {
             keyArr.splice(keyArr.indexOf(e.key), 1);
+            
         }
     }
 }
