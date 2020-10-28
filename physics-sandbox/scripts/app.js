@@ -5,6 +5,7 @@ export const canvasElem = document.getElementById('canvas');
 
 
 let prevTime;
+let accumulator = 0;
 
 requestAnimationFrame(gameLoop);
 
@@ -98,5 +99,9 @@ function getDelta(now) {
     if(!prevTime){prevTime=now;}
     let dt = (now - prevTime)/1000;
     prevTime = now;
-    return dt;    
+    accumulator += dt;
+    while (accumulator >= dt) {
+        accumulator -= dt;
+        return dt;
+    }   
 }
