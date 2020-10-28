@@ -70,7 +70,7 @@ function keyDownEventsHandler(e) {
         if (!(keyArr.includes(e.key))) {
             keyArr.push(e.key);
             if ((keyArr.length > 2)) {
-                keyArr.shift;
+                keyArr.shift();
             }
         }
     }

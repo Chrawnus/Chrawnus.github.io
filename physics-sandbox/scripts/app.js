@@ -3,6 +3,9 @@ import { Platform } from "/physics-sandbox/scripts/Platform.js";
 
 export const canvasElem = document.getElementById('canvas');
 
+
+let prevTime;
+
 requestAnimationFrame(gameLoop);
 
 export let platform1 = new Platform(canvasElem.width/2, 300, 100, 25);
@@ -16,25 +19,31 @@ window.addEventListener("keyup", keyUpEventsHandler);
 
 
 
-function gameLoop() {
-    physics();
-    update();
-    draw();
+
+
+function gameLoop(now) {
+
+
+    let dt = getDelta(now);
+    console.log(dt);
+    physics(dt);
+    update(dt);
+    draw(dt);
 
     requestAnimationFrame(gameLoop);
 }
 
 
-function physics() {
-    ball1.physics(0.08);
+function physics(dt) {
+    ball1.physics(dt);
 }
 
 
-function update() {
-    ball1.update(0.08);
+function update(dt) {
+    ball1.update(dt);
 }
 
-function draw() {
+function draw(dt) {
 
     const ctx = canvasElem.getContext('2d');
     
@@ -83,4 +92,11 @@ function keyUpEventsHandler(e) {
             keyArr.splice(keyArr.indexOf(e.key), 1);
         }
     }
+}
+
+function getDelta(now) {
+    if(!prevTime){prevTime=now;}
+    let dt = (now - prevTime)/1000;
+    prevTime = now;
+    return dt;
 }

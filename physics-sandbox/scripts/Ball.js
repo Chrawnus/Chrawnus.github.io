@@ -8,14 +8,16 @@ export class Ball {
         this.x = x;
         this.y = y;
         this.rad = rad;
-        this.g = 3;
+        this.g = 9.81;
         this.vy = 0;
         this.vx = 0;
-        this.velocity = 150;
-        this.drag = 1;
+        this.speedMult = 0;
+        this.drag = 10;
+        this.gracePeriod;
     }
 
     physics(delta) {
+        console.log(`Delta: ${delta}`)
         this.gravity(delta);
 
     }
@@ -37,23 +39,21 @@ export class Ball {
     gravity(delta) {
         this.vy += this.g;
         this.y += this.vy * delta;
-
+        
+        if (this.gracePeriod > 0) {
+            this.gracePeriod -= delta;
+            console.log(this.gracePeriod);
+        }
 
         if (this.y + this.rad > canvasElem.height) {
             this.vy *= -0.2;
             this.y = canvasElem.height - this.rad;
+            this.gracePeriod = delta*8;
+            console.log(this.gracePeriod);
         }
         if (this.y - this.rad < 0) {
             this.vy *= -0.2;
             this.y = this.rad;
-        }
-        if (this.collisionDetectionFloor(platform1)) {
-            this.vy *= -0.2;
-            this.y = platform1.y - this.rad;
-        }
-        if (this.collisionDetectionRoof(platform1)) {
-            this.vy *= -0.2;
-            this.y = (platform1.y + platform1.height) + this.rad;
         }
     }
 
@@ -61,8 +61,20 @@ export class Ball {
         this.x += this.vx * delta;
         this.vx *= 1 - delta * this.drag *0.01;
 
-        if (this.y === canvasElem.height - this.rad || this.collisionDetectionFloor(platform1) ) {
-            this.vx *= 1 - delta * this.drag
+        if (this.y === canvasElem.height - this.rad) {
+            if (!(keyArr.includes("ArrowLeft")) && !(keyArr.includes("ArrowRight"))) {
+                this.vx *= 1 - delta * this.drag
+                if (this.speedMult > 0) {
+                    this.speedMult -= delta*2;
+                    console.log(`speed multiplier: ${this.speedMult}`);
+                }
+            } else {
+                if (this.speedMult < 1.5) {
+                    this.speedMult += delta*4;
+                    console.log(`speed multiplier: ${this.speedMult}`);
+                }
+            }
+            
         }
 
         
@@ -77,40 +89,24 @@ export class Ball {
 
     movementHandler() {
         if (keyArr.includes("ArrowUp")) {
-            if ((this.y >= canvasElem.height - this.rad - 1) || this.collisionDetectionFloor(platform1)) {
-                this.vy = -150;
+            if (this.gracePeriod > 0) {
+                this.vy = -500;
             } 
         }
 
         if (keyArr.includes("ArrowLeft") && (this.x > this.rad)) {
-            if ((this.y == canvasElem.height - this.rad)) {
-                this.vx = -50;
-            } else {
-                this.vx = -25;
-            }
-        }
+            
+                this.vx = -200 * this.speedMult;
+        
+        } 
+
         if (keyArr.includes("ArrowRight") && (this.x < (canvasElem.width - this.rad))) {
-            if ((this.y == canvasElem.height - this.rad)) {
-                this.vx = 50;
-            } else {
-                this.vx = 25;
-            }
+            //if ((this.y == canvasElem.height - this.rad)) {
+                this.vx = 200 * this.speedMult;
+            //}
         }
     }
 
 
-    collisionDetectionFloor(platform) {
-        return !(
-            ((this.y + this.rad) < (platform.y)) ||
-            (this.y > (platform.y)) ||
-            ((this.x + this.rad/2) < platform.x) ||
-            (this.x > (platform.x + platform.width))
-        );
-    }
-
-    collisionDetectionRoof(platform) {
-        return !(
-            ((this.y - this.rad) > (platform.y + platform.height))
-        );
-    }
+ 
 }
