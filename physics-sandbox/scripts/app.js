@@ -1,5 +1,6 @@
 import { Ball } from "/physics-sandbox/scripts/Ball.js";
 import { Platform } from "/physics-sandbox/scripts/Platform.js";
+import { Collision } from "/physics-sandbox/scripts/CollisionDetection.js";
 
 export const canvasElem = document.getElementById('canvas');
 
@@ -10,7 +11,14 @@ let accumulator = 0;
 requestAnimationFrame(gameLoop);
 
 export let platform1 = new Platform(canvasElem.width/2, 300, 100, 25);
-let ball1 = new Ball(canvasElem.width/2, 15, 15);
+
+export let ball1 = new Ball(canvasElem.width/2, 15, 15);
+export let ball2 = new Ball(canvasElem.width/2, 200, 15, 15);
+
+
+
+let collider = new Collision();
+
 export let keyArr = [];
 
 
@@ -29,6 +37,7 @@ function gameLoop(now) {
 
     physics(dt);
     update(dt);
+    collision(dt);
     draw(dt);
 
     requestAnimationFrame(gameLoop);
@@ -37,11 +46,18 @@ function gameLoop(now) {
 
 function physics(now) {
     getPhysicsDelta(now);
+    
 }
 
 
 function update(dt) {
     ball1.update(dt);
+    ball2.update(dt);
+    
+}
+
+function collision() {
+    collider.physics(collider.physicsChildren);
 }
 
 function draw() {
@@ -54,16 +70,12 @@ function draw() {
 
     platform1.draw(ctx);
     ball1.draw(ctx);
+    ball2.draw(ctx);
 }
 
 
 
-function distanceDetection(x1, x2, y1, y2) {
-    let a = Math.abs(x1 - x2);
-    let b = Math.abs(y1 - y2);
 
-    return Math.sqrt(a * a + b * b);
-}
 
 
 
@@ -78,9 +90,6 @@ function keyDownEventsHandler(e) {
     if (e.key.startsWith('Arrow')) {
         if (!(keyArr.includes(e.key))) {
             keyArr.push(e.key);
-            if ((keyArr.length > 2)) {
-                keyArr.shift();
-            }
         }
     }
 
@@ -112,6 +121,8 @@ function getPhysicsDelta(dt) {
     accumulator += dt;
     while (accumulator >= pdt) {
         ball1.physics(pdt);
+        ball2.physics(pdt);
+
         accumulator -=pdt;
     }
 }

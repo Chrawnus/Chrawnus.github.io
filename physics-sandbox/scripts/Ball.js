@@ -36,9 +36,11 @@ export class Ball {
     }
 
     gravity(delta) {
+        if (!(this.y + this.rad >= canvasElem.height)) {
+            this.g = 9.81;
+        }
         this.vy += this.g;
         this.vx *= 1 - delta * this.drag * 0.01;
-
         
         if (this.speedMult > 50 * delta) {
             this.speedMult = 50 * delta;
@@ -50,16 +52,16 @@ export class Ball {
         }
 
 
-        if (this.y + this.rad > canvasElem.height) {
+        if (this.y + this.rad >= canvasElem.height) {
             this.vy *= -0.2;
             this.y = canvasElem.height - this.rad;
             this.gracePeriod = delta * 8;
             this.vx *= 1 - delta * this.drag;
+            this.g = 0;
+
 
             if (!(keyArr.includes("ArrowLeft")) != !(keyArr.includes("ArrowRight"))) {
-                
-                this.vx *= 1 - delta * this.drag * 0.25;
-                if (this.speedMult < delta * 300) {
+                if (this.speedMult < delta * 450) {
                     this.speedMult += delta * 15;
                 }
             }
@@ -78,8 +80,8 @@ export class Ball {
 
         }
 
-        if (this.x + this.rad > canvasElem.width || this.x - this.rad <= 0) {
-
+        if (this.x + this.rad >= canvasElem.width || this.x - this.rad <= 0) {
+            this.vx *= -0.8;
 
         }
     }
@@ -104,7 +106,7 @@ export class Ball {
             this.speedMult = 1;
         }
 
-        console.log(`x vel: ${this.vx}, y vel: ${this.vy}`);
+        
     }
 
 
@@ -117,10 +119,8 @@ export class Ball {
         }
 
         if (keyArr.includes("ArrowLeft") && !(keyArr.includes("ArrowRight")) && (this.x > this.rad)) {
-            if ((this.y === canvasElem.height - this.rad)) {
-                this.vx = -200 * this.speedMult;
-            } else if (this.vx > -250) {
-                this.vx -= 25;
+            if ((this.y === canvasElem.height - this.rad) && this.vx > -600) {
+                this.vx -= 50;
             }
 
 
@@ -128,10 +128,8 @@ export class Ball {
         }
 
         if (keyArr.includes("ArrowRight") && !(keyArr.includes("ArrowLeft")) && (this.x < (canvasElem.width - this.rad))) {
-            if ((this.y === canvasElem.height - this.rad)) {
-                this.vx = 200 * this.speedMult;
-            } else if (this.vx < 250) {
-                this.vx += 25;
+            if ((this.y === canvasElem.height - this.rad) && this.vx < 600) {
+                this.vx += 50;
             }
         }
     }
