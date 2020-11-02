@@ -12,11 +12,12 @@ export class Ball {
         this.vy = 0;
         this.vx = 0;
         this.speedMult = 0;
-        this.drag = 10;
+        this.drag = 1;
         this.gracePeriod;
     }
 
     physics(delta) {
+        
         this.gravity(delta);
 
     }
@@ -40,6 +41,7 @@ export class Ball {
             this.g = 9.81;
         }
         this.vy += this.g;
+
         this.vx *= 1 - delta * this.drag * 0.01;
         
         if (this.speedMult > 50 * delta) {
@@ -47,18 +49,43 @@ export class Ball {
         }
 
         if (this.gracePeriod > 0) {
+            
             this.gracePeriod -= delta;
+            
+            if (Math.abs(this.vy) < this.g*2.5) {
+                this.g = 0;
+                if (this.vy <= 9.81) {
 
+                    this.g = 0;
+                    this.vy = 0;
+                }
+
+            }
         }
 
 
         if (this.y + this.rad >= canvasElem.height) {
-            this.vy *= -0.2;
+            
+            if (Math.abs(this.vy) <= 9.81) {
+                this.vy = 0;
+                this.g = 0;
+            }
             this.y = canvasElem.height - this.rad;
+            if (Math.abs(this.vy) > this.g) {
+                console.log(this.vy);
+                console.log("hej")
+                this.vy *= -0.9;
+            }
+            
             this.gracePeriod = delta * 8;
             this.vx *= 1 - delta * this.drag;
-            this.g = 0;
+            if (Math.abs(this.vy) <= 9.81) {
+                this.g = 0;
+                this.vy = 0;
+            }
+            
 
+            
 
             if (!(keyArr.includes("ArrowLeft")) != !(keyArr.includes("ArrowRight"))) {
                 if (this.speedMult < delta * 450) {
@@ -68,7 +95,7 @@ export class Ball {
 
         }
         if (this.y - this.rad < 0) {
-            this.vy *= -0.2;
+            this.vy *= -0.9;
             this.y = this.rad;
         }
 
@@ -81,7 +108,7 @@ export class Ball {
         }
 
         if (this.x + this.rad >= canvasElem.width || this.x - this.rad <= 0) {
-            this.vx *= -0.8;
+            this.vx *= -0.9;
 
         }
     }

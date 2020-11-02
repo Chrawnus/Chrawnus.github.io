@@ -21,24 +21,28 @@ export class Collision {
                     const a = physicsChildren[i].x - physicsChildren[j].x;
                     const b = physicsChildren[i].y - physicsChildren[j].y;
                     const rad = physicsChildren[i].rad + physicsChildren[j].rad;
-                    
-                    if ((a * a + b * b ) < rad*rad) {
+
+
+                    if ((a * a + b * b) < rad * rad) {
                         const x = physicsChildren[i].x - physicsChildren[j].x;
                         const y = physicsChildren[i].y - physicsChildren[j].y;
                         const length = Math.sqrt(x * x + y * y);
                         const overlap = Math.abs(length - physicsChildren[i].rad);
                         const vectors = this.normalize(x, y, length);
+                        let vRelativeVelocity = { x: physicsChildren[i].vx - physicsChildren[j].vx, y: physicsChildren[i].vy - physicsChildren[j].vy };
+                        let speed = vRelativeVelocity.x * vectors.x + vRelativeVelocity.y * vectors.y;
 
-                        physicsChildren[i].x += overlap*vectors.x;
-                        physicsChildren[j].x -= overlap*vectors.x;
+                        physicsChildren[i].x += overlap * 0.5 * vectors.x;
+                        physicsChildren[j].x -= overlap * 0.5 * vectors.x;
+
+                        physicsChildren[i].y += overlap * 0.5 * vectors.y;
+                        physicsChildren[j].y -= overlap * 0.5 * vectors.y;
+
                         
-                        physicsChildren[i].y += overlap*vectors.y;
-                        physicsChildren[j].y -= overlap*vectors.y;
-
-/*                         physicsChildren[i].vx *= -0.8;
-                        physicsChildren[j].vx *= -0.8;
-                        physicsChildren[i].vy *= -0.8;
-                        physicsChildren[j].vy *= -0.8; */
+                        physicsChildren[i].vx -= (speed * vectors.x);
+                        physicsChildren[i].vy -= (speed * vectors.y);
+                        physicsChildren[j].vx += (speed * vectors.x);
+                        physicsChildren[j].vy += (speed * vectors.y);
                     }
                 }
             }
@@ -46,10 +50,10 @@ export class Collision {
     }
 
     normalize(x, y, length) {
-        return { 
-          x: x / length, 
-          y: y / length
+        return {
+            x: x / length,
+            y: y / length
         };
-      }
+    }
 }
 

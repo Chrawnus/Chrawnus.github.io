@@ -44,11 +44,6 @@ function gameLoop(now) {
 }
 
 
-function physics(now) {
-    getPhysicsDelta(now);
-    
-}
-
 
 function update(dt) {
     ball1.update(dt);
@@ -58,6 +53,11 @@ function update(dt) {
 
 function collision() {
     collider.physics(collider.physicsChildren);
+}
+
+function physics(now) {
+    getPhysicsDelta(now);
+    
 }
 
 function draw() {
