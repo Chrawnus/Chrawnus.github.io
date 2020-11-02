@@ -52,15 +52,6 @@ export class Ball {
             
             this.gracePeriod -= delta;
             
-            if (Math.abs(this.vy) < this.g*2.5) {
-                this.g = 0;
-                if (this.vy <= 9.81) {
-
-                    this.g = 0;
-                    this.vy = 0;
-                }
-
-            }
         }
 
 
@@ -72,17 +63,14 @@ export class Ball {
             }
             this.y = canvasElem.height - this.rad;
             if (Math.abs(this.vy) > this.g) {
-                console.log(this.vy);
-                console.log("hej")
+
                 this.vy *= -0.9;
             }
             
+
             this.gracePeriod = delta * 8;
             this.vx *= 1 - delta * this.drag;
-            if (Math.abs(this.vy) <= 9.81) {
-                this.g = 0;
-                this.vy = 0;
-            }
+
             
 
             
