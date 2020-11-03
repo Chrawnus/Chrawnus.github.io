@@ -12,7 +12,7 @@ let gameObjects = [];
 const world = new PhysicsWorld();
 
 for (let i = 0; i < 25; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width-15), getRandomInt(15, canvasElem.height-15), getRandomInt(10,50)));
+    gameObjects.push(new Ball(getRandomInt(50, canvasElem.width-50), getRandomInt(50, canvasElem.height-50), getRandomInt(5,50)));
     
 }
 
@@ -95,7 +95,7 @@ function getPhysicsDelta(dt) {
     let pdt = 0.01;
     accumulator += dt;
     while (accumulator >= pdt) {
-        world.physics(pdt);  
-        accumulator -=pdt;
+        world.physics(pdt);
+        accumulator -= pdt;
     }
 }
