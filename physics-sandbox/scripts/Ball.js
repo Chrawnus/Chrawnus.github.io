@@ -1,31 +1,17 @@
 import { canvasElem } from "/physics-sandbox/scripts/app.js";
+import { RigidBody } from "/physics-sandbox/scripts/RigidBody.js";
 import { keyArr } from "/physics-sandbox/scripts/app.js";
-import { platform1 } from "/physics-sandbox/scripts/app.js";
 
-
-export class Ball {
+export class Ball extends RigidBody {
     constructor(x, y, rad) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.rad = rad;
-        this.g = 9.81;
-        this.vy = 0;
-        this.vx = 0;
-        this.speedMult = 0;
-        this.drag = 1;
         this.gracePeriod;
     }
 
-    physics(delta) {
-        
-        this.gravity(delta);
-
-    }
-
     update(delta) {
+        super.movement(delta);
         this.movementHandler(delta);
-        this.movement(delta);
-
     }
 
     draw(ctx) {
@@ -36,82 +22,9 @@ export class Ball {
         ctx.stroke();
     }
 
-    gravity(delta) {
-        if (!(this.y + this.rad >= canvasElem.height)) {
-            this.g = 9.81;
-        }
-        this.vy += this.g;
-
-        this.vx *= 1 - delta * this.drag * 0.01;
-        
-        if (this.speedMult > 50 * delta) {
-            this.speedMult = 50 * delta;
-        }
-
-        if (this.gracePeriod > 0) {
-            
-            this.gracePeriod -= delta;
-            
-        }
-
-
-        if (this.y + this.rad >= canvasElem.height) {
-            
-            if (Math.abs(this.vy) <= 9.81) {
-                this.vy = 0;
-                this.g = 0;
-            }
-            this.y = canvasElem.height - this.rad;
-            if (Math.abs(this.vy) > this.g) {
-
-                this.vy *= -0.9;
-            }
-            
-
-            this.gracePeriod = delta * 8;
-            this.vx *= 1 - delta * this.drag;
-
-            
-
-            
-
-            if (!(keyArr.includes("ArrowLeft")) != !(keyArr.includes("ArrowRight"))) {
-                if (this.speedMult < delta * 450) {
-                    this.speedMult += delta * 15;
-                }
-            }
-
-        }
-        if (this.y - this.rad < 0) {
-            this.vy *= -0.9;
-            this.y = this.rad;
-        }
-
-
-
-
-
-        if (this.y === canvasElem.height - this.rad) {
-
-        }
-
-        if (this.x + this.rad >= canvasElem.width || this.x - this.rad <= 0) {
-            this.vx *= -0.9;
-
-        }
-    }
-
-    movement(delta) {
-
-        let distance = this.vy * delta;
-        this.y += distance;
-
-        this.x += this.vx * delta;
-
-
-
+    movementHandler() {
+        console.log(`x: ${this.x}, y: ${this.y}`)
         if (this.x + this.rad > canvasElem.width) {
-
             this.x = canvasElem.width - this.rad;
             this.speedMult = 1;
 
@@ -121,12 +34,6 @@ export class Ball {
             this.speedMult = 1;
         }
 
-        
-    }
-
-
-
-    movementHandler(delta) {
         if (keyArr.includes("ArrowUp")) {
             if (this.gracePeriod > 0) {
                 this.vy = -600;
@@ -134,16 +41,13 @@ export class Ball {
         }
 
         if (keyArr.includes("ArrowLeft") && !(keyArr.includes("ArrowRight")) && (this.x > this.rad)) {
-            if ((this.y === canvasElem.height - this.rad) && this.vx > -600) {
+            if (this.vx > -600) {
                 this.vx -= 50;
             }
-
-
-
         }
 
         if (keyArr.includes("ArrowRight") && !(keyArr.includes("ArrowLeft")) && (this.x < (canvasElem.width - this.rad))) {
-            if ((this.y === canvasElem.height - this.rad) && this.vx < 600) {
+            if (this.vx < 600) {
                 this.vx += 50;
             }
         }
