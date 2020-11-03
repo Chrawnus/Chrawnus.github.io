@@ -11,17 +11,13 @@ let gameObjects = [];
 
 const world = new PhysicsWorld();
 
-//gameObjects.push(new Ball(canvasElem.width/2, 15, 15));
-//gameObjects.push(new Ball(canvasElem.width/2, 200, 15, 15));
-//gameObjects.push(canvasElem.width+30, canvasElem.height+30, 15);
 for (let i = 0; i < 25; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width-15), getRandomInt(15, canvasElem.height-15), getRandomInt(5, 50)));
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width-15), getRandomInt(15, canvasElem.height-15), getRandomInt(10,50)));
     
 }
 
 world.add(gameObjects);
 
-//export let platform1 = new Platform(canvasElem.width/2, 300, 100, 25);
 
 requestAnimationFrame(gameLoop);
 
@@ -99,7 +95,7 @@ function getPhysicsDelta(dt) {
     let pdt = 0.01;
     accumulator += dt;
     while (accumulator >= pdt) {
-        world.physics(pdt, dt);
+        world.physics(pdt);  
         accumulator -=pdt;
     }
 }

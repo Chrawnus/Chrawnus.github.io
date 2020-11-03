@@ -21,7 +21,7 @@ export class PhysicsWorld {
     }
 
     gravity(delta) {
-
+        
         for (let i = 0; i < this.children.length; i++) {
             if (!(this.children[i].y + this.children[i].rad >= canvasElem.height)) {
                 this.g = 9.81;
@@ -96,7 +96,11 @@ export class PhysicsWorld {
                         const y = children[i].y - children[j].y;
                         const length = Math.sqrt(x * x + y * y);
                         const overlap = Math.abs(length - rad);
-                        const vectors = this.normalize(x, y, length);
+
+                        const vectors = length ? this.normalize(x, y, length) : {x: 0, y: -1};
+
+
+
                         let vRelativeVelocity = { x: children[i].vx - children[j].vx, y: children[i].vy - children[j].vy };
                         let speed = vRelativeVelocity.x * vectors.x + vRelativeVelocity.y * vectors.y;
 
@@ -109,6 +113,8 @@ export class PhysicsWorld {
                         children[j].x -= overlap * 0.5 * vectors.x;
                         children[i].y += overlap * 0.5 * vectors.y;
                         children[j].y -= overlap * 0.5 * vectors.y;
+                        
+
 
                     }
                 }

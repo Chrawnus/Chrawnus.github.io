@@ -13,9 +13,7 @@ export class RigidBody {
     }
 
     movement(delta) {
-        let distance = this.vy * delta;
-        this.y += distance;
-
+        this.y += this.vy * delta;
         this.x += this.vx * delta;
     }
 }
