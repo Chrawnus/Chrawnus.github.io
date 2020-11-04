@@ -3,36 +3,41 @@ import { RigidBody } from "/physics-sandbox/scripts/RigidBody.js";
 import { keyArr } from "/physics-sandbox/scripts/app.js";
 
 export class Ball extends RigidBody {
-    constructor(x, y, rad) {
-        super(x, y);
+    constructor(x, y, density, rad) {
+        super(x, y, density);
         this.rad = rad;
+        this.area = Math.PI*(this.rad*this.rad);
+        this.mass = this.area * this.density;
         this.gracePeriod;
     }
 
     update(delta) {
         super.movement(delta);
         this.movementHandler(delta);
+        super.sleepTimer(delta);
     }
 
     draw(ctx) {
         ctx.beginPath(this.x, this.y);
         ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
-        ctx.fillStyle = "green";
+        if (this.isAwake)
+        {
+            ctx.fillStyle = "green";
+        } else {
+            ctx.fillStyle = "red";
+        }
+        
         ctx.fill();
         ctx.stroke();
     }
 
     movementHandler() {
         //console.log(`x: ${this.x}, y: ${this.y}`)
-        if (this.x + this.rad > canvasElem.width) {
-            this.x = canvasElem.width - this.rad;
-            this.speedMult = 1;
-
-        } else if (this.x - this.rad <= 0) {
-
-            this.x = this.rad;
-            this.speedMult = 1;
+        if (this.isAwake = false) {
+            this.vy = 0;
+            this.vx = 0;
         }
+
 
         if (keyArr.includes("ArrowUp")) {
             if (this.gracePeriod > 0) {

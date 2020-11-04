@@ -12,7 +12,7 @@ let gameObjects = [];
 const world = new PhysicsWorld();
 
 for (let i = 0; i < 25; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(10, 51)));
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(1,5), getRandomInt(10,50)));
 
 }
 
