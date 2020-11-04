@@ -12,8 +12,8 @@ let gameObjects = [];
 const world = new PhysicsWorld();
 
 for (let i = 0; i < 25; i++) {
-    gameObjects.push(new Ball(getRandomInt(50, canvasElem.width-50), getRandomInt(50, canvasElem.height-50), getRandomInt(5,50)));
-    
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(10, 51)));
+
 }
 
 world.add(gameObjects);
@@ -40,16 +40,16 @@ function gameLoop(now) {
 function update(dt) {
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update(dt);
-    } 
+    }
 }
 
-function physics(now) {
-    getPhysicsDelta(now);
+function physics(dt) {
+    getPhysicsDelta(dt);
 }
 
 function draw() {
     const ctx = canvasElem.getContext('2d');
-    
+
     ctx.clearRect(0, 0, 600, 480);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
@@ -57,7 +57,7 @@ function draw() {
     //platform1.draw(ctx);
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].draw(ctx);
-    } 
+    }
 }
 
 function getRandomInt(min, max) {
@@ -85,8 +85,8 @@ function keyUpEventsHandler(e) {
 }
 
 function getDelta(now) {
-    if(!prevTime){prevTime=now;}
-    let dt = (now - prevTime)/1000;
+    if (!prevTime) { prevTime = now; }
+    let dt = (now - prevTime) / 1000;
     prevTime = now;
     return dt;
 }
@@ -94,8 +94,11 @@ function getDelta(now) {
 function getPhysicsDelta(dt) {
     let pdt = 0.01;
     accumulator += dt;
+
     while (accumulator >= pdt) {
+
         world.physics(pdt);
         accumulator -= pdt;
+
     }
 }

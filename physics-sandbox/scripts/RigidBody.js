@@ -1,3 +1,5 @@
+import { canvasElem } from "/physics-sandbox/scripts/app.js";
+
 export class RigidBody {
     constructor(x, y) {
         this.x = x;
@@ -6,6 +8,7 @@ export class RigidBody {
         this.vy = 0;
         this.drag = 1;
         this.restitution = 0.8;
+        this.awake = true;
     }
 
     update(delta) {

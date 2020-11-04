@@ -23,7 +23,7 @@ export class Ball extends RigidBody {
     }
 
     movementHandler() {
-        console.log(`x: ${this.x}, y: ${this.y}`)
+        //console.log(`x: ${this.x}, y: ${this.y}`)
         if (this.x + this.rad > canvasElem.width) {
             this.x = canvasElem.width - this.rad;
             this.speedMult = 1;
