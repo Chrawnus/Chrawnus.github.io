@@ -32,7 +32,7 @@ let collisionIndex = Object.keys(collisionSectors);
 const world = new PhysicsWorld();
 
 for (let i = 0; i < 500; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 0.4, 5));
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 0.4, 2));
     //gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(50,100), 25));
 }
 
