@@ -8,11 +8,22 @@ export class PhysicsWorld {
         this.drag = 0.1;
         this.rho = 1.22;
         this.collisionSectors = {
-            "sector1": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": 0 },
-            "sector2": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": 0 },
-            "sector3": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": canvasElem.height / 2 },
-            "sector4": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": canvasElem.height / 2 },
-
+            "sector1": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
+            "sector2": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": 0 },
+            "sector3": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": 0 },
+            "sector4": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": 0 },
+            "sector5": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) },
+            "sector6": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) },
+            "sector7": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) },
+            "sector8": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) },
+            "sector9": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) * 2 },
+            "sector10": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) * 2 },
+            "sector11": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) * 2 },
+            "sector12": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) * 2 },
+            "sector13": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) * 3 },
+            "sector14": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) * 3 },
+            "sector15": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) * 3 },
+            "sector16": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) * 3 },
         }
 
         this.collisionSectorsTest = {
@@ -28,6 +39,18 @@ export class PhysicsWorld {
             "sector2": [],
             "sector3": [],
             "sector4": [],
+            "sector5": [],
+            "sector6": [],
+            "sector7": [],
+            "sector8": [],
+            "sector9": [],
+            "sector10": [],
+            "sector11": [],
+            "sector12": [],
+            "sector13": [],
+            "sector14": [],
+            "sector15": [],
+            "sector16": [],
         }
     }
 
@@ -41,7 +64,6 @@ export class PhysicsWorld {
 
     physics(delta) {
         this.gravity(delta);
-        this.collisionGroupDivider();
         this.collisionHandler(delta);
     }
 
@@ -227,17 +249,9 @@ export class PhysicsWorld {
             }
         });
     }
-
-    //---------------------
     collisionGroupDivider() {
-        let sectors = Object.keys(this.collisionSectors);
-        let groups = Object.keys(this.collisionGroups);
-        let sectorPop = Object.keys(groups).length;
-        for (let i = 0; i < sectorPop; i++) {
-            this.collisionGroups[i];
-            
-        }
-        console.log(sectorPop)
+
+        
     }
     collisionGroupChecker() {
         let children = this.children;
