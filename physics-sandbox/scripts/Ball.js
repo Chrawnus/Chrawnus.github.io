@@ -9,29 +9,30 @@ export class Ball extends RigidBody {
         this.area = Math.PI*(this.rad*this.rad);
         this.mass = this.area * this.density;
         this.gracePeriod;
+        this.Cd = 0.47;
     }
 
     update(delta) {
         super.movement(delta);
         this.movementHandler(delta);
-        super.sleepTimer(delta);
+        //super.sleepTimer(delta);
     }
 
     draw(ctx) {
         ctx.beginPath(this.x, this.y);
         ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
-        if (this.isAwake)
-        {
+        //if (this.isAwake)
+        //{
             ctx.fillStyle = "green";
-        } else {
-            ctx.fillStyle = "red";
-        }
+        //} else {
+        //    ctx.fillStyle = "red";
+        //}
         
         ctx.fill();
         ctx.stroke();
     }
 
-    movementHandler() {
+    movementHandler(delta) {
         //console.log(`x: ${this.x}, y: ${this.y}`)
         if (this.isAwake = false) {
             this.vy = 0;
@@ -47,13 +48,13 @@ export class Ball extends RigidBody {
 
         if (keyArr.includes("ArrowLeft") && !(keyArr.includes("ArrowRight")) && (this.x > this.rad)) {
             if (this.vx > -600) {
-                this.vx -= 50;
+                this.vx -= 100;
             }
         }
 
         if (keyArr.includes("ArrowRight") && !(keyArr.includes("ArrowLeft")) && (this.x < (canvasElem.width - this.rad))) {
             if (this.vx < 600) {
-                this.vx += 50;
+                this.vx += 100;
             }
         }
     }

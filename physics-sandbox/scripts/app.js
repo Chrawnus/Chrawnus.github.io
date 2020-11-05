@@ -8,12 +8,32 @@ let prevTime;
 let accumulator = 0;
 
 let gameObjects = [];
+let collisionSectors = {
+    "sector1": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": 0},
+    "sector2": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": 0},
+    "sector3": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": 0},
+    "sector4": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": 0},
+    "sector5": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)},
+    "sector6": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)},
+    "sector7": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)},
+    "sector8": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)},
+    "sector9": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)*2},
+    "sector10": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)*2},
+    "sector11": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)*2},
+    "sector12": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)*2},
+    "sector13": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)*3},
+    "sector14": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)*3},
+    "sector15": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)*3},
+    "sector16": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)*3},
+}
+
+let collisionIndex = Object.keys(collisionSectors);
 
 const world = new PhysicsWorld();
 
-for (let i = 0; i < 25; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(1,5), getRandomInt(10,50)));
-
+for (let i = 0; i < 500; i++) {
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 1, 15));
+    //gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(50,100), 25));
 }
 
 world.add(gameObjects);
@@ -57,6 +77,11 @@ function draw() {
     //platform1.draw(ctx);
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].draw(ctx);
+    }
+    for (let i = 0; i < collisionIndex.length; i++) {
+        ctx.beginPath();
+        ctx.rect(collisionSectors[collisionIndex[i]].x, collisionSectors[collisionIndex[i]].y, collisionSectors[collisionIndex[i]].width, collisionSectors[collisionIndex[i]].height)
+        ctx.stroke();
     }
 }
 
