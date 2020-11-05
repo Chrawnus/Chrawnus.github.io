@@ -15,29 +15,30 @@ export class Ball extends RigidBody {
     update(delta) {
         super.movement(delta);
         this.movementHandler(delta);
-        //super.sleepTimer(delta);
+        super.sleepTimer(delta);
     }
 
     draw(ctx) {
         ctx.beginPath(this.x, this.y);
         ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
-        //if (this.isAwake)
-        //{
+        if (this.isAwake)
+        {
             ctx.fillStyle = "green";
-        //} else {
-        //    ctx.fillStyle = "red";
-        //}
+        } else {
+            ctx.fillStyle = "red";
+        }
         
         ctx.fill();
         ctx.stroke();
     }
 
     movementHandler(delta) {
-        //console.log(`x: ${this.x}, y: ${this.y}`)
-        if (this.isAwake = false) {
+        
+/*         if (this.isAwake === false) {
+            
             this.vy = 0;
             this.vx = 0;
-        }
+        } */
 
 
         if (keyArr.includes("ArrowUp")) {

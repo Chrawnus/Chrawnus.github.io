@@ -8,41 +8,26 @@ export class PhysicsWorld {
         this.drag = 0.1;
         this.rho = 1.22;
         this.collisionSectors = {
-            "sector1": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": 0},
-            "sector2": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": 0},
-            "sector3": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": 0},
-            "sector4": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": 0},
-            "sector5": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)},
-            "sector6": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)},
-            "sector7": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)},
-            "sector8": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)},
-            "sector9": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)*2},
-            "sector10": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)*2},
-            "sector11": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)*2},
-            "sector12": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)*2},
-            "sector13": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": 0, "y": (canvasElem.height/4)*3},
-            "sector14": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4), "y": (canvasElem.height/4)*3},
-            "sector15": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*2, "y": (canvasElem.height/4)*3},
-            "sector16": {"width": canvasElem.width/4, "height": canvasElem.height/4, "x": (canvasElem.width/4)*3, "y": (canvasElem.height/4)*3},
+            "sector1": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": 0 },
+            "sector2": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": 0 },
+            "sector3": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": canvasElem.height / 2 },
+            "sector4": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": canvasElem.height / 2 },
+
+        }
+
+        this.collisionSectorsTest = {
+            "sector1": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": 0, "y": 0},
+            "sector2": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": (canvasElem.width/2), "y": 0},
+            "sector3": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": 0, "y": canvasElem.height/2},
+            "sector4": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": (canvasElem.width/2)*3, "y": canvasElem.height/2},
+           
         }
 
         this.collisionGroups = {
-            "sector1" : [],
-            "sector2" : [],
-            "sector3" : [],
-            "sector4" : [],
-            "sector5" : [],
-            "sector6" : [],
-            "sector7" : [],
-            "sector8" : [],
-            "sector9" : [],
-            "sector10" : [],
-            "sector11" : [],
-            "sector12" : [],
-            "sector13" : [],
-            "sector14" : [],
-            "sector15" : [],
-            "sector16" : [],      
+            "sector1": [],
+            "sector2": [],
+            "sector3": [],
+            "sector4": [],
         }
     }
 
@@ -53,15 +38,14 @@ export class PhysicsWorld {
     }
 
 
+
     physics(delta) {
         this.gravity(delta);
+        this.collisionGroupDivider();
         this.collisionHandler(delta);
     }
 
     gravity(delta) {
-
-
-
         for (let i = 0; i < this.children.length; i++) {
 
 
@@ -85,7 +69,6 @@ export class PhysicsWorld {
                 } else if (Math.abs(this.children[i].vy) < (this.g * this.g)) {
                     this.children[i].vy = 0;
                 }
-                //console.log(`Ball ${this.children.indexOf(i)} vy:${this.children[i].vy}`)
                 this.children[i].vy += ay;
                 this.children[i].vx += ax;
 
@@ -117,38 +100,6 @@ export class PhysicsWorld {
                     this.children[i].speedMult = 1;
                 }
 
-                /*                 if (this.children[i].y - this.children[i].rad <= 0) {
-                                    this.children[i].vy *= this.children[i].restitution;
-                                    if (this.children[i].y - this.children[i].rad < 0) {
-                                        this.children[i].y = this.children[i].rad + 1;
-                                    }
-                    
-                                }
-                                if (this.children[i].y + this.children[i].rad >= canvasElem.height) {
-                                    if (this.children[i].y + this.children[i].rad > canvasElem.height) {
-                                        this.children[i].y = canvasElem.height - this.children[i].rad;
-                
-                                    }
-                                    if (this.children[i].vy >= -this.g * this.restitution) {
-                                        this.children[i].vy = 0;
-                                    }
-                                    this.children[i].gracePeriod = delta * 8;
-                                    this.children[i].vy *= this.children[i].restitution;
-                                }
-                    
-                                if (this.children[i].x + this.children[i].rad >= canvasElem.width || this.children[i].x - this.children[i].rad <= 0) {
-                                    if (this.children[i].x + this.children[i].rad > canvasElem.width) {
-                                        this.children[i].x = canvasElem.width - this.children[i].rad - 1;
-                                    }
-                                    if (this.children[i].x - this.children[i].rad < 0) {
-                                        this.children[i].x = this.children[i].rad + 1;
-                                    }
-                                    this.children[i].vx *= this.children[i].restitution;
-                                    this.children[i].speedMult = 1;
-                                } */
-
-
-
                 this.children[i].vx *= 1 - delta * this.children[i].drag;
 
 
@@ -157,12 +108,7 @@ export class PhysicsWorld {
                         this.children[i].speedMult += delta * 15;
                     }
                 }
-
-
 /*             } else {
-                this.children[i].vx = 0;
-                this.children[i].vy = 0;
-
                 if (this.children[i].y >= canvasElem.height - this.children[i].rad) {
                     this.children[i].vy *= this.children[i].restitution;
                     this.children[i].y = canvasElem.height - this.children[i].rad;
@@ -179,35 +125,33 @@ export class PhysicsWorld {
                     this.children[i].speedMult = 1;
                 }
             } */
-
-
         }
 
     }
 
-    RectCircleColliding(circle,rect){
-        const distX = Math.abs(circle.x - rect.x-rect.width/2);
-        const distY = Math.abs(circle.y - rect.y-rect.height/2);
-    
-        if (distX > (rect.width/2 + circle.rad)) { return false; }
-        if (distY > (rect.height/2 + circle.rad)) { return false; }
-    
-        if (distX <= (rect.width/2)) { return true; } 
-        if (distY <= (rect.height/2)) { return true; }
-    
-        const dx=distX-rect.width/2;
-        const dy=distY-rect.height/2;
-        return (dx*dx+dy*dy<=(circle.rad*circle.rad));
+    RectCircleColliding(circle, rect) {
+        const distX = Math.abs(circle.x - rect.x - rect.width / 2);
+        const distY = Math.abs(circle.y - rect.y - rect.height / 2);
+
+        if (distX > (rect.width / 2 + circle.rad)) { return false; }
+        if (distY > (rect.height / 2 + circle.rad)) { return false; }
+
+        if (distX <= (rect.width / 2)) { return true; }
+        if (distY <= (rect.height / 2)) { return true; }
+
+        const dx = distX - rect.width / 2;
+        const dy = distY - rect.height / 2;
+        return (dx * dx + dy * dy <= (circle.rad * circle.rad));
     }
 
 
-    collisionHandler() {
+    collisionHandler(delta) {
         let groups = this.collisionGroupChecker();
 
         groups.forEach((key) => {
             for (let i = 0; i < this.collisionGroups[key].length; i++) {
                 for (let j = 0; j < i; j++) {
-                    
+
                     if (i !== j) {
                         const a = this.collisionGroups[key][i].x - this.collisionGroups[key][j].x;
                         const b = this.collisionGroups[key][i].y - this.collisionGroups[key][j].y;
@@ -215,11 +159,31 @@ export class PhysicsWorld {
 
 
                         if ((a * a + b * b) < rad * rad) {
-                            
+                            this.collisionGroups[key][i].gracePeriod = delta * 8;
+                            this.collisionGroups[key][i].gracePeriod = delta * 8;
                             const x = this.collisionGroups[key][i].x - this.collisionGroups[key][j].x;
                             const y = this.collisionGroups[key][i].y - this.collisionGroups[key][j].y;
-                            const length = Math.sqrt(x * x + y * y);
-                            const overlap = Math.abs(length - rad);
+                            const length = Math.sqrt(x * x + y * y)
+                            //? Math.sqrt(x * x + y * y) : 1;
+
+
+                            const a1 = (2 * length) ? (this.collisionGroups[key][i].rad ** 2 - this.collisionGroups[key][j].rad ** 2 + length * length) / (2 * length) : 0;
+
+
+                            const b1 = (2 * length) ? (this.collisionGroups[key][j].rad ** 2 - this.collisionGroups[key][i].rad ** 2 + length * length) / (2 * length) : 0;
+
+
+                            const d1 = (a1 - this.collisionGroups[key][j].rad);
+                            const d2 = (b1 - this.collisionGroups[key][i].rad);
+
+                            const overlap = Math.abs(d1 + d2);
+
+                            const intersectLength1 = Math.abs(a1 - d1);
+                            const intersectLength2 = Math.abs(b1 - d2);
+
+                            const pushPercentage1 = Math.abs(d1 / intersectLength1);
+                            const pushPercentage2 = Math.abs(d2 / intersectLength2);
+
 
                             const vectors = length ? this.normalize(x, y, length) : { x: 0, y: -1 };
 
@@ -228,27 +192,53 @@ export class PhysicsWorld {
                             let impulse = (2 * speed / (this.collisionGroups[key][i].mass + this.collisionGroups[key][j].mass));
 
 
-                            this.collisionGroups[key][i].vx -= (impulse * this.collisionGroups[key][j].mass * vectors.x);
-                            this.collisionGroups[key][i].vy -= (impulse * this.collisionGroups[key][j].mass * vectors.y);
+                            if (this.collisionGroups[key][i].isAwake) {
+                                this.collisionGroups[key][i].vx -= (impulse * this.collisionGroups[key][j].mass * vectors.x) * 0.985;
+                                this.collisionGroups[key][i].vy -= (impulse * this.collisionGroups[key][j].mass * vectors.y) * 0.985;
+                            }
 
-                            this.collisionGroups[key][j].vx += (impulse * this.collisionGroups[key][i].mass * vectors.x);
-                            this.collisionGroups[key][j].vy += (impulse * this.collisionGroups[key][i].mass * vectors.y);
+                            if (this.collisionGroups[key][j].isAwake) {
+                                this.collisionGroups[key][j].vx += (impulse * this.collisionGroups[key][i].mass * vectors.x) * 0.98;
+                                this.collisionGroups[key][j].vy += (impulse * this.collisionGroups[key][i].mass * vectors.y) * 0.98;
+                            }
 
 
 
 
-                            this.collisionGroups[key][i].x += overlap * 0.2 * vectors.x;
-                            this.collisionGroups[key][i].y += overlap * 0.2 * vectors.y;
 
-                            this.collisionGroups[key][j].x -= overlap * 0.2 * vectors.x;
-                            this.collisionGroups[key][j].y -= overlap * 0.2 * vectors.y;
+                            this.collisionGroups[key][i].x += overlap * pushPercentage2 * vectors.x;
+                            this.collisionGroups[key][i].y += overlap * pushPercentage2 * vectors.y;
+
+
+
+                            this.collisionGroups[key][j].x -= overlap * pushPercentage1 * vectors.x;
+                            this.collisionGroups[key][j].y -= overlap * pushPercentage1 * vectors.y;
+
+
+
+
+
+
+
                         }
+
                     }
                 }
             }
         });
     }
 
+    //---------------------
+    collisionGroupDivider() {
+        let sectors = Object.keys(this.collisionSectors);
+        let groups = Object.keys(this.collisionGroups);
+        let sectorPop = Object.keys(groups).length;
+        for (let i = 0; i < sectorPop; i++) {
+            this.collisionGroups[i];
+            
+        }
+        console.log(sectorPop)
+    }
     collisionGroupChecker() {
         let children = this.children;
         let sectors = Object.keys(this.collisionSectors);
