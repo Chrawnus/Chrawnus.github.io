@@ -249,10 +249,7 @@ export class PhysicsWorld {
             }
         });
     }
-    collisionGroupDivider() {
 
-        
-    }
     collisionGroupChecker() {
         let children = this.children;
         let sectors = Object.keys(this.collisionSectors);
