@@ -1,6 +1,8 @@
 import { Ball } from "/physics-sandbox/scripts/Ball.js";
 //import { Platform } from "/physics-sandbox/scripts/Platform.js";
 import { PhysicsWorld } from "/physics-sandbox/scripts/PhysicsWorld.js";
+import { QuadTree } from "/physics-sandbox/scripts/QuadTree.js";
+
 
 export const canvasElem = document.getElementById('canvas');
 
@@ -8,7 +10,7 @@ let prevTime;
 let accumulator = 0;
 
 let gameObjects = [];
-let root = {
+let collisionSectors = {
     "topSector1": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": 0 },
     "topSector2": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": 0 },
     "topSector3": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": (canvasElem.height / 2)},
@@ -26,6 +28,7 @@ for (let i = 0; i < 500; i++) {
 
 world.add(gameObjects);
 
+let quadTree = new QuadTree(world.children);
 
 requestAnimationFrame(gameLoop);
 
@@ -38,6 +41,7 @@ function gameLoop(now) {
     let dt = getDelta(now);
 
     update(dt);
+    
     physics(dt);
     draw(dt);
 
@@ -49,6 +53,7 @@ function update(dt) {
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update(dt);
     }
+    quadTree.manageTree();
 }
 
 function physics(dt) {
