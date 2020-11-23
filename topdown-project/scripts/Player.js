@@ -74,16 +74,7 @@ export class Player {
         ctx.fill();
         ctx.stroke();
 
-        ctx.beginPath();
-/*         ctx.moveTo(this.x, this.y);
-        ctx.lineTo(radPos.x, radPos.y);
-        ctx.stroke(); */
-        
-        ctx.moveTo(this.x, this.y);
-        
-        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI/ 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI/ 180) );
-        ctx.lineTo(this.x, this.y);
-        ctx.stroke(); // or ctx.fill()
+
         
     }
 

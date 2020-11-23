@@ -33,8 +33,8 @@ for (let i = 0; i < 1; i++) {
     gameObjects.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 15));
 }
 
-for (let i = 0; i < 10; i++) {
-    staticObjects.push(new Platform(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(10, 30), getRandomInt(10, 30)));
+for (let i = 0; i < 25; i++) {
+    staticObjects.push(new Platform(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(20, 60), getRandomInt(20, 60)));
 }
 
 let world = new PhysicsWorld();
