@@ -77,6 +77,7 @@ function draw() {
     ctx.fillStyle = "black";
     
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
+    
     ctx.save();
     let clippingPath = new Path2D();
     clippingPath = gameObjects[0].getClippingPath(ctx);
