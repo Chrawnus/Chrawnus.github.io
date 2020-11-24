@@ -11,6 +11,7 @@ export class Platform {
     draw(ctx) {
         ctx.fillStyle = "red";
         ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 
 

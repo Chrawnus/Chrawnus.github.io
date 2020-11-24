@@ -12,9 +12,6 @@ export class Player {
         this.y = y;
         this.vx = 0;
         this.vy = 0;
-        this.drag = 1;
-        this.restitution = -0.8;
-        this.awake = true;
         this.rad = rad;
         this.area = Math.PI * (this.rad * this.rad);
         this.previousmousecoords = {
@@ -37,8 +34,14 @@ export class Player {
 
     update(delta) {
 
-        this.offset.x += mousecoords.x - this.previousmousecoords.x;
-        this.offset.y += mousecoords.y - this.previousmousecoords.y;
+/*         this.offset.x += mousecoords.x - this.previousmousecoords.x;
+        this.offset.y += mousecoords.y - this.previousmousecoords.y; */
+        
+        
+        this.offset.x += mousecoords.x
+        this.offset.y += mousecoords.y
+
+        console.log(`x: ${mousecoords.x}`)
 
         const targetcircle = {
             x: this.x + this.offset.x,
@@ -63,8 +66,8 @@ export class Player {
         
 
 
-        this.previousmousecoords.x = mousecoords.x;
-        this.previousmousecoords.y = mousecoords.y;
+/*         this.previousmousecoords.x = mousecoords.x;
+        this.previousmousecoords.y = mousecoords.y; */
 
 
         this.movement(delta);
@@ -100,7 +103,14 @@ export class Player {
         ctx.fill();
         ctx.stroke();
 
+        ctx.beginPath(mousecoords.x, mousecoords.y);
+        ctx.arc(mousecoords.x, mousecoords.y, 5, 0, Math.PI * 2, true);
 
+        ctx.fillStyle = "green";
+
+
+        ctx.fill();
+        ctx.stroke();
 
     }
 
@@ -145,11 +155,12 @@ export class Player {
         ctx.beginPath();
 
         ctx.moveTo(this.x, this.y);
-        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (45 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (45 * Math.PI / 180));
+        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180));
         ctx.lineTo(this.x, this.y);
-        //ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
+    
+        
 
-        ctx.arc(this.x, this.y, this.rad, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (45 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (45 * Math.PI / 180), true);
+        ctx.arc(this.x, this.y, this.rad, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180), true);
         ctx.stroke();
 
 

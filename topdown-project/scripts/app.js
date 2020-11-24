@@ -15,15 +15,23 @@ export const mousecoords = {
     y: 0
 };
 
+canvasElem.addEventListener("click", () => {
+    canvasElem.requestPointerLock();
+})
 
+let timeoutId;
 
+document.addEventListener("mousemove", (evt) => {
+    clearTimeout(timeoutId);
+    const x = evt.movementX;
+    const y = evt.movementY;
+    mousecoords.x = x * 2;
+    mousecoords.y = y * 2;  
 
-window.addEventListener("mousemove", (evt) => {
-    const rect = canvasElem.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-    mousecoords.x = x;
-    mousecoords.y = y;  
+    timeoutId = setTimeout(() => {
+        mousecoords.x = 0;
+        mousecoords.y = 0;
+    }, 0);
 });
 
 let prevTime;
