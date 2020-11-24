@@ -145,11 +145,11 @@ export class Player {
         ctx.beginPath();
 
         ctx.moveTo(this.x, this.y);
-        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180));
+        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (45 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (45 * Math.PI / 180));
         ctx.lineTo(this.x, this.y);
         //ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
 
-        ctx.arc(this.x, this.y, this.rad, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180), true);
+        ctx.arc(this.x, this.y, this.rad, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (45 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (45 * Math.PI / 180), true);
         ctx.stroke();
 
 
