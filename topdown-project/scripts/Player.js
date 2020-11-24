@@ -40,8 +40,28 @@ export class Player {
         this.offset.x += mousecoords.x - this.previousmousecoords.x;
         this.offset.y += mousecoords.y - this.previousmousecoords.y;
 
-        this.target.x = this.x + this.offset.x;
-        this.target.y = this.y + this.offset.y;
+        const targetcircle = {
+            x: this.x + this.offset.x,
+            y: this.y + this.offset.y,
+            rad: 1
+        };
+
+        const clampingCircle = {
+            x: this.x,
+            y: this.y,
+            rad: this.rad * 24,
+        }
+
+        if (this.circleCircleCollision(targetcircle, clampingCircle)) {
+            this.target.x = this.x + this.offset.x;
+            this.target.y = this.y + this.offset.y;
+        } else {
+           const targetPosition = this.getLineCircleIntersect(clampingCircle, targetcircle, clampingCircle.rad);
+           this.target.x = targetPosition.x;
+           this.target.y = targetPosition.y;
+        }
+        
+
 
         this.previousmousecoords.x = mousecoords.x;
         this.previousmousecoords.y = mousecoords.y;
@@ -71,6 +91,15 @@ export class Player {
         ctx.fill();
         ctx.stroke();
 
+        ctx.beginPath(this.target.x, this.target.y);
+        ctx.arc(this.target.x, this.target.y, 5, 0, Math.PI * 2, true);
+
+        ctx.fillStyle = "green";
+
+
+        ctx.fill();
+        ctx.stroke();
+
 
 
     }
@@ -84,19 +113,19 @@ export class Player {
     movementHandler() {
 
         if (keyArr.includes("w")) {
-            this.y -= 5;
+            this.y -= 2.5;
         }
 
         if (keyArr.includes("s")) {
-            this.y += 5;
+            this.y += 2.5;
         }
 
         if (keyArr.includes("a") && !(keyArr.includes("d"))) {
-            this.x -= 5;
+            this.x -= 2.5;
         }
 
         if (keyArr.includes("d") && !(keyArr.includes("a"))) {
-            this.x += 5;
+            this.x += 2.5;
         }
     }
 
@@ -125,6 +154,16 @@ export class Player {
 
 
     }
+
+    circleCircleCollision(c1, c2,) {
+        const a = c1.x - c2.x;
+        const b = c1.y - c2.y;
+        const rad = c1.rad + c2.rad;
+
+
+        return ((a * a + b * b) < rad * rad);
+    }
+
 
 }
 

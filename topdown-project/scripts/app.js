@@ -7,10 +7,16 @@ import { Platform } from "/topdown-project/scripts/Platform.js";
 export const canvasElem = document.getElementById('canvas');
 export const canvasElemRect = canvasElem.getBoundingClientRect();
 
+
+
+
 export const mousecoords = {
     x: 0,
     y: 0
 };
+
+
+
 
 window.addEventListener("mousemove", (evt) => {
     const rect = canvasElem.getBoundingClientRect();
