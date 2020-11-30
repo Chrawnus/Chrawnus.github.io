@@ -74,8 +74,6 @@ export class PhysicsWorld {
     }
 
     canvasEdgeCollision() {
-
-
         if (this.player[0].y >= canvasElem.height - this.player[0].rad) {
             this.player[0].y = canvasElem.height - this.player[0].rad;
         }
