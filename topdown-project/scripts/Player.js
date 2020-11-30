@@ -41,7 +41,7 @@ export class Player {
         this.offset.x += mousecoords.x
         this.offset.y += mousecoords.y
 
-        console.log(`x: ${mousecoords.x}`)
+        
 
         const targetcircle = {
             x: this.x + this.offset.x,
@@ -52,17 +52,17 @@ export class Player {
         const clampingCircle = {
             x: this.x,
             y: this.y,
-            rad: this.rad * 24,
+            rad: this.rad * 12,
         }
 
-        if (this.circleCircleCollision(targetcircle, clampingCircle)) {
+         if (this.circleCircleCollision(targetcircle, clampingCircle)) {
             this.target.x = this.x + this.offset.x;
             this.target.y = this.y + this.offset.y;
-        } else {
+        } else { 
            const targetPosition = this.getLineCircleIntersect(clampingCircle, targetcircle, clampingCircle.rad);
            this.target.x = targetPosition.x;
            this.target.y = targetPosition.y;
-        }
+         }
         
 
 
@@ -114,10 +114,7 @@ export class Player {
 
     }
 
-    getMouseDistance() {
 
-        console.log(length);
-    }
 
 
     movementHandler() {

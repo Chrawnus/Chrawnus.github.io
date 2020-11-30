@@ -37,15 +37,15 @@ document.addEventListener("mousemove", (evt) => {
 let prevTime;
 let accumulator = 0;
 
-let gameObjects = [];
+let player = [];
 
 let staticObjects = [];
 
 
 
-for (let i = 0; i < 1; i++) {
-    gameObjects.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 15));
-}
+
+    player.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 15));
+
 
 for (let i = 0; i < 25; i++) {
     staticObjects.push(new Platform(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(20, 60), getRandomInt(20, 60)));
@@ -53,8 +53,8 @@ for (let i = 0; i < 25; i++) {
 
 let world = new PhysicsWorld();
 
-world.add(gameObjects);
-
+world.add(player);
+world.add(staticObjects);
 
 requestAnimationFrame(gameLoop);
 
@@ -75,8 +75,8 @@ function gameLoop(now) {
 
 
 function update(dt) {
-    for (let i = 0; i < gameObjects.length; i++) {
-        gameObjects[i].update(dt);
+    for (let i = 0; i < player.length; i++) {
+        player[i].update(dt);
     }
 }
 
@@ -93,19 +93,21 @@ function draw() {
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     
     ctx.save();
-    let clippingPath = new Path2D();
-    clippingPath = gameObjects[0].getClippingPath(ctx);
-    void ctx.clip(clippingPath);
+/*     let clippingPath = new Path2D();
+    clippingPath = player[0].getClippingPath(ctx);
+    void ctx.clip(clippingPath); */
     ctx.fillStyle = "gray";
     
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     
 
-    for (let i = 0; i < gameObjects.length; i++) {
-        gameObjects[i].draw(ctx);
-    }
+
     for (let i = 0; i < staticObjects.length; i++) {
         staticObjects[i].draw(ctx);
+    }
+
+    for (let i = 0; i < player.length; i++) {
+        player[0].draw(ctx);
     }
     ctx.restore();
 

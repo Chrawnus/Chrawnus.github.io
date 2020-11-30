@@ -1,9 +1,13 @@
 import { canvasElem } from "/topdown-project/scripts/app.js";
 import { keyArr } from "/topdown-project/scripts/app.js";
+import { Player } from "/topdown-project/scripts/Player.js"
+import { Platform } from "/topdown-project/scripts/Platform.js"
+
 
 export class PhysicsWorld {
     constructor() {
-        this.children = [];
+        this.player = [];
+        this.staticGeometry = [];
         this.g = 9.81;
         this.drag = 0.1;
         this.rho = 1.22;
@@ -26,14 +30,6 @@ export class PhysicsWorld {
             "sector16": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) * 3 },
         }
 
-        this.collisionSectorsTest = {
-            "sector1": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": 0, "y": 0},
-            "sector2": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": (canvasElem.width/2), "y": 0},
-            "sector3": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": 0, "y": canvasElem.height/2},
-            "sector4": {"width": canvasElem.width/2, "height": canvasElem.height/2, "x": (canvasElem.width/2)*3, "y": canvasElem.height/2},
-           
-        }
-
         this.collisionGroups = {
             "sector1": [],
             "sector2": [],
@@ -52,50 +48,48 @@ export class PhysicsWorld {
             "sector15": [],
             "sector16": [],
         }
+
+        this.playerSectors = [];
     }
 
     add(obj) {
         for (let i = 0; i < obj.length; i++) {
-            this.children.push(obj[i]);
+            if (obj[i] instanceof Player) {
+                this.player.push(obj[i]);
+            } else if (obj[i] instanceof Platform) {
+                this.staticGeometry.push(obj[i]);
+                this.staticGeometryCheck();
+            }
         }
     }
 
 
 
     physics(delta) {
-        this.gravity(delta);
+        this.playerSectorCheck();
+        this.canvasEdgeCollision();
+        
         this.collisionHandler(delta);
+        
     }
 
-    gravity(delta) {
-        for (let i = 0; i < this.children.length; i++) {
+    canvasEdgeCollision() {
 
 
-
-
-
-
-
-
-
-
-
-                if (this.children[i].y >= canvasElem.height - this.children[i].rad) {
-                    this.children[i].y = canvasElem.height - this.children[i].rad;
-                }
-                if (this.children[i].x > canvasElem.width - this.children[i].rad) {
-                    this.children[i].x = canvasElem.width - this.children[i].rad;
-                }
-                if (this.children[i].x < this.children[i].rad) {
-                    this.children[i].x = this.children[i].rad;
-                }
-
-                if (this.children[i].y < this.children[i].rad) {
-                    this.children[i].y = this.children[i].rad;
-                }
-
-                //this.children[i].vx *= 1 - delta * this.children[i].drag;
+        if (this.player[0].y >= canvasElem.height - this.player[0].rad) {
+            this.player[0].y = canvasElem.height - this.player[0].rad;
         }
+        if (this.player[0].x > canvasElem.width - this.player[0].rad) {
+            this.player[0].x = canvasElem.width - this.player[0].rad;
+        }
+        if (this.player[0].x < this.player[0].rad) {
+            this.player[0].x = this.player[0].rad;
+        }
+
+        if (this.player[0].y < this.player[0].rad) {
+            this.player[0].y = this.player[0].rad;
+        }
+        //this.children[i].vx *= 1 - delta * this.children[i].drag;
 
     }
 
@@ -114,103 +108,79 @@ export class PhysicsWorld {
         return (dx * dx + dy * dy <= (circle.rad * circle.rad));
     }
 
+    rectRectColliding(rect1, rect2) {
+        return (rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.y + rect1.height > rect2.y) 
+        
+         
+    }
 
     collisionHandler(delta) {
-        let groups = this.collisionGroupChecker();
-
-        groups.forEach((key) => {
-            for (let i = 0; i < this.collisionGroups[key].length; i++) {
-                for (let j = 0; j < i; j++) {
-
-                    if (i !== j) {
-                        const a = this.collisionGroups[key][i].x - this.collisionGroups[key][j].x;
-                        const b = this.collisionGroups[key][i].y - this.collisionGroups[key][j].y;
-                        const rad = this.collisionGroups[key][i].rad + this.collisionGroups[key][j].rad;
-
-
-                        if ((a * a + b * b) < rad * rad) {
-                            this.collisionGroups[key][i].gracePeriod = delta * 8;
-                            this.collisionGroups[key][i].gracePeriod = delta * 8;
-                            const x = this.collisionGroups[key][i].x - this.collisionGroups[key][j].x;
-                            const y = this.collisionGroups[key][i].y - this.collisionGroups[key][j].y;
-                            const length = Math.sqrt(x * x + y * y)
-                            //? Math.sqrt(x * x + y * y) : 1;
-
-
-                            const a1 = (2 * length) ? (this.collisionGroups[key][i].rad ** 2 - this.collisionGroups[key][j].rad ** 2 + length * length) / (2 * length) : 0;
-
-
-                            const b1 = (2 * length) ? (this.collisionGroups[key][j].rad ** 2 - this.collisionGroups[key][i].rad ** 2 + length * length) / (2 * length) : 0;
-
-
-                            const d1 = (a1 - this.collisionGroups[key][j].rad);
-                            const d2 = (b1 - this.collisionGroups[key][i].rad);
-
-                            const overlap = Math.abs(d1 + d2);
-
-                            const intersectLength1 = Math.abs(a1 - d1);
-                            const intersectLength2 = Math.abs(b1 - d2);
-
-                            const pushPercentage1 = Math.abs(d1 / intersectLength1);
-                            const pushPercentage2 = Math.abs(d2 / intersectLength2);
-
-
-                            const vectors = length ? this.normalize(x, y, length) : { x: 0, y: -1 };
-
-                            let vRelativeVelocity = { x: this.collisionGroups[key][i].vx - this.collisionGroups[key][j].vx, y: this.collisionGroups[key][i].vy - this.collisionGroups[key][j].vy };
-                            let speed = vRelativeVelocity.x * vectors.x + vRelativeVelocity.y * vectors.y;
-                            let impulse = (2 * speed / (this.collisionGroups[key][i].mass + this.collisionGroups[key][j].mass));
-
-
-                            if (this.collisionGroups[key][i].isAwake) {
-                                this.collisionGroups[key][i].vx -= (impulse * this.collisionGroups[key][j].mass * vectors.x) * 0.985;
-                                this.collisionGroups[key][i].vy -= (impulse * this.collisionGroups[key][j].mass * vectors.y) * 0.985;
-                            }
-
-                            if (this.collisionGroups[key][j].isAwake) {
-                                this.collisionGroups[key][j].vx += (impulse * this.collisionGroups[key][i].mass * vectors.x) * 0.98;
-                                this.collisionGroups[key][j].vy += (impulse * this.collisionGroups[key][i].mass * vectors.y) * 0.98;
-                            }
-
-
-
-
-
-                            this.collisionGroups[key][i].x += overlap * pushPercentage2 * vectors.x;
-                            this.collisionGroups[key][i].y += overlap * pushPercentage2 * vectors.y;
-
-
-
-                            this.collisionGroups[key][j].x -= overlap * pushPercentage1 * vectors.x;
-                            this.collisionGroups[key][j].y -= overlap * pushPercentage1 * vectors.y;
-
-
-
-
-
-
-
-                        }
-
+        const player = this.player[0];
+        const playerSectors = this.playerSectors;
+        const groups = this.collisionGroups;
+        for (let i = 0; i < playerSectors.length; i++) {
+            for (let j = 0; j < groups[playerSectors[i]].length; j++) {
+                
+                if (groups[playerSectors[i]][j] !== player) {
+                    if(this.RectCircleColliding(player, groups[playerSectors[i]][j])) {
+                        groups[playerSectors[i]][j].color = "green";
+                    } else {
+                        groups[playerSectors[i]][j].color = "red";
                     }
                 }
             }
-        });
+            
+        }
     }
 
-    collisionGroupChecker() {
-        let children = this.children;
+    playerSectorCheck() {
+        const player = this.player;
+        const sectors = Object.keys(this.collisionSectors);
+        const groups = Object.keys(this.collisionGroups);
+        let playerSectors = this.playerSectors;
+        sectors.forEach((key) => {
+            for (let i = 0; i < player.length; i++) {
+                if (!(this.collisionGroups[key].includes(player[0]))) {
+
+                    if (this.RectCircleColliding(player[0], this.collisionSectors[key])) {
+                        this.collisionGroups[key].push(player[0]);
+                        console.log(`player added to ${key}`);
+                        this.playerSectors.push(key);
+                       
+                        
+                    }
+                } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
+                    this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
+                    console.log(`player removed from ${key}`);
+                    playerSectors.splice(playerSectors.indexOf(key), 1);
+                    
+                }
+               
+            }
+        });
+        
+    }
+
+    staticGeometryCheck() {
+        let staticGeometry = this.staticGeometry;
+
         let sectors = Object.keys(this.collisionSectors);
         let groups = Object.keys(this.collisionGroups);
 
         sectors.forEach((key) => {
-            for (let i = 0; i < children.length; i++) {
-                if (!(this.collisionGroups[key].includes(children[i]))) {
-                    if (this.RectCircleColliding(children[i], this.collisionSectors[key])) {
-                        this.collisionGroups[key].push(children[i]);
+            for (let i = 0; i < staticGeometry.length; i++) {
+                if (!(this.collisionGroups[key].includes(staticGeometry[i]))) {
+
+                    if (this.rectRectColliding(staticGeometry[i], this.collisionSectors[key])) {
+                        this.collisionGroups[key].push(staticGeometry[i]);
+                        console.log(`platform added to ${key}`);
                     }
-                } else if (!(this.RectCircleColliding(children[i], this.collisionSectors[key]))) {
-                    this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(children[i]), 1);
+                } else if (!(this.rectRectColliding(staticGeometry[i], this.collisionSectors[key]))) {
+                    this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(staticGeometry[i]), 1);
+                    console.log(`platform removed from ${key}`);
                 }
 
             }
