@@ -68,9 +68,9 @@ export class PhysicsWorld {
     physics(delta) {
         this.playerSectorCheck();
         this.canvasEdgeCollision();
-        
+
         this.collisionHandler(delta);
-        
+
     }
 
     canvasEdgeCollision() {
@@ -110,9 +110,9 @@ export class PhysicsWorld {
         return (rect1.x < rect2.x + rect2.width &&
             rect1.x + rect1.width > rect2.x &&
             rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y) 
-        
-         
+            rect1.y + rect1.height > rect2.y)
+
+
     }
 
     collisionHandler(delta) {
@@ -121,16 +121,20 @@ export class PhysicsWorld {
         const groups = this.collisionGroups;
         for (let i = 0; i < playerSectors.length; i++) {
             for (let j = 0; j < groups[playerSectors[i]].length; j++) {
-                
-                if (groups[playerSectors[i]][j] !== player) {
-                    if(this.RectCircleColliding(player, groups[playerSectors[i]][j])) {
-                        groups[playerSectors[i]][j].color = "green";
+                const rectangle = groups[playerSectors[i]][j];
+                if (rectangle !== player) {
+                    if (this.RectCircleColliding(player, rectangle)) {
+                        rectangle.color = "green";
+                        const deepestPoint = this.deepestPoint(player, rectangle);
+           
+
+                        console.log(this.deepestPoint(player, rectangle));
                     } else {
-                        groups[playerSectors[i]][j].color = "red";
+                        rectangle.color = "red";
                     }
                 }
             }
-            
+
         }
     }
 
@@ -147,19 +151,23 @@ export class PhysicsWorld {
                         this.collisionGroups[key].push(player[0]);
                         console.log(`player added to ${key}`);
                         this.playerSectors.push(key);
-                       
-                        
+
+
                     }
                 } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
+                    for (let i = 0; i < this.collisionSectors[key].length; i++) {
+                        this.collisionSectors[key][i].color = "red";
+
+                    }
                     this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
                     console.log(`player removed from ${key}`);
                     playerSectors.splice(playerSectors.indexOf(key), 1);
-                    
+
                 }
-               
+
             }
         });
-        
+
     }
 
     staticGeometryCheck() {
@@ -193,5 +201,46 @@ export class PhysicsWorld {
         };
     }
 
+    deepestPoint(circle, rect) {
+        const slope = (circle.y - rect.y) / (circle.x - rect.y);
+        const intercept = circle.y - (slope * circle.x);
+
+        return {
+            lineSlope: slope,
+            lineIntercept: intercept,
+            x: circle.x + circle.rad,
+            y: (circle.x * slope) + intercept
+        }
+    }
+
+    
+
+/*     clamp(x, lower, upper) {
+        return Math.max(lower, Math.min(upper, x))
+    }
+
+
+
+    getNearestPointInPerimeter(rect.x, rect.y, rect.width, rect.height, x, y) {
+        const r = l + w;
+        
+        const b = t + h;
+
+        const x = this.clamp(x, l, r);
+        
+        clamp(y, t, b)
+
+        local dl, dr, dt, db = abs(x - l), abs(x - r), abs(y - t), abs(y - b)
+        local m = min(dl, dr, dt, db)
+
+        if m == dt then return x, t end
+        if m == db then return x, b end
+        if m == dl then return l, y end
+        return r, y
+
+    } */
+
+
 
 }
+
