@@ -8,6 +8,7 @@ export class Player {
         this.prevX;
         this.prevY;
         this.timer = 0;
+        this.velocity = 250;
         this.x = x;
         this.y = y;
         this.vx = 0;
@@ -28,8 +29,6 @@ export class Player {
             x: 0,
             y: 0
         };
-
-        this.collidingY = false;
     }
 
 
@@ -78,21 +77,22 @@ export class Player {
     }
 
     movementHandler(delta) {
-        if (keyArr.includes("w")) {
-            this.y -= 2.5;
-        }
-
-        if (keyArr.includes("s")) {
-            this.y += 2.5;
+        if (keyArr.includes("w") && !(keyArr.includes("s"))) {
+            this.vy = -this.velocity;
+        } else if (keyArr.includes("s") && !(keyArr.includes("w"))) {
+            this.vy = +this.velocity;
+        } else {
+            this.vy = 0;
         }
         
         if (keyArr.includes("a") && !(keyArr.includes("d"))) {
-            this.x -= 2.5;
+            this.vx = -this.velocity;
+        } else if (keyArr.includes("d") && !(keyArr.includes("a"))) {
+            this.vx = +this.velocity;
+        } else {
+            this.vx = 0;
         }
 
-        if (keyArr.includes("d") && !(keyArr.includes("a"))) {
-            this.x += 2.5;
-        }
     }
 
     movement(delta) {
@@ -176,6 +176,9 @@ export class Player {
 
         return ((a * a + b * b) < rad * rad);
     }
+
+    
+
 
 
 }

@@ -7,6 +7,7 @@ import { Platform } from "/topdown-project/scripts/Platform.js"
 export class PhysicsWorld {
     constructor() {
         this.player = [];
+
         this.staticGeometry = [];
 
 
@@ -62,9 +63,9 @@ export class PhysicsWorld {
         }
     }
 
-    physics(delta) {
+    physics(delta, dt) {
         this.playerSectorCheck();
-        this.collisionHandler(delta);
+        this.collisionHandler(delta, dt);
         this.canvasEdgeCollision();
 
 
@@ -104,7 +105,7 @@ export class PhysicsWorld {
         return (dx * dx + dy * dy <= (circle.rad * circle.rad));
     }
 
-    collisionHandler(delta) {
+    collisionHandler(delta, dt) {
         const player = this.player[0];
         const playerSectors = this.playerSectors;
         const groups = this.collisionGroups;
@@ -112,16 +113,28 @@ export class PhysicsWorld {
             for (let j = 0; j < groups[playerSectors[i]].length; j++) {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player) {
-                    if (this.RectCircleColliding(player, rectangle)) {
+                    
+                    let projectedX = () => player.x + (player.vx * dt * 2);
+                    
+                    
+                    let projectedY = () => player.y + (player.vx * dt * 2);
+                    
+                    let projectedPlayer = {
+                        x: projectedX(),
+                        y: projectedY()
+                    }
+                    console.log(`player: ${player.x, player.y}`)
+                    console.log(`projected player: ${projectedPlayer.x, projectedPlayer.y}`)
 
-                        this.RectCircleCollidingDirectionY(player, rectangle)
+                    if (!(this.RectCircleColliding(projectedPlayer, rectangle))) {
+                        player.velocity = 250;
+                
 
-                        this.RectCircleCollidingDirectionX(player, rectangle)
-
-                        rectangle.color = "green";
-                    } else {
-                        player.collidingY = false;
                         rectangle.color = "red";
+                    } else {
+
+                        
+                        rectangle.color = "green";
                     }
                 }
             }
@@ -194,11 +207,8 @@ export class PhysicsWorld {
 
 
 
-
-
-
     RectCircleCollidingDirectionX(circle, rect) {
-        
+
         const circleRight = () => circle.x + (circle.rad + 1);
         const circleLeft = () => circle.x - (circle.rad + 1);
 
@@ -208,14 +218,12 @@ export class PhysicsWorld {
 
         //collision with left edge
         if (circleRight() > rectLeft
-            && !(circleLeft() > rectLeft)
-            && !(circle.collidingY)) {
-                circle.x -= 2.5;
-        } 
+            && !(circleLeft() > rectLeft)) {
+            circle.x -= 2.5;
+        }
         if (circleLeft() < rectRight
-            && !(circleRight() < rectRight)
-            && !(circle.collidingY)) {
-                circle.x += 2.5;
+            && !(circleRight() < rectRight)) {
+            circle.x += 2.5;
         }
         //rectRight() + circle.rad + 
     }
@@ -231,18 +239,12 @@ export class PhysicsWorld {
         //collision with upper edge
         if (circleBottom() > rectTop
             && !(circleTop() > rectTop)) {
-                circle.collidingY = true;
-                circle.y -= 2.5;
-        } else {
-            circle.collidingY = false;
+            circle.y -= 2.5;
         }
 
         if (circleTop() < rectBottom
             && !(circleBottom() < rectBottom)) {
-                circle.collidingY = true;
-                circle.y += 2.5;
-        } else {
-            circle.collidingY = false;
+            circle.y += 2.5;
         }
 
     }

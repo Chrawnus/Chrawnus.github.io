@@ -151,7 +151,7 @@ function getPhysicsDelta(dt) {
 
     while (accumulator >= pdt) {
 
-        world.physics(pdt);
+        world.physics(pdt, dt);
         accumulator -= pdt;
 
     }
