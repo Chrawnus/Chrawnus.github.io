@@ -76,6 +76,7 @@ function gameLoop(now) {
 
 function update(dt) {
     for (let i = 0; i < player.length; i++) {
+        
         player[i].update(dt);
     }
 }

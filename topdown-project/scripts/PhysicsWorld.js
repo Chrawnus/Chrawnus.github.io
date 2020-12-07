@@ -8,9 +8,8 @@ export class PhysicsWorld {
     constructor() {
         this.player = [];
         this.staticGeometry = [];
-        this.g = 9.81;
-        this.drag = 0.1;
-        this.rho = 1.22;
+
+
         this.collisionSectors = {
             "sector1": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
             "sector2": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": 0 },
@@ -63,13 +62,12 @@ export class PhysicsWorld {
         }
     }
 
-
-
     physics(delta) {
         this.playerSectorCheck();
+        this.collisionHandler(delta);
         this.canvasEdgeCollision();
 
-        this.collisionHandler(delta);
+
 
     }
 
@@ -106,15 +104,6 @@ export class PhysicsWorld {
         return (dx * dx + dy * dy <= (circle.rad * circle.rad));
     }
 
-    rectRectColliding(rect1, rect2) {
-        return (rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y)
-
-
-    }
-
     collisionHandler(delta) {
         const player = this.player[0];
         const playerSectors = this.playerSectors;
@@ -124,12 +113,14 @@ export class PhysicsWorld {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player) {
                     if (this.RectCircleColliding(player, rectangle)) {
-                        rectangle.color = "green";
-                        const deepestPoint = this.deepestPoint(player, rectangle);
-           
 
-                        console.log(this.deepestPoint(player, rectangle));
+                        this.RectCircleCollidingDirectionY(player, rectangle)
+
+                        this.RectCircleCollidingDirectionX(player, rectangle)
+
+                        rectangle.color = "green";
                     } else {
+                        player.collidingY = false;
                         rectangle.color = "red";
                     }
                 }
@@ -201,46 +192,67 @@ export class PhysicsWorld {
         };
     }
 
-    deepestPoint(circle, rect) {
-        const slope = (circle.y - rect.y) / (circle.x - rect.y);
-        const intercept = circle.y - (slope * circle.x);
 
-        return {
-            lineSlope: slope,
-            lineIntercept: intercept,
-            x: circle.x + circle.rad,
-            y: (circle.x * slope) + intercept
+
+
+
+
+    RectCircleCollidingDirectionX(circle, rect) {
+        
+        const circleRight = () => circle.x + (circle.rad + 1);
+        const circleLeft = () => circle.x - (circle.rad + 1);
+
+        const rectLeft = rect.x;
+        const rectRight = rect.x + rect.width;
+
+
+        //collision with left edge
+        if (circleRight() > rectLeft
+            && !(circleLeft() > rectLeft)
+            && !(circle.collidingY)) {
+                circle.x -= 2.5;
+        } 
+        if (circleLeft() < rectRight
+            && !(circleRight() < rectRight)
+            && !(circle.collidingY)) {
+                circle.x += 2.5;
         }
+        //rectRight() + circle.rad + 
     }
 
-    
+    RectCircleCollidingDirectionY(circle, rect) {
 
-/*     clamp(x, lower, upper) {
-        return Math.max(lower, Math.min(upper, x))
+        const circleTop = () => circle.y - (circle.rad + 1);
+        const circleBottom = () => circle.y + (circle.rad + 1);
+
+        const rectTop = rect.y;
+        const rectBottom = rect.y + rect.height;
+
+        //collision with upper edge
+        if (circleBottom() > rectTop
+            && !(circleTop() > rectTop)) {
+                circle.collidingY = true;
+                circle.y -= 2.5;
+        } else {
+            circle.collidingY = false;
+        }
+
+        if (circleTop() < rectBottom
+            && !(circleBottom() < rectBottom)) {
+                circle.collidingY = true;
+                circle.y += 2.5;
+        } else {
+            circle.collidingY = false;
+        }
+
     }
 
+    rectRectColliding(rect1, rect2) {
+        return (rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.y + rect1.height > rect2.y)
 
-
-    getNearestPointInPerimeter(rect.x, rect.y, rect.width, rect.height, x, y) {
-        const r = l + w;
-        
-        const b = t + h;
-
-        const x = this.clamp(x, l, r);
-        
-        clamp(y, t, b)
-
-        local dl, dr, dt, db = abs(x - l), abs(x - r), abs(y - t), abs(y - b)
-        local m = min(dl, dr, dt, db)
-
-        if m == dt then return x, t end
-        if m == db then return x, b end
-        if m == dl then return l, y end
-        return r, y
-
-    } */
-
-
-
+    }
 }
 

@@ -28,6 +28,8 @@ export class Player {
             x: 0,
             y: 0
         };
+
+        this.collidingY = false;
     }
 
 
@@ -70,17 +72,37 @@ export class Player {
         this.previousmousecoords.y = mousecoords.y; */
 
 
-        this.movement(delta);
         this.movementHandler();
+        this.movement(delta);
+        
+    }
+
+    movementHandler(delta) {
+        if (keyArr.includes("w")) {
+            this.y -= 2.5;
+        }
+
+        if (keyArr.includes("s")) {
+            this.y += 2.5;
+        }
+        
+        if (keyArr.includes("a") && !(keyArr.includes("d"))) {
+            this.x -= 2.5;
+        }
+
+        if (keyArr.includes("d") && !(keyArr.includes("a"))) {
+            this.x += 2.5;
+        }
     }
 
     movement(delta) {
-
+        
         this.y += this.vy * delta;
         this.x += this.vx * delta;
 
 
     }
+
 
     draw(ctx) {
         const radPos = this.getLineCircleIntersect(this, this.target, this.rad);
@@ -117,24 +139,7 @@ export class Player {
 
 
 
-    movementHandler() {
 
-        if (keyArr.includes("w")) {
-            this.y -= 2.5;
-        }
-
-        if (keyArr.includes("s")) {
-            this.y += 2.5;
-        }
-
-        if (keyArr.includes("a") && !(keyArr.includes("d"))) {
-            this.x -= 2.5;
-        }
-
-        if (keyArr.includes("d") && !(keyArr.includes("a"))) {
-            this.x += 2.5;
-        }
-    }
 
     getLineCircleIntersect(p0, p1, r) {
         const theta = Math.atan2(p1.y - p0.y, p1.x - p0.x)
