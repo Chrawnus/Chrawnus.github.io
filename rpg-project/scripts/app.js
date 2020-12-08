@@ -1,6 +1,6 @@
-import { PhysicsWorld } from "/topdown-project/scripts/PhysicsWorld.js";
-import { Player } from "/topdown-project/scripts/Player.js";
-import { Platform } from "/topdown-project/scripts/Platform.js";
+import { PhysicsWorld } from "/rpg-project/scripts/PhysicsWorld.js";
+import { Player } from "/rpg-project/scripts/Player.js";
+import { Platform } from "/rpg-project/scripts/Platform.js";
 
 
 
