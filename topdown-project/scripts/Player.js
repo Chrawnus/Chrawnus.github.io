@@ -5,12 +5,20 @@ import { keyArr } from "/topdown-project/scripts/app.js";
 
 export class Player {
     constructor(x, y, rad) {
-        this.prevX;
-        this.prevY;
+        this.prevPos = {
+            x: undefined,
+            y: undefined
+        }
+        
         this.timer = 0;
         this.velocity = 250;
-        this.x = x;
-        this.y = y;
+        this.pos = {
+            x: x,
+            y: y
+        }
+
+        this.dx = 0;
+        this.dy = 0;
         this.vx = 0;
         this.vy = 0;
         this.rad = rad;
@@ -24,7 +32,7 @@ export class Player {
             x: 0,
             y: 0
         };
-
+        this.colliding = false;
         this.target = {
             x: 0,
             y: 0
@@ -34,7 +42,7 @@ export class Player {
 
 
     update(delta) {
-
+        this.getPrevXAndPrevY();
 /*         this.offset.x += mousecoords.x - this.previousmousecoords.x;
         this.offset.y += mousecoords.y - this.previousmousecoords.y; */
         
@@ -45,20 +53,20 @@ export class Player {
         
 
         const targetcircle = {
-            x: this.x + this.offset.x,
-            y: this.y + this.offset.y,
+            x: this.pos.x + this.offset.x,
+            y: this.pos.y + this.offset.y,
             rad: 1
         };
 
         const clampingCircle = {
-            x: this.x,
-            y: this.y,
+            x: this.pos.x,
+            y: this.pos.y,
             rad: this.rad * 12,
         }
 
          if (this.circleCircleCollision(targetcircle, clampingCircle)) {
-            this.target.x = this.x + this.offset.x;
-            this.target.y = this.y + this.offset.y;
+            this.target.x = this.pos.x + this.offset.x;
+            this.target.y = this.pos.y + this.offset.y;
         } else { 
            const targetPosition = this.getLineCircleIntersect(clampingCircle, targetcircle, clampingCircle.rad);
            this.target.x = targetPosition.x;
@@ -97,8 +105,8 @@ export class Player {
 
     movement(delta) {
         
-        this.y += this.vy * delta;
-        this.x += this.vx * delta;
+        this.pos.y += this.vy * delta;
+        this.pos.x += this.vx * delta;
 
 
     }
@@ -107,8 +115,8 @@ export class Player {
     draw(ctx) {
         const radPos = this.getLineCircleIntersect(this, this.target, this.rad);
 
-        ctx.beginPath(this.x, this.y);
-        ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, true);
+        ctx.beginPath(this.pos.x, this.pos.y);
+        ctx.arc(this.pos.x, this.pos.y, this.rad, 0, Math.PI * 2, true);
 
         ctx.fillStyle = "green";
 
@@ -156,13 +164,13 @@ export class Player {
 
         ctx.beginPath();
 
-        ctx.moveTo(this.x, this.y);
-        ctx.arc(this.x, this.y, this.rad * 24, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180));
-        ctx.lineTo(this.x, this.y);
+        ctx.moveTo(this.pos.x, this.pos.y);
+        ctx.arc(this.pos.x, this.pos.y, this.rad * 24, Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) + (30 * Math.PI / 180));
+        ctx.lineTo(this.pos.x, this.pos.y);
     
         
 
-        ctx.arc(this.x, this.y, this.rad, Math.atan2(radPos.y - this.y, radPos.x - this.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.y, radPos.x - this.x) + (30 * Math.PI / 180), true);
+        ctx.arc(this.pos.x, this.pos.y, this.rad, Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) + (30 * Math.PI / 180), true);
         ctx.stroke();
 
 
@@ -177,7 +185,16 @@ export class Player {
         return ((a * a + b * b) < rad * rad);
     }
 
-    
+    getPrevXAndPrevY() {
+        if (!this.prevPos.x) { this.prevPos.x = this.pos.x; }
+        if (!this.prevPos.y) { this.prevPos.y = this.pos.y; }
+        
+        this.dx = this.pos.x - this.prevPos.x;
+        this.dy = this.pos.y - this.prevPos.y;
+
+        this.prevPos.x = this.pos.x;
+        this.prevPos.y = this.pos.y;
+        }
 
 
 

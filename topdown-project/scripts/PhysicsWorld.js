@@ -59,6 +59,7 @@ export class PhysicsWorld {
             } else if (obj[i] instanceof Platform) {
                 this.staticGeometry.push(obj[i]);
                 this.staticGeometryCheck();
+
             }
         }
     }
@@ -73,26 +74,26 @@ export class PhysicsWorld {
     }
 
     canvasEdgeCollision() {
-        if (this.player[0].y >= canvasElem.height - this.player[0].rad) {
-            this.player[0].y = canvasElem.height - this.player[0].rad;
+        if (this.player[0].pos.y >= canvasElem.height - this.player[0].rad) {
+            this.player[0].pos.y = canvasElem.height - this.player[0].rad;
         }
-        if (this.player[0].x > canvasElem.width - this.player[0].rad) {
-            this.player[0].x = canvasElem.width - this.player[0].rad;
+        if (this.player[0].pos.x > canvasElem.width - this.player[0].rad) {
+            this.player[0].pos.x = canvasElem.width - this.player[0].rad;
         }
-        if (this.player[0].x < this.player[0].rad) {
-            this.player[0].x = this.player[0].rad;
+        if (this.player[0].pos.x < this.player[0].rad) {
+            this.player[0].pos.x = this.player[0].rad;
         }
 
-        if (this.player[0].y < this.player[0].rad) {
-            this.player[0].y = this.player[0].rad;
+        if (this.player[0].pos.y < this.player[0].rad) {
+            this.player[0].pos.y = this.player[0].rad;
         }
         //this.children[i].vx *= 1 - delta * this.children[i].drag;
 
     }
 
     RectCircleColliding(circle, rect) {
-        const distX = Math.abs(circle.x - rect.x - rect.width / 2);
-        const distY = Math.abs(circle.y - rect.y - rect.height / 2);
+        const distX = Math.abs(circle.pos.x - rect.x - rect.width / 2);
+        const distY = Math.abs(circle.pos.y - rect.y - rect.height / 2);
 
         if (distX > (rect.width / 2 + circle.rad)) { return false; }
         if (distY > (rect.height / 2 + circle.rad)) { return false; }
@@ -113,28 +114,25 @@ export class PhysicsWorld {
             for (let j = 0; j < groups[playerSectors[i]].length; j++) {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player) {
-                    
-                    let projectedX = () => player.x + (player.vx * dt * 2);
-                    
-                    
-                    let projectedY = () => player.y + (player.vx * dt * 2);
-                    
-                    let projectedPlayer = {
-                        x: projectedX(),
-                        y: projectedY()
-                    }
-                    console.log(`player: ${player.x, player.y}`)
-                    console.log(`projected player: ${projectedPlayer.x, projectedPlayer.y}`)
 
-                    if (!(this.RectCircleColliding(projectedPlayer, rectangle))) {
-                        player.velocity = 250;
-                
+                    //initial collision testing
+                    if (this.RectCircleColliding(player, rectangle)) {
+                        
+                        this.collision(rectangle, player);
 
-                        rectangle.color = "red";
+/*                         if (this.RectCircleCollidingY(player, rectangle)) {
+                            player.pos.y = player.prevPos.y;
+                        }
+                        if (this.RectCircleCollidingX(player, rectangle)) {
+                            player.pos.x = player.prevPos.x;
+                        } */
+
+                    
+                        rectangle.color = "green";
                     } else {
 
-                        
-                        rectangle.color = "green";
+
+                        rectangle.color = "red";
                     }
                 }
             }
@@ -159,10 +157,6 @@ export class PhysicsWorld {
 
                     }
                 } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
-                    for (let i = 0; i < this.collisionSectors[key].length; i++) {
-                        this.collisionSectors[key][i].color = "red";
-
-                    }
                     this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
                     console.log(`player removed from ${key}`);
                     playerSectors.splice(playerSectors.indexOf(key), 1);
@@ -207,46 +201,33 @@ export class PhysicsWorld {
 
 
 
-    RectCircleCollidingDirectionX(circle, rect) {
+    RectCircleCollidingX(circle, rect) {
 
-        const circleRight = () => circle.x + (circle.rad + 1);
-        const circleLeft = () => circle.x - (circle.rad + 1);
+        const circleRight = () => circle.pos.x + (circle.rad + 1);
+        const circleLeft = () => circle.pos.x - (circle.rad + 1);
 
         const rectLeft = rect.x;
         const rectRight = rect.x + rect.width;
 
 
-        //collision with left edge
-        if (circleRight() > rectLeft
-            && !(circleLeft() > rectLeft)) {
-            circle.x -= 2.5;
-        }
-        if (circleLeft() < rectRight
-            && !(circleRight() < rectRight)) {
-            circle.x += 2.5;
-        }
-        //rectRight() + circle.rad + 
+        //collision with left edge or right edge
+        return ((circleRight() > rectLeft
+            && !(circleLeft() > rectLeft))) || ((circleLeft() < rectRight
+            && !(circleRight() < rectRight)));
     }
 
-    RectCircleCollidingDirectionY(circle, rect) {
+    RectCircleCollidingY(circle, rect) {
 
-        const circleTop = () => circle.y - (circle.rad + 1);
-        const circleBottom = () => circle.y + (circle.rad + 1);
+        const circleTop = () => circle.pos.y - (circle.rad + 1);
+        const circleBottom = () => circle.pos.y + (circle.rad + 1);
 
         const rectTop = rect.y;
         const rectBottom = rect.y + rect.height;
 
-        //collision with upper edge
-        if (circleBottom() > rectTop
-            && !(circleTop() > rectTop)) {
-            circle.y -= 2.5;
-        }
-
-        if (circleTop() < rectBottom
-            && !(circleBottom() < rectBottom)) {
-            circle.y += 2.5;
-        }
-
+        //collision with upper edge or bottom edge
+        return ((circleBottom() > rectTop
+            && !(circleTop() > rectTop))) || ((circleTop() < rectBottom
+            && !(circleBottom() < rectBottom)));
     }
 
     rectRectColliding(rect1, rect2) {
@@ -256,5 +237,34 @@ export class PhysicsWorld {
             rect1.y + rect1.height > rect2.y)
 
     }
+
+    collision(rect, circle){
+        var NearestX = Math.max(rect.x, Math.min(circle.pos.x, rect.x + rect.width));
+        var NearestY = Math.max(rect.y, Math.min(circle.pos.y, rect.y + rect.height));    
+        var dist = {x: circle.pos.x - NearestX, y: circle.pos.y - NearestY};
+      
+        /*
+        if (circle.vel.dot(dist) < 0) { //if circle is moving toward the rect
+          //update circle.vel using one of the above methods
+        }
+        */
+      
+        const mag = Math.sqrt(dist.x * dist.x + dist.y * dist.y);
+        var penetrationDepth = circle.rad - mag;
+        dist.x /= mag;
+        dist.y /= mag;
+        var penetrationVector = {
+          x: dist.x * penetrationDepth,
+          y: dist.y * penetrationDepth 
+        }
+        circle.pos.x += penetrationVector.x;
+        circle.pos.y += penetrationVector.y;
+      }
+
+      getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    }  
 }
 
