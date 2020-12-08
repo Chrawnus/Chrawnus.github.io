@@ -1,7 +1,7 @@
-import { canvasElem } from "/topdown-project/scripts/app.js";
-import { keyArr } from "/topdown-project/scripts/app.js";
-import { Player } from "/topdown-project/scripts/Player.js"
-import { Platform } from "/topdown-project/scripts/Platform.js"
+import { canvasElem } from "/rpg-project/scripts/app.js";
+import { keyArr } from "/rpg-project/scripts/app.js";
+import { Player } from "/rpg-project/scripts/Player.js"
+import { Platform } from "/rpg-project/scripts/Platform.js"
 
 
 export class PhysicsWorld {
