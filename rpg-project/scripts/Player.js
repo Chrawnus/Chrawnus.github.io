@@ -1,7 +1,7 @@
-import { canvasElem } from "/topdown-project/scripts/app.js";
-import { mousecoords } from "/topdown-project/scripts/app.js";
+import { canvasElem } from "/rpg-project/scripts/app.js";
+import { mousecoords } from "/rpg-project/scripts/app.js";
 
-import { keyArr } from "/topdown-project/scripts/app.js";
+import { keyArr } from "/rpg-project/scripts/app.js";
 
 export class Player {
     constructor(x, y, rad) {
@@ -32,22 +32,32 @@ export class Player {
             x: 0,
             y: 0
         };
-        this.colliding = false;
+        
         this.target = {
-            x: 0,
-            y: 0
+            "pos": {
+                x: this.pos.x,
+                y: this.pos.y
+            },
+            "rad": 5
+
         };
+
+        this.clampingCircle = {
+            x: this.pos.x,
+            y: this.pos.y,
+            rad: this.rad * 2,
+        }
     }
 
 
 
     update(delta) {
-        this.getPrevXAndPrevY();
+
 /*         this.offset.x += mousecoords.x - this.previousmousecoords.x;
         this.offset.y += mousecoords.y - this.previousmousecoords.y; */
         
         
-        this.offset.x += mousecoords.x
+/*         this.offset.x += mousecoords.x
         this.offset.y += mousecoords.y
 
         
@@ -58,20 +68,16 @@ export class Player {
             rad: 1
         };
 
-        const clampingCircle = {
-            x: this.pos.x,
-            y: this.pos.y,
-            rad: this.rad * 2,
-        }
 
-         if (this.circleCircleCollision(targetcircle, clampingCircle)) {
+
+         if (this.circleCircleCollision(targetcircle, this.clampingCircle)) {
             this.target.x = this.pos.x + this.offset.x;
             this.target.y = this.pos.y + this.offset.y;
         } else { 
-           const targetPosition = this.getLineCircleIntersect(clampingCircle, targetcircle, clampingCircle.rad);
+           const targetPosition = this.getLineCircleIntersect(this.clampingCircle, targetcircle, this.clampingCircle.rad);
            this.target.x = targetPosition.x;
            this.target.y = targetPosition.y;
-         }
+         } */
         
 
 
@@ -86,19 +92,53 @@ export class Player {
 
     movementHandler(delta) {
         if (keyArr.includes("w") && !(keyArr.includes("s"))) {
-            this.vy = -this.velocity;
+            if (!(keyArr.includes(" "))) {this.vy = -this.velocity;}
+            
+            if (keyArr.includes("a") || keyArr.includes("d")) {
+                this.target.pos.y = this.pos.y - this.clampingCircle.rad;
+            } else {
+                this.target.pos.y = this.pos.y - this.clampingCircle.rad;
+                this.target.pos.x = this.pos.x;
+            }
         } else if (keyArr.includes("s") && !(keyArr.includes("w"))) {
-            this.vy = +this.velocity;
+            if (!(keyArr.includes(" "))) {this.vy = +this.velocity;}
+            
+            if (keyArr.includes("a") || keyArr.includes("d")) {
+                this.target.pos.y = this.pos.y + this.clampingCircle.rad;
+            } else {
+                this.target.pos.y = this.pos.y + this.clampingCircle.rad;
+                this.target.pos.x = this.pos.x;
+            }
+            
         } else {
             this.vy = 0;
+            //this.target.y = this.pos.y;
         }
         
         if (keyArr.includes("a") && !(keyArr.includes("d"))) {
-            this.vx = -this.velocity;
+            if (!(keyArr.includes(" "))) {this.vx = -this.velocity;}
+            
+            if (keyArr.includes("w") || keyArr.includes("s")) {
+                this.target.pos.x = this.pos.x - this.clampingCircle.rad;
+            } else {
+                this.target.pos.x = this.pos.x - this.clampingCircle.rad;
+                this.target.pos.y = this.pos.y;
+            }
+            
+            
         } else if (keyArr.includes("d") && !(keyArr.includes("a"))) {
-            this.vx = +this.velocity;
+            if (!(keyArr.includes(" "))) {this.vx = +this.velocity;}
+
+            if (keyArr.includes("w") || keyArr.includes("s")) {
+                this.target.pos.x = this.pos.x + this.clampingCircle.rad;
+            } else {
+                this.target.pos.x = this.pos.x + this.clampingCircle.rad;
+                this.target.pos.y = this.pos.y;
+            }
+            
         } else {
             this.vx = 0;
+            //this.target.x = this.pos.x;
         }
 
     }
@@ -113,7 +153,7 @@ export class Player {
 
 
     draw(ctx) {
-        const radPos = this.getLineCircleIntersect(this, this.target, this.rad);
+        const radPos = this.getLineCircleIntersect(this, this.target.pos, this.rad);
 
         ctx.beginPath(this.pos.x, this.pos.y);
         ctx.arc(this.pos.x, this.pos.y, this.rad, 0, Math.PI * 2, true);
@@ -124,8 +164,8 @@ export class Player {
         ctx.fill();
         ctx.stroke();
 
-        ctx.beginPath(this.target.x, this.target.y);
-        ctx.arc(this.target.x, this.target.y, 5, 0, Math.PI * 2, true);
+        ctx.beginPath(this.target.pos.x, this.target.pos.y);
+        ctx.arc(this.target.pos.x, this.target.pos.y, 5, 0, Math.PI * 2, true);
 
         ctx.fillStyle = "green";
 
@@ -159,7 +199,7 @@ export class Player {
     }
 
     getClippingPath(ctx) {
-        const radPos = this.getLineCircleIntersect(this, this.target, this.rad);
+        const radPos = this.getLineCircleIntersect(this, this.target.pos, this.rad);
 
 
         ctx.beginPath();

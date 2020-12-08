@@ -16,6 +16,25 @@ export class PhysicsWorld {
             height: canvasElem.height / 32
         }
 
+        this.grid = [
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": 0 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": 0 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": 0 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) * 2 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) * 2 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) * 2 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) * 2 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": (canvasElem.height / 4) * 3 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": (canvasElem.height / 4) * 3 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 2, "y": (canvasElem.height / 4) * 3 },
+            { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4) * 3, "y": (canvasElem.height / 4) * 3 },
+        ]
+
         this.collisionSectors = {
             "sector1": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
             "sector2": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": 0 },
@@ -68,7 +87,7 @@ export class PhysicsWorld {
                 x += this.tileSize.width;
             }
 
-            this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0, 2)})
+            this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0, 2) })
 
             if (this.tileGrid[i].traversable > 0) {
                 this.staticGeometry.push(this.tileGrid[i]);
@@ -82,7 +101,7 @@ export class PhysicsWorld {
     drawTileGrid(ctx) {
         const grid = this.tileGrid;
         for (let i = 0; i < grid.length; i++) {
-            
+
             if (grid[i].traversable < 1) {
                 ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
             } else {
@@ -94,6 +113,13 @@ export class PhysicsWorld {
 
     }
 
+    drawCollisionSectors(ctx) {
+        const grid = this.grid;
+        for (let i = 0; i < grid.length; i++) {
+                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+        }
+
+    }
 
 
     add(obj) {
@@ -149,12 +175,13 @@ export class PhysicsWorld {
 
     collisionHandler(delta, dt) {
         const player = this.player[0];
+        const tiles = this.tileGrid;
         const playerSectors = this.playerSectors;
         const groups = this.collisionGroups;
         for (let i = 0; i < playerSectors.length; i++) {
             for (let j = 0; j < groups[playerSectors[i]].length; j++) {
                 const rectangle = groups[playerSectors[i]][j];
-                if (rectangle !== player) {
+                if (rectangle !== player.target && rectangle !== player) {
 
                     //initial collision testing
                     if (this.RectCircleColliding(player, rectangle)) {
@@ -179,10 +206,13 @@ export class PhysicsWorld {
             }
 
         }
+        
+
     }
 
     playerSectorCheck() {
         const player = this.player;
+        const target = this.player[0].target;
         const sectors = Object.keys(this.collisionSectors);
         const groups = Object.keys(this.collisionGroups);
         let playerSectors = this.playerSectors;
@@ -203,6 +233,29 @@ export class PhysicsWorld {
                     playerSectors.splice(playerSectors.indexOf(key), 1);
 
                 }
+
+                
+
+            }
+
+            for (let i = 0; i < player.length; i++) {
+                if (!(this.collisionGroups[key].includes(target))) {
+
+                    if (this.RectCircleColliding(this.player[0].target, this.collisionSectors[key])) {
+                        this.collisionGroups[key].push(target);
+                        console.log(`player added to ${key}`);
+                        this.playerSectors.push(key);
+
+
+                    }
+                } else if (!(this.RectCircleColliding(this.player[0].target, this.collisionSectors[key]))) {
+                    this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(target), 1);
+                    console.log(`player removed from ${key}`);
+                    playerSectors.splice(playerSectors.indexOf(key), 1);
+
+                }
+
+                
 
             }
         });

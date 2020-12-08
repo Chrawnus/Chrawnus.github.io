@@ -15,24 +15,9 @@ export const mousecoords = {
     y: 0
 };
 
-canvasElem.addEventListener("click", () => {
-    canvasElem.requestPointerLock();
-})
 
-let timeoutId;
 
-document.addEventListener("mousemove", (evt) => {
-    clearTimeout(timeoutId);
-    const x = evt.movementX;
-    const y = evt.movementY;
-    mousecoords.x = x * 2;
-    mousecoords.y = y * 2;  
 
-    timeoutId = setTimeout(() => {
-        mousecoords.x = 0;
-        mousecoords.y = 0;
-    }, 0);
-});
 
 let prevTime;
 let accumulator = 0;
@@ -104,8 +89,15 @@ function draw() {
     
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     
+    
+    
     world.drawTileGrid(ctx);
 
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    world.drawCollisionSectors(ctx);
+    ctx.lineWidth = 1.0;
+    ctx.strokeStyle = "black";
     for (let i = 0; i < staticObjects.length; i++) {
         staticObjects[i].draw(ctx);
     }
@@ -127,16 +119,17 @@ function getRandomInt(min, max) {
 
 
 function keyDownEventsHandler(e) {
-    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d") {
+    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d" || e.key === " ") {
         if (!(keyArr.includes(e.key))) {
             keyArr.push(e.key);
+            console.log(keyArr)
         }
     }
 }
 
 
 function keyUpEventsHandler(e) {
-    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d") {
+    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d" || e.key === " " ) {
         if ((keyArr.includes(e.key))) {
             keyArr.splice(keyArr.indexOf(e.key), 1);
         }
