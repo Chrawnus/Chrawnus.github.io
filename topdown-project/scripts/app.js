@@ -44,17 +44,19 @@ let staticObjects = [];
 
 
 
-    player.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 15));
+    player.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), canvasElem.height/64));
 
 
-for (let i = 0; i < 25; i++) {
+ /* for (let i = 0; i < 25; i++) {
     staticObjects.push(new Platform(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(20, 60), getRandomInt(20, 60)));
-}
-
+} */ 
+ 
 let world = new PhysicsWorld();
 
+world.createTileGrid();
 world.add(player);
-world.add(staticObjects);
+//world.add(staticObjects);
+
 
 requestAnimationFrame(gameLoop);
 
@@ -86,6 +88,7 @@ function physics(dt) {
 }
 
 function draw() {
+    /** @type CanvasRenderingContext2D */
     const ctx = canvasElem.getContext('2d');
 
     ctx.clearRect(0, 0, 600, 480);
@@ -101,11 +104,13 @@ function draw() {
     
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     
-
+    world.drawTileGrid(ctx);
 
     for (let i = 0; i < staticObjects.length; i++) {
         staticObjects[i].draw(ctx);
     }
+
+    
 
     for (let i = 0; i < player.length; i++) {
         player[0].draw(ctx);

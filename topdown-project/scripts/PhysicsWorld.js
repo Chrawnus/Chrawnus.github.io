@@ -10,6 +10,11 @@ export class PhysicsWorld {
 
         this.staticGeometry = [];
 
+        this.tileGrid = [];
+        this.tileSize = {
+            width: canvasElem.width / 32,
+            height: canvasElem.height / 32
+        }
 
         this.collisionSectors = {
             "sector1": { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
@@ -52,6 +57,45 @@ export class PhysicsWorld {
         this.playerSectors = [];
     }
 
+    createTileGrid() {
+        let x = 0;
+        let y = 0;
+        for (let i = 0; i < 1024; i++) {
+            if (!(i % 32) && !(i === 0)) {
+                y += this.tileSize.height;
+                x = 0;
+            } else {
+                x += this.tileSize.width;
+            }
+
+            this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0, 2)})
+
+            if (this.tileGrid[i].traversable > 0) {
+                this.staticGeometry.push(this.tileGrid[i]);
+            }
+            this.staticGeometryCheck();
+        }
+
+        console.log(this.tileGrid);
+    }
+
+    drawTileGrid(ctx) {
+        const grid = this.tileGrid;
+        for (let i = 0; i < grid.length; i++) {
+            
+            if (grid[i].traversable < 1) {
+                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+            } else {
+                ctx.fillStyle = "red";
+                ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+            }
+        }
+
+    }
+
+
+
     add(obj) {
         for (let i = 0; i < obj.length; i++) {
             if (obj[i] instanceof Player) {
@@ -68,9 +112,6 @@ export class PhysicsWorld {
         this.playerSectorCheck();
         this.collisionHandler(delta, dt);
         this.canvasEdgeCollision();
-
-
-
     }
 
     canvasEdgeCollision() {
@@ -117,17 +158,17 @@ export class PhysicsWorld {
 
                     //initial collision testing
                     if (this.RectCircleColliding(player, rectangle)) {
-                        
+
                         this.collision(rectangle, player);
 
-/*                         if (this.RectCircleCollidingY(player, rectangle)) {
-                            player.pos.y = player.prevPos.y;
-                        }
-                        if (this.RectCircleCollidingX(player, rectangle)) {
-                            player.pos.x = player.prevPos.x;
-                        } */
+                        /*                         if (this.RectCircleCollidingY(player, rectangle)) {
+                                                    player.pos.y = player.prevPos.y;
+                                                }
+                                                if (this.RectCircleCollidingX(player, rectangle)) {
+                                                    player.pos.x = player.prevPos.x;
+                                                } */
 
-                    
+
                         rectangle.color = "green";
                     } else {
 
@@ -213,7 +254,7 @@ export class PhysicsWorld {
         //collision with left edge or right edge
         return ((circleRight() > rectLeft
             && !(circleLeft() > rectLeft))) || ((circleLeft() < rectRight
-            && !(circleRight() < rectRight)));
+                && !(circleRight() < rectRight)));
     }
 
     RectCircleCollidingY(circle, rect) {
@@ -227,7 +268,7 @@ export class PhysicsWorld {
         //collision with upper edge or bottom edge
         return ((circleBottom() > rectTop
             && !(circleTop() > rectTop))) || ((circleTop() < rectBottom
-            && !(circleBottom() < rectBottom)));
+                && !(circleBottom() < rectBottom)));
     }
 
     rectRectColliding(rect1, rect2) {
@@ -238,33 +279,33 @@ export class PhysicsWorld {
 
     }
 
-    collision(rect, circle){
+    collision(rect, circle) {
         var NearestX = Math.max(rect.x, Math.min(circle.pos.x, rect.x + rect.width));
-        var NearestY = Math.max(rect.y, Math.min(circle.pos.y, rect.y + rect.height));    
-        var dist = {x: circle.pos.x - NearestX, y: circle.pos.y - NearestY};
-      
+        var NearestY = Math.max(rect.y, Math.min(circle.pos.y, rect.y + rect.height));
+        var dist = { x: circle.pos.x - NearestX, y: circle.pos.y - NearestY };
+
         /*
         if (circle.vel.dot(dist) < 0) { //if circle is moving toward the rect
           //update circle.vel using one of the above methods
         }
         */
-      
+
         const mag = Math.sqrt(dist.x * dist.x + dist.y * dist.y);
         var penetrationDepth = circle.rad - mag;
         dist.x /= mag;
         dist.y /= mag;
         var penetrationVector = {
-          x: dist.x * penetrationDepth,
-          y: dist.y * penetrationDepth 
+            x: dist.x * penetrationDepth,
+            y: dist.y * penetrationDepth
         }
         circle.pos.x += penetrationVector.x;
         circle.pos.y += penetrationVector.y;
-      }
+    }
 
-      getRandomInt(min, max) {
+    getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-    }  
+    }
 }
 

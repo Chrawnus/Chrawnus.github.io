@@ -61,7 +61,7 @@ export class Player {
         const clampingCircle = {
             x: this.pos.x,
             y: this.pos.y,
-            rad: this.rad * 12,
+            rad: this.rad * 2,
         }
 
          if (this.circleCircleCollision(targetcircle, clampingCircle)) {
