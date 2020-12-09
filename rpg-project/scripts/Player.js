@@ -9,6 +9,8 @@ export class Player {
             x: undefined,
             y: undefined
         }
+
+        this.elevation;
         
         this.timer = 0;
         this.velocity = 250;

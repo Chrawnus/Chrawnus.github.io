@@ -9,12 +9,6 @@ export class PhysicsWorld {
         this.player = [];
         this.noiseGenerator = [];
         this.staticGeometry = [];
-        this.tiles = 1024;
-        this.tileGrid = [];
-        this.tileSize = {
-            width: canvasElem.width / (Math.sqrt(this.tiles)),
-            height: canvasElem.height / (Math.sqrt(this.tiles))
-        }
 
         this.grid = [
             { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
@@ -76,45 +70,7 @@ export class PhysicsWorld {
         this.playerSectors = [];
     }
 
-    createTileGrid() {
-        let x = 0;
-        let y = 0;
-        for (let i = 0; i < Math.sqrt(this.tiles); i++) {
-            for (let j = 0; j < Math.sqrt(this.tiles); j++) {
-                y = i * this.tileSize.width;
-                x = j * this.tileSize.width;
-                this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0,this.getRandomInt(99,101))})   
-            }   
-        }
 
-        for (let i = 0; i < this.tileGrid.length; i++) {
-            if ((this.tileGrid[i].traversable > 75)) {
-                this.staticGeometry.push(this.tileGrid[i]);
-                
-            }
-            this.staticGeometryCheck();
-        }
-        console.log(this.tileGrid);
-    }
-
-    drawTileGrid(ctx) {
-        const grid = this.tileGrid;
-        for (let i = 0; i < grid.length; i++) {
-
-            if (grid[i].traversable > 75) {
-                ctx.fillStyle = `rgba(255, 0, 0, ${1*(grid[i].traversable/100)})`;
-                ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-                
-            } else {
-
-                    ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-                
-                
-            }
-        }
-
-    }
 
     drawCollisionSectors(ctx) {
         const grid = this.grid;
@@ -137,11 +93,22 @@ export class PhysicsWorld {
         }
     }
 
+    addTileGrid(obj) {
+        for (let i = 0; i < obj.length; i++) {
+                
+                this.staticGeometry.push(obj[i]);
+                this.staticGeometryCheck();
+                console.log(this.staticGeometry)
+            }
+        
+    }
+
 
 
     physics(delta, dt) {
         this.playerSectorCheck();
         this.collisionHandler(delta, dt);
+        
         this.canvasEdgeCollision();
     }
 
@@ -188,20 +155,28 @@ export class PhysicsWorld {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player.target && rectangle !== player) {
 
-                    //initial collision testing
+
                     if (this.RectCircleColliding(player, rectangle)) {
+                        if ((!(player.elevation) && !(player.elevation === 0))) {
+                            player.elevation = rectangle.traversable;
+                        } else if (Math.abs(rectangle.traversable - player.elevation) > 1) {
+                            this.collision(rectangle, player);
 
-                        this.collision(rectangle, player);
+                            /*                                               if (this.RectCircleCollidingY(player, rectangle)) {
+                                                                              player.pos.y = player.prevPos.y;
+                                                                          }
+                                                                          if (this.RectCircleCollidingX(player, rectangle)) {
+                                                                              player.pos.x = player.prevPos.x;
+                                                                          }  */
+                          
+                          
+                                                  rectangle.color = "green";
+                        } else if ((player.x !== (rectangle.x + rectangle.width/2)) && (player.y !== (rectangle.y + rectangle.height/2))) {
+                            player.x = rectangle.x + rectangle.width/2;
+                            player.y = rectangle.y + rectangle.height/2;
+                        }
+                        
 
-  /*                                               if (this.RectCircleCollidingY(player, rectangle)) {
-                                                    player.pos.y = player.prevPos.y;
-                                                }
-                                                if (this.RectCircleCollidingX(player, rectangle)) {
-                                                    player.pos.x = player.prevPos.x;
-                                                }  */
-
-
-                        rectangle.color = "green";
                     } else {
 
 

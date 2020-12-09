@@ -2,7 +2,8 @@ import { PhysicsWorld } from "/rpg-project/scripts/PhysicsWorld.js";
 import { Player } from "/rpg-project/scripts/Player.js";
 import { Platform } from "/rpg-project/scripts/Platform.js";
 import { NoiseGenerator } from "/rpg-project/scripts/NoiseGenerator.js";
-
+import { TileGrid} from "/rpg-project/scripts/TileGrid.js";
+import { HelperFunctions } from "/rpg-project/scripts/helperFunctions.js";
 
 export const canvasElem = document.getElementById('canvas');
 export const canvasElemRect = canvasElem.getBoundingClientRect();
@@ -15,47 +16,49 @@ export const mousecoords = {
     y: 0
 };
 
+const helper = new HelperFunctions();
 
 
 
 
-let prevTime;
-let accumulator = 0;
 
 let player = [];
 
 let staticObjects = [];
 
 
-
-
-
-
-
-
-    player.push(new Player(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), canvasElem.height/64));
+    player.push(new Player(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), canvasElem.height/64));
 
 
  /* for (let i = 0; i < 25; i++) {
-    staticObjects.push(new Platform(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(20, 60), getRandomInt(20, 60)));
+    staticObjects.push(new Platform(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), helper.getRandomInt(20, 60), helper.getRandomInt(20, 60)));
 } */ 
  
-let world = new PhysicsWorld();
+const world = new PhysicsWorld();
 
-world.createTileGrid();
+const tileGrid = new TileGrid(1024);
+
+tileGrid.addWorld(world);
+tileGrid.createTileGrid();
+
+helper.add(world);
+
+
 world.add(player);
 //world.add(staticObjects);
 
+
+world.addTileGrid(tileGrid.tileGrid);
 
 requestAnimationFrame(gameLoop);
 
 export let keyArr = [];
 
-window.addEventListener("keydown", keyDownEventsHandler);
-window.addEventListener("keyup", keyUpEventsHandler);
+window.addEventListener("keydown", helper.keyDownEventsHandler);
+window.addEventListener("keyup", helper.keyUpEventsHandler);
 
 function gameLoop(now) {
-    let dt = getDelta(now);
+    let dt = helper.getDelta(now);
 
     update(dt);
     physics(dt);
@@ -73,7 +76,7 @@ function update(dt) {
 }
 
 function physics(dt) {
-    getPhysicsDelta(dt);
+    helper.getPhysicsDelta(dt);
 }
 
 function draw() {
@@ -95,7 +98,7 @@ function draw() {
     
     
     
-    world.drawTileGrid(ctx);
+    tileGrid.drawTileGrid(ctx);
 
     ctx.strokeStyle = "green";
     ctx.lineWidth = 2;
@@ -115,47 +118,7 @@ function draw() {
 
 }
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-}
 
 
-function keyDownEventsHandler(e) {
-    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d" || e.key === " ") {
-        if (!(keyArr.includes(e.key))) {
-            keyArr.push(e.key);
-            console.log(keyArr)
-        }
-    }
-}
 
-
-function keyUpEventsHandler(e) {
-    if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d" || e.key === " " ) {
-        if ((keyArr.includes(e.key))) {
-            keyArr.splice(keyArr.indexOf(e.key), 1);
-        }
-    }
-}
-
-function getDelta(now) {
-    if (!prevTime) { prevTime = now; }
-    let dt = (now - prevTime) / 1000;
-    prevTime = now;
-    return dt;
-}
-
-function getPhysicsDelta(dt) {
-    let pdt = 0.01;
-    accumulator += dt;
-
-    while (accumulator >= pdt) {
-
-        world.physics(pdt, dt);
-        accumulator -= pdt;
-
-    }
-}
 
