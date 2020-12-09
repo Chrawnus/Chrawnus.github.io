@@ -87,9 +87,9 @@ export class PhysicsWorld {
                 x += this.tileSize.width;
             }
 
-            this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0, 2) })
+            this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.getRandomInt(0, 3) })
 
-            if (this.tileGrid[i].traversable > 0) {
+            if (!(this.tileGrid[i].traversable > 0)) {
                 this.staticGeometry.push(this.tileGrid[i]);
             }
             this.staticGeometryCheck();
@@ -103,10 +103,11 @@ export class PhysicsWorld {
         for (let i = 0; i < grid.length; i++) {
 
             if (grid[i].traversable < 1) {
-                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-            } else {
                 ctx.fillStyle = "red";
                 ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+                
+            } else {
                 ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
             }
         }
@@ -212,7 +213,6 @@ export class PhysicsWorld {
 
     playerSectorCheck() {
         const player = this.player;
-        const target = this.player[0].target;
         const sectors = Object.keys(this.collisionSectors);
         const groups = Object.keys(this.collisionGroups);
         let playerSectors = this.playerSectors;
@@ -229,27 +229,6 @@ export class PhysicsWorld {
                     }
                 } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
                     this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
-                    console.log(`player removed from ${key}`);
-                    playerSectors.splice(playerSectors.indexOf(key), 1);
-
-                }
-
-                
-
-            }
-
-            for (let i = 0; i < player.length; i++) {
-                if (!(this.collisionGroups[key].includes(target))) {
-
-                    if (this.RectCircleColliding(this.player[0].target, this.collisionSectors[key])) {
-                        this.collisionGroups[key].push(target);
-                        console.log(`player added to ${key}`);
-                        this.playerSectors.push(key);
-
-
-                    }
-                } else if (!(this.RectCircleColliding(this.player[0].target, this.collisionSectors[key]))) {
-                    this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(target), 1);
                     console.log(`player removed from ${key}`);
                     playerSectors.splice(playerSectors.indexOf(key), 1);
 
