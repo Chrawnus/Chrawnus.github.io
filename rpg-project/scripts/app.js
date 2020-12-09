@@ -1,7 +1,7 @@
 import { PhysicsWorld } from "/rpg-project/scripts/PhysicsWorld.js";
 import { Player } from "/rpg-project/scripts/Player.js";
 import { Platform } from "/rpg-project/scripts/Platform.js";
-
+import { NoiseGenerator } from "/rpg-project/scripts/NoiseGenerator.js";
 
 
 export const canvasElem = document.getElementById('canvas');
@@ -15,20 +15,9 @@ export const mousecoords = {
     y: 0
 };
 
-canvasElem.height = window.innerHeight-32;
-canvasElem.width = window.innerHeight-32;
 
-var resizeTimer;
-$(window).on('resize', function () {
 
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-        canvasElem.height = window.innerHeight - 32;
-        canvasElem.width = window.innerHeight - 32;
 
-    }, 500);
-
-});
 
 let prevTime;
 let accumulator = 0;
@@ -36,6 +25,10 @@ let accumulator = 0;
 let player = [];
 
 let staticObjects = [];
+
+
+
+
 
 
 
