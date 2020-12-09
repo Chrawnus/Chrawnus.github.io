@@ -9,11 +9,11 @@ export class PhysicsWorld {
         this.player = [];
 
         this.staticGeometry = [];
-
+        this.tiles = 1024;
         this.tileGrid = [];
         this.tileSize = {
-            width: canvasElem.width / 32,
-            height: canvasElem.height / 32
+            width: canvasElem.width / (Math.sqrt(this.tiles)),
+            height: canvasElem.height / (Math.sqrt(this.tiles))
         }
 
         this.grid = [
@@ -79,8 +79,8 @@ export class PhysicsWorld {
     createTileGrid() {
         let x = 0;
         let y = 0;
-        for (let i = 0; i < 1024; i++) {
-            if (!(i % 32) && !(i === 0)) {
+        for (let i = 0; i < this.tiles; i++) {
+            if (!(i % (Math.sqrt(this.tiles))) && !(i === 0)) {
                 y += this.tileSize.height;
                 x = 0;
             } else {

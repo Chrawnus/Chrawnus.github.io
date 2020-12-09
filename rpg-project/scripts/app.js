@@ -15,9 +15,20 @@ export const mousecoords = {
     y: 0
 };
 
+canvasElem.height = window.innerHeight-32;
+canvasElem.width = window.innerHeight-32;
 
+var resizeTimer;
+$(window).on('resize', function () {
 
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+        canvasElem.height = window.innerHeight - 32;
+        canvasElem.width = window.innerHeight - 32;
 
+    }, 500);
+
+});
 
 let prevTime;
 let accumulator = 0;
