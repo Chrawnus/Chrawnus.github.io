@@ -326,7 +326,7 @@ export class PhysicsWorld {
                 if (tiles[i][j].traversable) {
                     player.pos.x = tiles[i][j].x + tiles[i][j].width/2;
                     player.pos.y = tiles[i][j].y + tiles[i][j].width/2;
-                    player.playerTile.push(tiles[i][j]);
+                    player.playerTile.push({i, j});
                     console.log(player.playerTile)
                     break;
                 }
