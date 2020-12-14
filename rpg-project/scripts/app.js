@@ -27,7 +27,7 @@ let player = [];
 let staticObjects = [];
 
 
-    player.push(new Player(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), canvasElem.height/64));
+    player.push(new Player(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), (canvasElem.height/64)));
 
 
  /* for (let i = 0; i < 25; i++) {

@@ -68,6 +68,7 @@ export class PhysicsWorld {
         }
 
         this.playerSectors = [];
+        
     }
 
 
@@ -155,29 +156,26 @@ export class PhysicsWorld {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player.target && rectangle !== player) {
 
-
+                    
                     if (this.RectCircleColliding(player, rectangle)) {
-                        if ((!(player.elevation) && !(player.elevation === 0))) {
-                            player.elevation = rectangle.traversable;
-                        } else if (Math.abs(rectangle.traversable - player.elevation) > 1) {
+                        if (rectangle.traversable < 1) {
                             this.collision(rectangle, player);
-
-                            /*                                               if (this.RectCircleCollidingY(player, rectangle)) {
-                                                                              player.pos.y = player.prevPos.y;
-                                                                          }
-                                                                          if (this.RectCircleCollidingX(player, rectangle)) {
-                                                                              player.pos.x = player.prevPos.x;
-                                                                          }  */
-                          
-                          
-                                                  rectangle.color = "green";
-                        } else if ((player.x !== (rectangle.x + rectangle.width/2)) && (player.y !== (rectangle.y + rectangle.height/2))) {
-                            player.x = rectangle.x + rectangle.width/2;
-                            player.y = rectangle.y + rectangle.height/2;
+                            rectangle.color = "green";
+                        } else if (rectangle.traversable > 0 && !(player.playerTile.includes(rectangle)) && player.playerTile.length < 2) {
+                            
+                            player.playerTile.push(rectangle)
+                            console.log(player.playerTile[0]);
+                            player.playerTile[0].fillColor = "red";
                         }
                         
 
                     } else {
+                        if(player.playerTile.includes(rectangle)) {
+                            player.playerTile[0].fillColor = `${player.playerTile[0].defaultColor}`;
+                            player.playerTile.splice(player.playerTile[player.playerTile.indexOf(rectangle)], 1);
+                            console.log(player.playerTile[0]);
+                            
+                        }
 
 
                         rectangle.color = "red";
@@ -201,14 +199,14 @@ export class PhysicsWorld {
 
                     if (this.RectCircleColliding(player[0], this.collisionSectors[key])) {
                         this.collisionGroups[key].push(player[0]);
-                        console.log(`player added to ${key}`);
+                        
                         this.playerSectors.push(key);
 
 
                     }
                 } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
                     this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
-                    console.log(`player removed from ${key}`);
+                    
                     playerSectors.splice(playerSectors.indexOf(key), 1);
 
                 }

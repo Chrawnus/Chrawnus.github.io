@@ -9,8 +9,9 @@ export class Player {
             x: undefined,
             y: undefined
         }
-
-        this.elevation;
+        this.idle = false;
+        this.playerTile = [];
+        
         
         this.timer = 0;
         this.velocity = 250;
@@ -85,7 +86,6 @@ export class Player {
 
 /*         this.previousmousecoords.x = mousecoords.x;
         this.previousmousecoords.y = mousecoords.y; */
-
 
         this.movementHandler();
         this.movement(delta);
@@ -237,7 +237,6 @@ export class Player {
         this.prevPos.x = this.pos.x;
         this.prevPos.y = this.pos.y;
         }
-
 
 
 }
