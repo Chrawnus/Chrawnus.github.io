@@ -44,11 +44,13 @@ tileGrid.createTileGrid();
 helper.add(world);
 
 
-world.add(player);
+
 //world.add(staticObjects);
 
 
 world.addTileGrid(tileGrid.tileGrid);
+
+world.add(player);
 
 requestAnimationFrame(gameLoop);
 

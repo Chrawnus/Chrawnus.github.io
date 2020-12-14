@@ -2,14 +2,14 @@ import { canvasElem } from "/rpg-project/scripts/app.js";
 import { keyArr } from "/rpg-project/scripts/app.js";
 import { Player } from "/rpg-project/scripts/Player.js"
 import { Platform } from "/rpg-project/scripts/Platform.js"
-
+import { HelperFunctions } from "/rpg-project/scripts/helperFunctions.js";
 
 export class PhysicsWorld {
     constructor() {
         this.player = [];
         this.noiseGenerator = [];
         this.staticGeometry = [];
-
+        this.helper = new HelperFunctions();
         this.grid = [
             { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": 0, "y": 0 },
             { "width": canvasElem.width / 4, "height": canvasElem.height / 4, "x": (canvasElem.width / 4), "y": 0 },
@@ -68,24 +68,28 @@ export class PhysicsWorld {
         }
 
         this.playerSectors = [];
-        
+
     }
+
+
 
 
 
     drawCollisionSectors(ctx) {
         const grid = this.grid;
         for (let i = 0; i < grid.length; i++) {
-                ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+            ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
         }
 
     }
 
+    
 
     add(obj) {
         for (let i = 0; i < obj.length; i++) {
             if (obj[i] instanceof Player) {
                 this.player.push(obj[i]);
+                this.positionPlayer();
             } else if (obj[i] instanceof Platform) {
                 this.staticGeometry.push(obj[i]);
                 this.staticGeometryCheck();
@@ -95,13 +99,27 @@ export class PhysicsWorld {
     }
 
     addTileGrid(obj) {
-        for (let i = 0; i < obj.length; i++) {
-                
-                this.staticGeometry.push(obj[i]);
-                this.staticGeometryCheck();
-                console.log(this.staticGeometry)
+        let iter = 0;
+        let iterAdd = 0;
+        for (let i = 0; i < Math.sqrt(obj.length); i++) {
+            this.staticGeometry.push([]);
+        }
+
+        for (let i = 0; i < Math.sqrt(obj.length); i++) {
+            for (let j = 0; j < Math.sqrt(obj.length); j++) {
+                this.staticGeometry[i].push(obj[i+j+iter]);
+                if (j === Math.sqrt(obj.length) - 1)
+                iterAdd = j;
             }
-        
+            
+            iter += iterAdd;
+            
+
+        }
+/*         this.staticGeometry.push(obj[i]);
+        this.staticGeometryCheck();
+        console.log(this.staticGeometry); */
+        console.log(this.staticGeometry);
     }
 
 
@@ -109,7 +127,7 @@ export class PhysicsWorld {
     physics(delta, dt) {
         this.playerSectorCheck();
         this.collisionHandler(delta, dt);
-        
+
         this.canvasEdgeCollision();
     }
 
@@ -156,35 +174,14 @@ export class PhysicsWorld {
                 const rectangle = groups[playerSectors[i]][j];
                 if (rectangle !== player.target && rectangle !== player) {
 
-                    
-                    if (this.RectCircleColliding(player, rectangle)) {
-                        if (rectangle.traversable < 1) {
-                            this.collision(rectangle, player);
-                            rectangle.color = "green";
-                        } else if (rectangle.traversable > 0 && !(player.playerTile.includes(rectangle)) && player.playerTile.length < 2) {
-                            
-                            player.playerTile.push(rectangle)
-                            console.log(player.playerTile[0]);
-                            player.playerTile[0].fillColor = "red";
-                        }
-                        
-
-                    } else {
-                        if(player.playerTile.includes(rectangle)) {
-                            player.playerTile[0].fillColor = `${player.playerTile[0].defaultColor}`;
-                            player.playerTile.splice(player.playerTile[player.playerTile.indexOf(rectangle)], 1);
-                            console.log(player.playerTile[0]);
-                            
-                        }
 
 
-                        rectangle.color = "red";
-                    }
+
                 }
             }
 
         }
-        
+
 
     }
 
@@ -199,19 +196,19 @@ export class PhysicsWorld {
 
                     if (this.RectCircleColliding(player[0], this.collisionSectors[key])) {
                         this.collisionGroups[key].push(player[0]);
-                        
+
                         this.playerSectors.push(key);
 
 
                     }
                 } else if (!(this.RectCircleColliding(player[0], this.collisionSectors[key]))) {
                     this.collisionGroups[key].splice(this.collisionGroups[key].indexOf(player[0]), 1);
-                    
+
                     playerSectors.splice(playerSectors.indexOf(key), 1);
 
                 }
 
-                
+
 
             }
         });
@@ -315,6 +312,31 @@ export class PhysicsWorld {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    }
+
+    positionPlayer() {
+        let tiles = this.staticGeometry;
+        let player = this.player[0];
+        for (let i = 0; i < tiles.length; i++) {
+            if (player.playerTile.length > 0) {
+                break;
+            }
+            for (let j = 0; j < tiles[i].length; j++) {
+
+                if (tiles[i][j].traversable) {
+                    player.pos.x = tiles[i][j].x + tiles[i][j].width/2;
+                    player.pos.y = tiles[i][j].y + tiles[i][j].width/2;
+                    player.playerTile.push(tiles[i][j]);
+                    console.log(player.playerTile)
+                    break;
+                }
+
+            
+                
+            }
+            
+        }
+    
     }
 }
 

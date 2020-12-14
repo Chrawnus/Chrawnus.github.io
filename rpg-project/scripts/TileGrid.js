@@ -30,7 +30,9 @@ export class TileGrid {
                 y = i * this.tileSize.width;
                 x = j * this.tileSize.width;
                 this.tileGrid.push({ "width": this.tileSize.width, "height": this.tileSize.height, "x": x, "y": y, "traversable": this.helper.getRandomInt(0,4), "fillColor" : undefined, "defaultColor" : undefined})   
-            }   
+            } 
+            
+            
         }
 
         for (let i = 0; i < this.tileGrid.length; i++) {
@@ -54,11 +56,12 @@ export class TileGrid {
 
         
     }
+    
 
     drawTileGrid(ctx) {
         const grid = this.tileGrid;
         for (let i = 0; i < grid.length; i++) {
-
+            
             if (grid[i].traversable === 0) {
                 
                 ctx.fillStyle = `${grid[i].fillColor}`;
