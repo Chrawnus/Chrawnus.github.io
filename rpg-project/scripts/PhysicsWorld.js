@@ -89,7 +89,8 @@ export class PhysicsWorld {
         for (let i = 0; i < obj.length; i++) {
             if (obj[i] instanceof Player) {
                 this.player.push(obj[i]);
-                this.positionPlayer();
+                this.getStartPosition();
+                this.player[0].grid = this.staticGeometry;
             } else if (obj[i] instanceof Platform) {
                 this.staticGeometry.push(obj[i]);
                 this.staticGeometryCheck();
@@ -116,16 +117,13 @@ export class PhysicsWorld {
             
 
         }
-/*         this.staticGeometry.push(obj[i]);
-        this.staticGeometryCheck();
-        console.log(this.staticGeometry); */
-        console.log(this.staticGeometry);
     }
 
 
 
     physics(delta, dt) {
         this.playerSectorCheck();
+        this.positionPlayer();
         this.collisionHandler(delta, dt);
 
         this.canvasEdgeCollision();
@@ -314,7 +312,7 @@ export class PhysicsWorld {
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     }
 
-    positionPlayer() {
+    getStartPosition() {
         let tiles = this.staticGeometry;
         let player = this.player[0];
         for (let i = 0; i < tiles.length; i++) {
@@ -322,21 +320,34 @@ export class PhysicsWorld {
                 break;
             }
             for (let j = 0; j < tiles[i].length; j++) {
-
                 if (tiles[i][j].traversable) {
                     player.pos.x = tiles[i][j].x + tiles[i][j].width/2;
                     player.pos.y = tiles[i][j].y + tiles[i][j].width/2;
-                    player.playerTile.push({i, j});
-                    console.log(player.playerTile)
+                    player.playerTile.push(i, j);
                     break;
-                }
-
-            
-                
-            }
-            
+                }    
+            }  
         }
+    }
+
+    positionPlayer() {
+        const player = this.player[0];
+        let y = player.playerTile[0] < 0 ? 0 : player.playerTile[0] > player.playerTile[0].length - 1 ? player.playerTile[0].length - 1 : player.playerTile[0];
+        let x = player.playerTile[1] < 0 ? 0 : player.playerTile[1] > player.playerTile[1].length - 1 ? player.playerTile[1].length - 1 : player.playerTile[1];
+
+        if (!(this.staticGeometry[x][y].traversable)) {
+            player.playerTile[0] = player.prevTile[0];
+            player.playerTile[1] = player.prevTile[1];
+        } else {
+            player.playerTile[0] = y;
+            player.playerTile[1] = x;
+        }
+
+
+        player.pos.y = this.staticGeometry[y][x].y + this.staticGeometry[y][x].height/2;
+        player.pos.x = this.staticGeometry[y][x].x + this.staticGeometry[y][x].width/2;
     
+
     }
 }
 
