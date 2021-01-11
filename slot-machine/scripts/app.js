@@ -4,7 +4,7 @@ const lockContainer = document.getElementById("lock-container");
 
 const spinButton = document.getElementById("spinner")
 
-let slotNumbers = 10;
+let slotNumbers = 6;
 
 let lockedArray = new Array(slotNumbers);
 lockedArray.fill(0);
