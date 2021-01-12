@@ -16,8 +16,26 @@ createSlots();
 
 spinButton.addEventListener("click", () => {
     for (let i = 0; i < slotNumbers; i++) {
+        let numbersArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        const rotations = 5;
+        const slot = document.getElementById(`slot-${i}`);
+
+
         if (lockedArray[i] === 0) {
-            document.getElementById(`slot-${i}`).textContent = getRandomInt(0, 10);
+            slot.textContent = numbersArray[0];
+
+            const number = getRandomInt(0, 10);
+            console.log(number)
+
+
+            for (let j = 0; j < (rotations * 10 - number); j++) {
+                setTimeout(() => {
+                    const lastNumber = numbersArray.pop();
+                    numbersArray.unshift(lastNumber);
+                    slot.textContent = numbersArray[0]; 
+                }, (10+i*2)*(j*j*0.1+1));
+
+            }
         }
     }
 });
@@ -28,7 +46,10 @@ function createSlots() {
         const slot = document.createElement("p");
         slot.className = "slot";
         slot.id = `slot-${i}`;
+
+
         slot.textContent = getRandomInt(0, 10);
+
         slotContainer.appendChild(slot);
         const lock = document.createElement("button")
         lock.className = "lock";

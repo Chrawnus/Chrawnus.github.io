@@ -23,8 +23,15 @@ body {
 }
 
 .slot {
+    padding: 0;
     margin-left: 2.3rem;
     margin-right: 2.3rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
 }
 
 .lock {
