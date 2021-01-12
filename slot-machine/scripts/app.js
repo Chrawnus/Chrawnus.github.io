@@ -33,7 +33,7 @@ spinButton.addEventListener("click", () => {
                     const lastNumber = numbersArray.pop();
                     numbersArray.unshift(lastNumber);
                     slot.textContent = numbersArray[0]; 
-                }, (10+i*2)*(j*j*0.1+1));
+                }, (getRandomInt(10,16)+i*2)*(j*j*0.1+1));
 
             }
         }
