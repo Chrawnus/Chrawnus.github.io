@@ -4,15 +4,14 @@ const lockContainer = document.getElementById("lock-container");
 
 const spinButton = document.getElementById("spinner")
 
+
+
 let slotNumbers = 6;
 
 let lockedArray = new Array(slotNumbers);
 lockedArray.fill(0);
 
-console.log(lockedArray);
-
 createSlots();
-
 
 spinButton.addEventListener("click", () => {
     console.clear();
@@ -34,7 +33,7 @@ spinButton.addEventListener("click", () => {
                     const lastNumber = numbersArray.shift();
                     numbersArray.push(lastNumber);
                     slot.textContent = numbersArray[0]; 
-                }, (getRandomInt(10,16)+i*2)*(j*j*0.01+1));
+                }, (getRandomInt(10,16)+i*2)*(j*j*0.05+1));
 
             }
         }
