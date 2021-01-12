@@ -15,9 +15,10 @@ createSlots();
 
 
 spinButton.addEventListener("click", () => {
+    console.clear();
     for (let i = 0; i < slotNumbers; i++) {
         let numbersArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        const rotations = 5;
+        const rotations = 10;
         const slot = document.getElementById(`slot-${i}`);
 
 
@@ -28,12 +29,12 @@ spinButton.addEventListener("click", () => {
             console.log(number)
 
 
-            for (let j = 0; j < (rotations * 10 - number); j++) {
+            for (let j = 0; j < (rotations * 10 + number); j++) {
                 setTimeout(() => {
-                    const lastNumber = numbersArray.pop();
-                    numbersArray.unshift(lastNumber);
+                    const lastNumber = numbersArray.shift();
+                    numbersArray.push(lastNumber);
                     slot.textContent = numbersArray[0]; 
-                }, (getRandomInt(10,16)+i*2)*(j*j*0.1+1));
+                }, (getRandomInt(10,16)+i*2)*(j*j*0.01+1));
 
             }
         }
