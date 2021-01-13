@@ -28,7 +28,7 @@ spinButton.addEventListener("click", () => {
                 let y_pos = -slotNumber.style.top.slice(0, -2);
                 y_pos = Number(y_pos);
                 for (let k = 0; k < 10; k++) {
-                    //y_pos += 0.11;
+                    y_pos += 11;
                     console.log(y_pos);
                     setTimeout(() => {
                         slotNumber.style.top = `${y_pos}px`;
