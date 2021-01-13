@@ -22,19 +22,18 @@ spinButton.addEventListener("click", () => {
 
 
         if (lockedArray[i] === 0) {
-            slot.textContent = numbersArray[0];
-
             const number = getRandomInt(0, 10);
-            console.log(number)
-
-
-            for (let j = 0; j < (rotations * 10 + number); j++) {
-                setTimeout(() => {
-                    const lastNumber = numbersArray.shift();
-                    numbersArray.push(lastNumber);
-                    slot.textContent = numbersArray[0]; 
-                }, (getRandomInt(10,16)+i*2)*(j*j*0.05+1));
-
+            for (let j = 0; j < 10; j++) {
+                const slotNumber = document.getElementById(`${i}-${j}`);
+                let y_pos = -slotNumber.style.top.slice(0, -2);
+                y_pos = Number(y_pos);
+                for (let k = 0; k < 10; k++) {
+                    //y_pos += 0.11;
+                    console.log(y_pos);
+                    setTimeout(() => {
+                        slotNumber.style.top = `${y_pos}px`;
+                    }, (getRandomInt(10, 16) + i * 2) * (j * j * 0.05 + 1));
+                }
             }
         }
     }
@@ -44,10 +43,14 @@ spinButton.addEventListener("click", () => {
 function createSlots() {
     for (let i = 0; i < slotNumbers; i++) {
         const slot = document.createElement("ul");
-        for (let j = 0; j < 9; i++) {
+        for (let j = 0; j < 10; j++) {
             const number = document.createElement("li");
             number.textContent = `${j}`
             number.id = `${i}-${j}`;
+            number.style.position = `absolute`;
+            number.style.margin = "2rem"
+            number.style.top = `${(j - 1) * 55}px`
+            number.style.left = `${-75 + (i * 14)}px`
             slot.appendChild(number);
         }
         slot.className = "slot";
@@ -55,8 +58,6 @@ function createSlots() {
 
 
 
-        
-        slot.style.overflow = "hidden";
         slotContainer.appendChild(slot);
         const lock = document.createElement("button")
         lock.className = "lock";
