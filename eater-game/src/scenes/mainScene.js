@@ -14,7 +14,6 @@ export class MainScene extends Phaser.Scene {
   create() {
     new PhaserText(this);
     new PhaserLogo(this);
-  
     
   }
 }
