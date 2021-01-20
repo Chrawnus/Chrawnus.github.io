@@ -1,6 +1,4 @@
-import { PlayerGraphics } from "../sprites/playerGraphics.js";
-
-export class Player extends Phaser.GameObjects.Graphics {
+export class PlayerGraphics extends Phaser.GameObjects.Graphics {
     constructor(scene, x, y, rad, color, alpha) {
         super(
             scene
@@ -12,7 +10,7 @@ export class Player extends Phaser.GameObjects.Graphics {
         this.color = color;
         this.alpha = alpha;
         this.draw();
-        scene.physics.add.existing(this);
+        this.generateTexture('player');
         
 
 

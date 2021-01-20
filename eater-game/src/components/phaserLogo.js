@@ -9,5 +9,6 @@ export class PhaserLogo extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this)
     this.setOrigin(0.5)
+    
   }
 }
