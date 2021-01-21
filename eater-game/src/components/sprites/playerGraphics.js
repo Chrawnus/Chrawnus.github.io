@@ -9,23 +9,15 @@ export class PlayerGraphics extends Phaser.GameObjects.Graphics {
         this.rad = rad;
         this.color = color;
         this.alpha = alpha;
-        this.draw();
-        this.generateTexture('player');
-        
-
-
-
-    }
-    update() {
-
-        
     }
 
+    
+    
     draw() {
         
         this.clear();
-        this.lineStyle(5, this.color, 1.0);
-        this.fillStyle(this.color, 1.0);
+        this.lineStyle(5, this.color, this.alpha);
+        this.fillStyle(this.color, this.alpha);
 
         this.beginPath();
         this.arc(0, 0, this.rad, 0, Math.PI*2, false);

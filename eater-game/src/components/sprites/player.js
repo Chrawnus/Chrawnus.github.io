@@ -1,43 +1,43 @@
-import { PlayerGraphics } from "../sprites/playerGraphics.js";
 
-export class Player extends Phaser.GameObjects.Graphics {
+
+export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, rad, color, alpha) {
         super(
             scene
 
         )
+        this.children = [];
+        this.image;
+        this.position;
         this.x = x;
         this.y = y;
         this.rad = rad;
         this.color = color;
         this.alpha = alpha;
-        this.draw();
+
+        this.velocity = 8;
         scene.physics.add.existing(this);
-        
-
-
-
+        this.setCollideWorldBounds(true);
+        this.body.setAllowGravity(false)
+        this.setDamping(true)
+        this.setDrag(0.000005);
     }
+
     update() {
-
-        
+        this.image.x = this.x;
+        this.image.y = this.y;
+        this.position = {x: this.x, y: this.y};
     }
 
-    draw() {
-        
-        this.clear();
-        this.lineStyle(5, this.color, 1.0);
-        this.fillStyle(this.color, 1.0);
-
-        this.beginPath();
-        this.arc(0, 0, this.rad, 0, Math.PI*2, false);
-        
-
-        this.closePath();
-        this.strokePath();
-        this.fillPath();
-        
+    //create sprite out of playerGraphics and add it to this.image;
+    addGraphicsObject(obj) {
+        this.children.push(obj);
+        this.createTexture();
     }
 
-    
+    createTexture() {
+        let graphicsObj = this.children[0];
+        graphicsObj.draw();
+        this.image = graphicsObj.generateTexture('playerGraphics');
+    }
 }
