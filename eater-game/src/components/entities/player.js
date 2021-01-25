@@ -27,6 +27,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     update() {
 
-        this.position = {x: this.x, y: this.y};
+        this.position = { x: this.x, y: this.y };
+    }
+
+    restoreHealth() {
+        if (this.health < 1.0) {
+            if (this.health > 0.95) {
+                this.health = 1.0;
+            } else {
+                this.health += 0.05;
+            }
+        }
     }
 }

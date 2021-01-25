@@ -23,7 +23,7 @@ export class Pellets extends Phaser.Physics.Arcade.Sprite {
 
     update() {
 
-        this.position = {x: this.x, y: this.y};
+        this.position = { x: this.x, y: this.y };
     }
 
 }

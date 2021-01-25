@@ -4,7 +4,7 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.baseURL = 'src/assets/';    
+    this.load.baseURL = 'src/assets/';
   }
 
   create() {
