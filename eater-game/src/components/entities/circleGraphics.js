@@ -41,12 +41,4 @@ export class CircleGraphics extends Phaser.GameObjects.Graphics {
         obj.image = this.generateTexture('playerGraphics');
     }
 
-    destroyEntity(obj1, obj2) {
-
-        let objIndex = this.entities.indexOf(obj2);
-        this.entities.splice(objIndex, 1);
-        obj2.destroy();
-    }
-
-
 }

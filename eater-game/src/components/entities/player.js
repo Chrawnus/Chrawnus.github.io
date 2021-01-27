@@ -7,7 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         )
         this.image;
-        this.position;
+        this.position = { x: this.x, y: this.y };
 
         this.x = x;
         this.y = y;

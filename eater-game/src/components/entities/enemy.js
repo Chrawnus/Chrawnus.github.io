@@ -5,7 +5,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         )
         this.image;
-        this.position;
+        this.position = { x: this.x, y: this.y };
 
         this.x = x;
         this.y = y;
@@ -13,7 +13,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.color = color;
         this.alpha = alpha;
 
-        this.velocity = 4;
+        this.velocity = 360;
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(false);
         this.body.setAllowGravity(false);

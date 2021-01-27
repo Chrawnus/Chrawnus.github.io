@@ -6,7 +6,7 @@ export class Pellets extends Phaser.Physics.Arcade.Sprite {
         )
         this.children = [];
         this.image;
-        this.position;
+        this.position = { x: this.x, y: this.y };
 
         this.x = x;
         this.y = y;
