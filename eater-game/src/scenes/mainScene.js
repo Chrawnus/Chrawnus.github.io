@@ -114,7 +114,7 @@ function overlapFunction(scene) {
   scene.physics.add.overlap(player, pellet, () => {
 
     player.restoreHealth();
-    enemyPathHandler.path.length = 0;
+    
     pellet.x = getRandomInt(180, screenObj.width - 180)
     pellet.y = getRandomInt(180, screenObj.height - 180)
     enemyPathHandler.circleAround(pellet, enemy);
