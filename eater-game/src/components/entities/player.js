@@ -1,5 +1,3 @@
-
-
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, rad, color, alpha) {
         super(
@@ -8,12 +6,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         )
         this.image;
         this.position = { x: this.x, y: this.y };
-
+        
         this.x = x;
         this.y = y;
         this.rad = rad;
         this.color = color;
         this.alpha = alpha;
+        
+
 
         this.velocity = 4;
         scene.physics.add.existing(this);
@@ -21,8 +21,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setAllowGravity(false);
         this.setDamping(true);
         this.setDrag(0.000005);
+        this.setCircle(this.rad)
 
-        this.health = 1.0;
+        this.health = 100;
     }
 
     update() {
@@ -31,12 +32,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     restoreHealth() {
-        if (this.health < 1.0) {
-            if (this.health > 0.95) {
-                this.health = 1.0;
+        if (this.health < 100) {
+            if (this.health > 95) {
+                this.health = 100;
             } else {
-                this.health += 0.05;
+                this.health += 5;
             }
         }
     }
+
+
 }

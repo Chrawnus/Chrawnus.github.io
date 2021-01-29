@@ -19,6 +19,7 @@ export class Pellets extends Phaser.Physics.Arcade.Sprite {
         this.body.setAllowGravity(false);
         this.setDamping(true);
         this.setDrag(0.000005);
+        this.setCircle(this.rad, 11, 11)
     }
 
     update() {

@@ -66,5 +66,9 @@ export class PathHandler {
         }
     }
 
+    huntPlayer(player, orig, enemy) {
+
+    }
+
 }
 
