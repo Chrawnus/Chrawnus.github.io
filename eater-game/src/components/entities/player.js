@@ -23,6 +23,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setDrag(0.000005);
         this.setCircle(this.rad)
 
+        this.timesHealthUpgraded = 0;
+        this.healthPelletsCollected = 0;
+        this.healthPelletsToUpgrade = 5;
+        this.maxHealth = 100;
         this.health = 100;
     }
 
@@ -32,11 +36,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     restoreHealth() {
-        if (this.health < 100) {
-            if (this.health > 95) {
-                this.health = 100;
+        if (this.health === this.maxHealth) {
+            this.healthPelletsCollected += 1;
+            if (this.healthPelletsCollected >= this.healthPelletsToUpgrade) {
+                this.maxHealth = Math.round(this.maxHealth*1.05);
+                this.healthPelletsToUpgrade = Math.ceil(this.healthPelletsToUpgrade*1.125);
+                console.log(this.healthPelletsToUpgrade);
+            }
+        }
+        if (this.health < this.maxHealth) {
+            if (this.health > this.maxHealth*0.95) {
+                this.health = this.maxHealth;
             } else {
-                this.health += 5;
+                this.health += this.maxHealth*0.05;
             }
         }
     }

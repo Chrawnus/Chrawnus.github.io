@@ -17,7 +17,6 @@ export class HelperFunctions {
             health.update(player.health);
             if (enemy.velocity < enemy.maxVel) {
                 enemy.velocity += 5;
-                console.log(enemy.velocity)
             }
 
             target.x = this.getRandomInt(180, canvas.width - 180)
