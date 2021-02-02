@@ -7,7 +7,7 @@ import { MainScene } from "../src/scenes/mainScene.js";
 
 const config = {
   type: Phaser.AUTO,
-  backgroundColor: '#cdcdcd',
+  backgroundColor: '#afafaf',
   physics: {
     default: 'arcade',
     arcade: {
