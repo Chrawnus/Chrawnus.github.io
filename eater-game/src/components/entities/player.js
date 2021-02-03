@@ -39,8 +39,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.health === this.maxHealth) {
             this.healthPelletsCollected += 1;
             if (this.healthPelletsCollected >= this.healthPelletsToUpgrade) {
-                this.maxHealth = Math.round(this.maxHealth*1.05);
-                this.healthPelletsToUpgrade = Math.ceil(this.healthPelletsToUpgrade*1.125);
+                this.maxHealth = Math.round(this.maxHealth*1.075);
+                this.healthPelletsToUpgrade = Math.ceil(this.healthPelletsToUpgrade*1.0625);
+                this.healthPelletsCollected = 0;
                 console.log(this.healthPelletsToUpgrade);
             }
         }
