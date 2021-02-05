@@ -36,7 +36,7 @@ export class Sorter {
         let pivot = medianArr[1];
         let pivotIndex = array.indexOf(pivot);
 
-        //move every item in the array bigger than pivot to the right of the pivot, and every item smaller to the left of the pivot
+        //move every item in the array greater than pivot to the right of the pivot, and every item smaller to the left of the pivot
         for (let i = 0; i < array.length; i++) {
             if (i !== pivotIndex) {
                 if (i < pivotIndex && array[i] > pivot) {
