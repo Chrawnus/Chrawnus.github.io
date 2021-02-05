@@ -7,7 +7,7 @@ export class Sorter {
         //terminating case, push to sortedArr;
         if (array.length < 4) {
             if (array.length === 3) {
-                this.threeItemSort(array);
+                this.insertionSort(array);
                 return sortedArr.push(...array);
             }
             if (array.length === 2) {
@@ -22,6 +22,7 @@ export class Sorter {
                 return 0;
             }
         }
+        
         let length = array.length;
 
         //Choose the median of array as pivot
@@ -69,28 +70,38 @@ export class Sorter {
         }
     }
 
-    experimentalSort(array, arraySize, sortedArr){
+    experimentalSort(array, arraySize, sortedArr, quicksort){
         
         let radiiArr = [];
         let sortedRadiiArr = [];
         let maxDigit = this.numDigits(arraySize);
         
+        // create as many empty arrays as there are digits in the largest number in array,
+        // and push them to radiiArr and sortedRadiiArr.
         for (let i = 0; i < maxDigit ; i++) {
             radiiArr.push([]);  
             sortedRadiiArr.push([]);
         }
 
+        // loop through array and push array[i] to its corresponding array inside radiiArr,
+        // so numbers with the same amount of digits are grouped together
         for (let i = 0; i < array.length; i++) {
-            radiiArr[this.numDigits(array[i])-1].push(array[i]);
-            
+            radiiArr[this.numDigits(array[i])-1].push(array[i]);   
         }
 
-        
-        for (let i = 0; i < radiiArr.length; i++) {
-            this.quickSort(radiiArr[i], sortedArr);
+        if (!quicksort || quicksort === undefined) {
+            console.log("performing radix sort")
+            for (let i = 0; i < radiiArr.length; i++) {
+                this.arraySort(radiiArr[i], this.numDigits(radiiArr[i][0]), sortedRadiiArr[i]);
+            }
+            return sortedArr = sortedRadiiArr.flat(Infinity);
+        } else {
+            console.log("performing quicksort")
+            for (let i = 0; i < radiiArr.length; i++) {
+                this.quickSort(radiiArr[i], sortedRadiiArr[i]);
+            }
+            return sortedArr = sortedRadiiArr.flat(Infinity);
         }
-
-        console.log(sortedArr);
     }
 
     threeItemSort(array) {
@@ -110,6 +121,64 @@ export class Sorter {
             array[0] = array[1];
             array[1] = interm;
         };
+    }
+
+    insertionSort(array) {
+        let n = array.length;
+        for (let i = 0; i < array.length; i++) {
+            let current = array[i];
+            let j = i - 1;
+            while ((j > -1) && array[j] > current) {
+                array[j+1] = array[j];
+                j--;
+            }
+            array[j+1] = current;
+        }
+
+        return array;
+    }
+
+    arraySort(array, n, sortedArr) {
+        //terminal condition, empty array, do nothing
+        if (n < 1) { 
+            console.log("hi")
+            return 0; 
+        }
+        // n = place value to check
+        
+        let digits = 10;
+        let radiiArr = [];
+        
+        // create digit[0-9] arrays and push to radiiArr
+        for (let i = 0; i < digits ; i++) {
+            radiiArr.push([]);  
+        }
+
+        // loop through array and push array[i] to the digit array
+        // that corresponds to the value of of the digit in the nth place of array[i]
+        for (let i = 0; i < array.length; i++) {
+            radiiArr[Math.floor((array[i]/10**(n-1))%10)].push(array[i]);   
+        }
+        
+        // remove any digit arrays that are empty
+        for (let i = 0; i < radiiArr.length; i++) {
+            if (radiiArr[i].length === 0) {
+                radiiArr.splice(i, 1);
+                i = 0;
+            }
+        }
+
+        // terminal case, every number in initial array has been sorted 
+        // according to least significant digit, push radiiArr to sortedArr
+        if (n < 2) {
+            return sortedArr.push(radiiArr) ; 
+        }
+        
+        // if least significant digit has not been reached, 
+        //call this function recursively
+        for (let i = 0; i < radiiArr.length; i++) {
+            radiiArr[i] = this.arraySort(radiiArr[i], n-1, sortedArr);
+        } 
     }
 
     randomIntFromInterval(min, max) { // min and max included 
@@ -195,4 +264,18 @@ export class Sorter {
         }
     }
 
+    getNthPlaceDigit(x, n) {
+        return Math.floor((x/10**(n-1))%10)
+    }
+
+    decimalPlaces(num) {
+        let match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+        if (!match) { return 0; }
+        return Math.max(
+             0,
+             // Number of digits right of decimal point.
+             (match[1] ? match[1].length : 0)
+             // Adjust for scientific notation.
+             - (match[2] ? +match[2] : 0));
+      }
 }
