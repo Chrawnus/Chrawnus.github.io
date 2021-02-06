@@ -41,7 +41,7 @@ export class HelperFunctions {
         if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d" || e.key === " ") {
             if (!(keyArr.includes(e.key))) {
                 keyArr.push(e.key);
-                console.log(keyArr)
+                
             }
         }
     }

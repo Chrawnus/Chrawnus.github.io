@@ -1,7 +1,6 @@
 import { PhysicsWorld } from "/rpg-project/scripts/PhysicsWorld.js";
 import { Player } from "/rpg-project/scripts/Player.js";
 import { Platform } from "/rpg-project/scripts/Platform.js";
-import { NoiseGenerator } from "/rpg-project/scripts/NoiseGenerator.js";
 import { TileGrid} from "/rpg-project/scripts/TileGrid.js";
 import { HelperFunctions } from "/rpg-project/scripts/helperFunctions.js";
 
@@ -27,7 +26,7 @@ let player = [];
 let staticObjects = [];
 
 
-    player.push(new Player(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), canvasElem.height/64));
+    player.push(new Player(helper.getRandomInt(15, canvasElem.width - 15), helper.getRandomInt(15, canvasElem.height - 15), (canvasElem.height/64)));
 
 
  /* for (let i = 0; i < 25; i++) {
@@ -44,11 +43,13 @@ tileGrid.createTileGrid();
 helper.add(world);
 
 
-world.add(player);
+
 //world.add(staticObjects);
 
 
 world.addTileGrid(tileGrid.tileGrid);
+
+world.add(player);
 
 requestAnimationFrame(gameLoop);
 

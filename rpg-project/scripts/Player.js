@@ -9,9 +9,11 @@ export class Player {
             x: undefined,
             y: undefined
         }
+        this.idle = false;
+        this.playerTile = [];
+        this.prevTile = [0, 0];
+        this.grid;
 
-        this.elevation;
-        
         this.timer = 0;
         this.velocity = 250;
         this.pos = {
@@ -34,7 +36,7 @@ export class Player {
             x: 0,
             y: 0
         };
-        
+
         this.target = {
             "pos": {
                 x: this.pos.x,
@@ -55,47 +57,52 @@ export class Player {
 
     update(delta) {
 
-/*         this.offset.x += mousecoords.x - this.previousmousecoords.x;
-        this.offset.y += mousecoords.y - this.previousmousecoords.y; */
+        /*         this.offset.x += mousecoords.x - this.previousmousecoords.x;
+                this.offset.y += mousecoords.y - this.previousmousecoords.y; */
+
+
+        /*         this.offset.x += mousecoords.x
+                this.offset.y += mousecoords.y
+        
+                
+        
+                const targetcircle = {
+                    x: this.pos.x + this.offset.x,
+                    y: this.pos.y + this.offset.y,
+                    rad: 1
+                };
         
         
-/*         this.offset.x += mousecoords.x
-        this.offset.y += mousecoords.y
-
         
-
-        const targetcircle = {
-            x: this.pos.x + this.offset.x,
-            y: this.pos.y + this.offset.y,
-            rad: 1
-        };
-
-
-
-         if (this.circleCircleCollision(targetcircle, this.clampingCircle)) {
-            this.target.x = this.pos.x + this.offset.x;
-            this.target.y = this.pos.y + this.offset.y;
-        } else { 
-           const targetPosition = this.getLineCircleIntersect(this.clampingCircle, targetcircle, this.clampingCircle.rad);
-           this.target.x = targetPosition.x;
-           this.target.y = targetPosition.y;
-         } */
-        
+                 if (this.circleCircleCollision(targetcircle, this.clampingCircle)) {
+                    this.target.x = this.pos.x + this.offset.x;
+                    this.target.y = this.pos.y + this.offset.y;
+                } else { 
+                   const targetPosition = this.getLineCircleIntersect(this.clampingCircle, targetcircle, this.clampingCircle.rad);
+                   this.target.x = targetPosition.x;
+                   this.target.y = targetPosition.y;
+                 } */
 
 
-/*         this.previousmousecoords.x = mousecoords.x;
-        this.previousmousecoords.y = mousecoords.y; */
 
+        /*         this.previousmousecoords.x = mousecoords.x;
+                this.previousmousecoords.y = mousecoords.y; */
 
         this.movementHandler();
         this.movement(delta);
-        
+
     }
 
     movementHandler(delta) {
         if (keyArr.includes("w") && !(keyArr.includes("s"))) {
-            if (!(keyArr.includes(" "))) {this.vy = -this.velocity;}
-            
+            if (!(keyArr.includes(" "))) {
+                if (!(this.playerTile[0] < 1) && this.grid[this.playerTile[0] - 1][this.playerTile[1]].traversable) {
+                    this.prevTile[0] = this.playerTile[0];
+                    this.playerTile[0] -= 1
+                }
+
+            }
+
             if (keyArr.includes("a") || keyArr.includes("d")) {
                 this.target.pos.y = this.pos.y - this.clampingCircle.rad;
             } else {
@@ -103,33 +110,50 @@ export class Player {
                 this.target.pos.x = this.pos.x;
             }
         } else if (keyArr.includes("s") && !(keyArr.includes("w"))) {
-            if (!(keyArr.includes(" "))) {this.vy = +this.velocity;}
-            
+            if (!(keyArr.includes(" "))) {
+                if (!(this.playerTile[0] > this.grid.length - 1)  && this.grid[this.playerTile[0] + 1][this.playerTile[1]].traversable) {
+                    this.prevTile[0] = this.playerTile[0];
+                    this.playerTile[0] += 1
+                }
+            }
+
             if (keyArr.includes("a") || keyArr.includes("d")) {
                 this.target.pos.y = this.pos.y + this.clampingCircle.rad;
             } else {
                 this.target.pos.y = this.pos.y + this.clampingCircle.rad;
                 this.target.pos.x = this.pos.x;
             }
-            
+
         } else {
             this.vy = 0;
             //this.target.y = this.pos.y;
         }
-        
+
         if (keyArr.includes("a") && !(keyArr.includes("d"))) {
-            if (!(keyArr.includes(" "))) {this.vx = -this.velocity;}
-            
+            if (!(keyArr.includes(" "))) {
+                if (!(this.playerTile[1] < 1) && this.grid[this.playerTile[0]][this.playerTile[1] - 1].traversable) {
+                    this.prevTile[1] = this.playerTile[1];
+                    this.playerTile[1] -= 1
+                }
+            }
+
             if (keyArr.includes("w") || keyArr.includes("s")) {
                 this.target.pos.x = this.pos.x - this.clampingCircle.rad;
             } else {
                 this.target.pos.x = this.pos.x - this.clampingCircle.rad;
                 this.target.pos.y = this.pos.y;
             }
-            
-            
+
+
         } else if (keyArr.includes("d") && !(keyArr.includes("a"))) {
-            if (!(keyArr.includes(" "))) {this.vx = +this.velocity;}
+            if (!(keyArr.includes(" "))) {
+                if (!(this.playerTile[1] > this.grid.length - 1) && this.grid[this.playerTile[0]][this.playerTile[1] + 1].traversable) {
+                    this.prevTile[1] = this.playerTile[1];
+                    this.playerTile[1] += 1
+
+
+                }
+            }
 
             if (keyArr.includes("w") || keyArr.includes("s")) {
                 this.target.pos.x = this.pos.x + this.clampingCircle.rad;
@@ -137,7 +161,7 @@ export class Player {
                 this.target.pos.x = this.pos.x + this.clampingCircle.rad;
                 this.target.pos.y = this.pos.y;
             }
-            
+
         } else {
             this.vx = 0;
             //this.target.x = this.pos.x;
@@ -146,7 +170,7 @@ export class Player {
     }
 
     movement(delta) {
-        
+
         this.pos.y += this.vy * delta;
         this.pos.x += this.vx * delta;
 
@@ -209,8 +233,8 @@ export class Player {
         ctx.moveTo(this.pos.x, this.pos.y);
         ctx.arc(this.pos.x, this.pos.y, this.rad * 24, Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) + (30 * Math.PI / 180));
         ctx.lineTo(this.pos.x, this.pos.y);
-    
-        
+
+
 
         ctx.arc(this.pos.x, this.pos.y, this.rad, Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) - (30 * Math.PI / 180), Math.atan2(radPos.y - this.pos.y, radPos.x - this.pos.x) + (30 * Math.PI / 180), true);
         ctx.stroke();
@@ -230,14 +254,13 @@ export class Player {
     getPrevXAndPrevY() {
         if (!this.prevPos.x) { this.prevPos.x = this.pos.x; }
         if (!this.prevPos.y) { this.prevPos.y = this.pos.y; }
-        
+
         this.dx = this.pos.x - this.prevPos.x;
         this.dy = this.pos.y - this.prevPos.y;
 
         this.prevPos.x = this.pos.x;
         this.prevPos.y = this.pos.y;
-        }
-
+    }
 
 
 }
