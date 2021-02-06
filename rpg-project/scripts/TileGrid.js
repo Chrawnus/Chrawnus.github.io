@@ -1,5 +1,5 @@
-import { canvasElem } from "/rpg-project/scripts/app.js";
-import { HelperFunctions } from "/rpg-project/scripts/helperFunctions.js";
+import { canvasElem } from "./app.js";
+import { HelperFunctions } from "./helperFunctions.js";
 
 
 
