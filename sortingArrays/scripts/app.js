@@ -1,25 +1,41 @@
 import { Sorter } from "./sorting.js";
 
 let sorter = new Sorter();
+let numberOfArrays = 10;
+let arraySize = 100000;
+let maxValue = 100000;
+let arrOfArr = [];
+let sortedArrOfArr = [];
 
-let arraySize = 1000000;
-let maxValue = 1000000;
-let randomArr = [...Array(arraySize)].map(() => Math.floor(sorter.randomIntFromInterval(0, maxValue)));
-let sortedArray = [];
+for (let i = 0; i < numberOfArrays; i++) {
+    arrOfArr.push([...Array(arraySize)].map(() => Math.floor(sorter.randomIntFromInterval(0, maxValue))));
+    sortedArrOfArr.push([]);
+}
 
-console.log(randomArr);
+//let randomArr = [...Array(arraySize)].map(() => Math.floor(sorter.randomIntFromInterval(0, maxValue)));
+
+
+
+console.log(arrOfArr);
 
 
 const t0 = performance.now();
-sortedArray = sorter.experimentalSort(randomArr, maxValue, sortedArray);
+for (let i = 0; i < numberOfArrays; i++) {
+    sortedArrOfArr[i] = sorter.experimentalSort(arrOfArr[i], maxValue, sortedArrOfArr[i], false);
+}
+
 //sorter.quickSort(randomArr, sortedArray);
 //sortedArray = sorter.insertionSort(randomArr);
 
 var t1 = performance.now();
-console.log('Took', (t1 - t0).toFixed(4), 'milliseconds to sort' );
+console.log('Took average of', ((t1 - t0) / numberOfArrays).toFixed(4), 'milliseconds to sort', numberOfArrays, "array(s)" );
 
-//console.log(sortedArray);
-//sorter.checkSorted(sortedArray);
+console.log(sortedArrOfArr);
+
+for (let i = 0; i < numberOfArrays; i++) {
+    sorter.checkSorted(sortedArrOfArr[i]);
+    
+}
 
 
 let number = sorter.randomIntFromInterval(0, maxValue);
