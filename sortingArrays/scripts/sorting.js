@@ -265,7 +265,7 @@ export class Sorter {
     }
 
     getNthPlaceDigit(x, n) {
-        return Math.floor((x/10**(n-1))%10)
+        return Math.floor((x/10**(n-1))%10);
     }
 
     decimalPlaces(num) {
