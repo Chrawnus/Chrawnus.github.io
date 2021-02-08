@@ -13,8 +13,8 @@ export class TileGrid {
             height: canvasElem.height / (Math.sqrt(this.tiles))
         }
 
+        this.startNode;
         this.nodes = [];
-
         this.helper = new HelperFunctions();
     }
 
@@ -34,16 +34,17 @@ export class TileGrid {
                     {
                         "width": this.tileSize.width,
                         "height": this.tileSize.height,
-                        "x": x, 
+                        "x": x,
                         "y": y,
                         "traversable": false,
                         "node": false,
-                        "checked": {
-                            "north": false,
-                            "east": false,
-                            "south": false,
-                            "west": false
-                        }
+                        "connectedNode": {
+                            "north": undefined,
+                            "east": undefined,
+                            "south": undefined,
+                            "west": undefined
+                        },
+                        "clicked": false
                     });
 
             }
@@ -64,7 +65,7 @@ export class TileGrid {
                 ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
                 ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
 
-            } else if (grid[i].traversable === true) {
+            } else if (grid[i].traversable === true && grid[i].node === false) {
                 ctx.fillStyle = `white`;
                 ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
                 ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
@@ -83,37 +84,58 @@ export class TileGrid {
         const grid = this.tileGrid;
         const tileWidth = this.tileSize.width;
         const tileHeight = this.tileSize.height;
-        let nodes = this.nodes;
-
+        const nodes = this.nodes;
         for (let i = 0; i < grid.length; i++) {
             if (isPointOnTile(cursorX, grid, i, tileWidth, cursorY, tileHeight)) {
-                grid[i].node = !(grid[i].node);
-                if ((grid[i].node)) {
-                    nodes.push(grid[i]);
-                } else {
-                    nodes.splice(nodes.indexOf(nodes[i]), 1);
+                grid[i].clicked = !(grid[i].clicked);
+                console.log(grid[i].clicked)
+                if (!(nodes.length) || nodes.length < 2) {
+                    this.flipNode(grid, i);
+                    if (nodes.length === 1 && nodes[0] === grid[i]) {
+                        nodes.splice(0, 1);
+                    } else {
+                        nodes.push(grid[i]);
+                    } 
+                } else if (nodes.length >= 2) {
+                    if (nodes.includes(grid[i])) {
+                        this.flipNode(grid, i)
+                        nodes.splice(nodes.indexOf(grid[i]), 1);
+                    } else {
+                        this.flipNode(grid, i)
+                        nodes.push(grid[i]);
+                    }
+                }
+            }
+            
+
+            if (!(isPointOnTile(cursorX, grid, i, tileWidth, cursorY, tileHeight))) {
+                if ((grid[i].clicked === 2)) {
+                    grid[i].clicked = 1;
                 }
             }
 
         }
 
-        if (nodes.length > 1) {
-            
-        }
-
         console.log(nodes);
+
+    }
+
+    flipNode(grid, i) {
+        grid[i].node = !(grid[i].node);
+        grid[i].traversable = !(grid[i].traversable);
     }
 
     updatePath() {
-        let nodes = this.nodes;
-        let nodeCount = this.nodes.length;
         let grid = this.tileGrid;
-
 
     }
 }
 
 
+
+function arePointsOnCoordinateLines(nodes, lastNode, grid, i) {
+    return nodes[lastNode].x === grid[i].x || nodes[lastNode].y === grid[i].y;
+}
 
 function isPointOnTile(x, grid, i, tileWidth, y, tileHeight) {
     return (x >= grid[i].x && x < grid[i].x + tileWidth) && (y >= grid[i].y && y < grid[i].y + tileHeight);

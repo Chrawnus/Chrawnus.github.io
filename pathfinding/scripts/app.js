@@ -9,7 +9,7 @@ function getCursorPosition(canvasElem, event) {
     const y = event.clientY - rect.top
     console.clear();
     tileGrid.createNode(x, y);
-    tileGrid.updatePath();
+    
 }
 
 
