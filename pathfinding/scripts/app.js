@@ -1,7 +1,24 @@
 import { TileGrid } from "./TileGrid.js";
 import { HelperFunctions } from "./helperFunctions.js";
+import { InputHelper } from "./inputHelper.js";
 
 export const canvasElem = document.getElementById('canvas');
+const tileGrid = new TileGrid(1024);
+const inputHelper = new InputHelper();
+
+let prevTime;
+export let keyArr = [];
+
+
+
+tileGrid.createTileGrid();
+
+window.addEventListener("keydown", inputHelper.keyDownEventsHandler);
+window.addEventListener("keyup", inputHelper.keyUpEventsHandler);
+
+canvasElem.addEventListener('mousedown', function(e) {
+    getCursorPosition(canvasElem, e)
+})
 
 function getCursorPosition(canvasElem, event) {
     const rect = canvasElem.getBoundingClientRect()
@@ -12,18 +29,6 @@ function getCursorPosition(canvasElem, event) {
     
 }
 
-
-
-canvasElem.addEventListener('mousedown', function(e) {
-    getCursorPosition(canvasElem, e)
-})
-
-
-let prevTime;
-
-const tileGrid = new TileGrid(1024);
-
-tileGrid.createTileGrid();
 
 requestAnimationFrame(gameLoop);
 
