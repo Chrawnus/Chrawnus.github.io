@@ -24,10 +24,10 @@ function getCursorPosition(canvasElem, event) {
     const rect = canvasElem.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
-    console.clear();
+
     tileGrid.createNode(x, y);
     tileGrid.updatePath();
-    
+    console.log(tileGrid.pathArray)
 }
 
 
@@ -45,7 +45,7 @@ function gameLoop(now) {
 
 
 function update(dt) {
-
+    
 }
 
 function physics(dt) {
