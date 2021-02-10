@@ -14,11 +14,11 @@ export class TileGrid {
             width: canvasElem.width / (Math.sqrt(this.tiles)),
             height: canvasElem.height / (Math.sqrt(this.tiles))
         }
-
         this.startNode;
         this.lastStartNode = [];
         this.nodes = [];
         this.helper = new HelperFunctions();
+        this.pathArray = [];
     }
 
     addWorld(obj) {
@@ -148,8 +148,7 @@ export class TileGrid {
                 }
             }
         }
-        console.log(this.lastStartNode);
-        console.log(nodes);
+        //console.log(nodes);
 
     }
 
@@ -199,25 +198,25 @@ export class TileGrid {
         let west = 3;
 
         if (grid[i].y < startNode.y && cN[north] === grid[i]) {
-            this.removePath(i, grid, south, tiles);
+            this.removePath(i, grid, south, tiles, this.pathArray);
             startNode.connectedNode[north] = undefined;
             grid[i].connectedNode[south] = undefined;
             grid[i].node = false;
             nodes.splice(nodes.indexOf(grid[i]), 1);
         } else if (grid[i].y > startNode.y && cN[south] === grid[i]) {
-            this.removePath(i, grid, north, tiles);
+            this.removePath(i, grid, north, tiles, this.pathArray);
             startNode.connectedNode[south] = undefined;
             grid[i].connectedNode[north] = undefined;
             grid[i].node = false;
             nodes.splice(nodes.indexOf(grid[i]), 1);
         } else if (grid[i].x < startNode.x && cN[west] === grid[i]) {
-            this.removePath(i, grid, east, tiles);
+            this.removePath(i, grid, east, tiles, this.pathArray);
             startNode.connectedNode[west] = undefined;
             grid[i].connectedNode[east] = undefined;
             grid[i].node = false;
             nodes.splice(nodes.indexOf(grid[i]), 1);
         } else if (grid[i].x > startNode.x && cN[east] === grid[i]) {
-            this.removePath(i, grid, west, tiles);
+            this.removePath(i, grid, west, tiles, this.pathArray);
             startNode.connectedNode[east] = undefined;
             grid[i].connectedNode[west] = undefined;
             grid[i].node = false;
@@ -225,14 +224,18 @@ export class TileGrid {
         }
     }
 
-    removePath(i, grid, direction, tiles) {
+    removePath(i, grid, direction, tiles, pathArray) {
+        
         let north = 0;
         let south = 1;
         let east = 2;
         let west = 3;
         let increment = getIncrement(direction);
+        let altDirection = direction%2 === 0 ? 1 : -1;
+        let index = pathArray.findIndex((element) => element[0] === grid[i].connectedNode[direction] || grid[i].connectedNode[direction].connectedNode[altDirection] === element[0]);
+        console.log(pathArray[index]);
+        console.log(index);
 
-        console.log(increment)
 
         function getIncrement(direction) {
             return (direction === north) ? -Math.sqrt(tiles) : (direction === south) ? Math.sqrt(tiles) : (direction === west) ? -1 : 1;
@@ -241,9 +244,20 @@ export class TileGrid {
         function getCondition(direction, j) {
             return (direction === south || direction === east) ? j < grid.indexOf(grid[i].connectedNode[direction]) : j > grid.indexOf(grid[i].connectedNode[direction]);
         }
+
+        for (let i = 0; i < pathArray[index].length; i++) {
+            pathArray[index][i].traversable = false;
+
+        } 
+
+        //checkNumberOfCnNodesAlt(pathArray[i], 0) - 1
+
+        pathArray.splice(index, 1);
+
+
         for (let j = i; getCondition(direction, j); j += increment) {
             grid[j].traversable = false;
-        }
+        } 
     }
 
     checkForConnectedNodes(grid, i) {
@@ -275,13 +289,12 @@ export class TileGrid {
     }
 
     flipNode(grid, i) {
-
-
         grid[i].node = !(grid[i].node);
-        grid[i].traversable = !(grid[i].traversable);
+        //grid[i].traversable = !(grid[i].traversable);
     }
 
     updatePath() {
+        let pathArray = this.pathArray;
         let tiles = this.tiles;
         let grid = this.tileGrid;
         let nodes = this.nodes;
@@ -294,48 +307,65 @@ export class TileGrid {
                 if (nodes[i].startNode) {
                     for (let j = 0; j < nodes[i].connectedNode.length; j++) {
                         if (nodes[i].connectedNode[j] !== undefined) {
-                            createPath(j, north, grid, nodes, i, tiles, south, east, west);
+                            createPath(j, grid, nodes, i, tiles, north, south, east, west, pathArray);
                         }
                     }
                 }
-
+            }
+        }
+        if (pathArray.length > 0) {
+            for (let i = 0; i < pathArray.length; i++) {
+                console.log(pathArray[i]);
+                for (let j = 0; j < pathArray[i].length; j++) {
+                    pathArray[i][j].traversable = true;    
+                }
+                
             }
         }
     }
+
+
 }
 
 
 
-function createPath(j, north, grid, nodes, i, tiles, south, east, west) {
+function createPath(j, grid, nodes, i, tiles, north, south, east, west, pathArray) {
+    console.log(nodes[i]);
+    let path = [];
     switch (j) {
         case (north):
-            console.log(j);
             for (let k = grid.indexOf(nodes[i]); k > grid.indexOf(nodes[i].connectedNode[j]); k -= Math.sqrt(tiles)) {
-                grid[k].traversable = true;
+                path.push(grid[k]);
             }
             break;
 
         case (south):
-            console.log(j);
             for (let k = grid.indexOf(nodes[i]); k < grid.indexOf(nodes[i].connectedNode[j]); k += Math.sqrt(tiles)) {
-                grid[k].traversable = true;
+                path.push(grid[k]);
             }
             break;
         case (east):
-            console.log(j);
             for (let k = grid.indexOf(nodes[i]); k < grid.indexOf(nodes[i].connectedNode[j]); k++) {
-                grid[k].traversable = true;
+                path.push(grid[k]);
             }
             break;
         case (west):
-            console.log(j);
             for (let k = grid.indexOf(nodes[i]); k > grid.indexOf(nodes[i].connectedNode[j]); k--) {
-                grid[k].traversable = true;
+                path.push(grid[k]);
             }
             break;
         default:
             break;
     }
+    if (i > 0 && checkReversed(pathArray[i - 1], path)) {
+        return 0;
+    }
+    if (pathArray[i] === undefined) {
+        return pathArray[i] = path;
+    } else {
+        return pathArray[i + checkNumberOfCnNodesAlt(pathArray[i], 0) - 1] = path;
+    }
+    
 }
 
 function arePointsOnCoordinateLines(startNode, grid, i) {
@@ -346,3 +376,33 @@ function isPointOnTile(x, grid, i, tileWidth, y, tileHeight) {
     return (x >= grid[i].x && x < grid[i].x + tileWidth) && (y >= grid[i].y && y < grid[i].y + tileHeight);
 }
 
+function checkReversed(arr1, arr2) {
+    if (arr1.length === arr2.length) {
+
+        for (let i = 0; i < arr1.length; i++) {
+            if (checkSameCoords(i)) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+
+        return false;
+    }
+
+
+    function checkSameCoords(i) {
+        return (arr1[i].x !== arr2[arr2.length - 1 - i].x) && (arr1[i].y !== arr2[arr2.length - 1 - i].y);
+    }
+}
+
+function checkNumberOfCnNodesAlt(grid, i) {
+    let count = 0;
+    for (let j = 0; j < grid[i].connectedNode.length; j++) {
+        if (grid[i].connectedNode[j]) {
+            count++;
+        }
+
+    }
+    return count;
+}
