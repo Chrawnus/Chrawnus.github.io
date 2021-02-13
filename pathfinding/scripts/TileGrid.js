@@ -58,15 +58,11 @@ export class TileGrid {
                             if (isInNodes) {
                                 return;
                             } else {
-                                console.log("adding node")
                                 nodes.push(this);
-                                console.log(nodes);
                             }
                         } else {
                             if (isInNodes) {
-                                console.log("removing node")
                                 nodes.splice(nodes.indexOf(this), 1);
-                                console.log(nodes);
                                 if (isStartNode && nodes.length > 0) {
                                     startNode = nodes[nodes.length - 1];
                                 } else {
@@ -103,10 +99,19 @@ export class TileGrid {
         for (let i = 0; i < grid.length; i++) {
             if (isPointOnTile(cursorX, grid, i, tileWidth, cursorY, tileHeight)) {
                 if (keyArr.includes("Control")) {
-                    if (nodes.length === 1 && nodes.includes(grid[i])) { // remove first node
-                        this.removeNode(grid, i, nodes);
-                    } else if (nodes.includes(grid[i])) {
-                        this.removeNode(grid, i, nodes);
+                    if (nodes.includes(grid[i])) {
+                        this.removeNode(grid, i, this.nodes);
+                        let test = [];
+                        for (let i = 0; i < grid.length; i++) {
+                            const tile = grid[i];
+                            for (let j = 0; j < tile.connectingNodes.length; j++) {
+                                const connNode = tile.connectingNodes[j];
+                                if (connNode !== undefined) {
+                                    test.push(tile)
+                                }
+                            }
+                        }
+                        console.log(test)
                     }
                 } else if (!(keyArr.includes("Control"))) {
                     if (nodes.length === 0) { // create first node
@@ -115,7 +120,6 @@ export class TileGrid {
                         this.addIfFreeChildNode(grid, i);
                     } else if (nodes.includes(grid[i])) {
                         if (keyArr.includes("Shift")) {
-                            console.log("hi")
                             this.connectNodes(grid, i, nodes);
                         }
                         this.startNode = grid[i];
@@ -124,7 +128,7 @@ export class TileGrid {
 
                 }
             }
-        }
+        }  
     }
 
     connectNodes(grid, i, nodes) {
@@ -177,6 +181,7 @@ export class TileGrid {
         tile.node = false;
         tile.traversable = false;
         if (this.startNode === tile) {
+            console.log("hi")
             this.startNode = nodes[nodes.length - 1];
         }
         this.clearConnectingNodes(tile)
