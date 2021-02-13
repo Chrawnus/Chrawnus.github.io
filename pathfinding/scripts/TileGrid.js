@@ -101,17 +101,6 @@ export class TileGrid {
                 if (keyArr.includes("Control")) {
                     if (nodes.includes(grid[i])) {
                         this.removeNode(grid, i, this.nodes);
-                        let test = [];
-                        for (let i = 0; i < grid.length; i++) {
-                            const tile = grid[i];
-                            for (let j = 0; j < tile.connectingNodes.length; j++) {
-                                const connNode = tile.connectingNodes[j];
-                                if (connNode !== undefined) {
-                                    test.push(tile)
-                                }
-                            }
-                        }
-                        console.log(test)
                     }
                 } else if (!(keyArr.includes("Control"))) {
                     if (nodes.length === 0) { // create first node
@@ -178,6 +167,7 @@ export class TileGrid {
     removeNode(grid, i, nodes) {
         this.updatePath(grid, i, nodes, false);
         let tile = grid[i];
+
         tile.node = false;
         tile.traversable = false;
         if (this.startNode === tile) {
@@ -249,23 +239,10 @@ export class TileGrid {
     clearConnectingNodes(tile) {
 
         for (let i = 0; i < tile.connectingNodes.length; i++) {
-            let connectedNode = tile.connectingNodes[i];
-            const direction = ({
-                0: "north",
-                1: "east",
-                2: "south",
-                3: "west"
-            })[i];
-
-            const complementaryDirection = ({
-                "north": 2,
-                "east": 3,
-                "south": 0,
-                "west": 1
-            })[direction];
-
-            if (connectedNode !== undefined) {
-                connectedNode.connectingNodes[complementaryDirection] = undefined;
+            const cnNode = tile.connectingNodes[i];
+            if (cnNode !== undefined) {
+                const comp = !i ? 2 : i === 1 ? 3 : i === 2 ? 0 : 1;
+                cnNode.connectingNodes[comp] = undefined;
                 tile.connectingNodes[i] = undefined;
             }
         }
