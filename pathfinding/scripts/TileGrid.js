@@ -12,8 +12,8 @@ export class TileGrid {
             height: canvasElem.height / (Math.sqrt(this.tiles))
         }
         this.startNode;
-        this.nodes = [];
-        this.paths = [];
+        this.nodes = [],
+            this.paths = [];
         this.helper = new HelperFunctions();
     }
 
@@ -28,21 +28,54 @@ export class TileGrid {
             for (let j = 0; j < Math.sqrt(this.tiles); j++) {
                 y = i * this.tileSize.width;
                 x = j * this.tileSize.width;
-                this.tileGrid.push(
-                    {
-                        "width": this.tileSize.width,
-                        "height": this.tileSize.height,
-                        "x": x,
-                        "y": y,
-                        "traversable": false,
-                        "node": false,
-                        "connectingNodes": [
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined
-                        ]
-                    });
+                this.tileGrid.push({
+                    "width": this.tileSize.width,
+                    "height": this.tileSize.height,
+                    "x": x,
+                    "y": y,
+                    "index": j + Math.sqrt(this.tiles) * i,
+                    "traversable": false,
+                    "node": false,
+                    "connectingNodes": [
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined
+                    ],
+                    draw: function (ctx, startNode) {
+                        let color = !(this.traversable) ? 'gray' : !(this.node) ? 'white' : !(this === startNode) ? 'black' : 'red';
+
+                        ctx.fillStyle = color;
+                        ctx.fillRect(this.x, this.y, this.width, this.height);
+                        ctx.strokeRect(this.x, this.y, this.width, this.height);
+                    },
+
+                    checkState: function (nodes, startNode) {
+                        const isNode = this.node;
+                        const isInNodes = nodes.includes(this);
+                        const isStartNode = (startNode !== undefined && this === startNode);
+                        if (isNode) {
+                            if (isInNodes) {
+                                return;
+                            } else {
+                                console.log("adding node")
+                                nodes.push(this);
+                                console.log(nodes);
+                            }
+                        } else {
+                            if (isInNodes) {
+                                console.log("removing node")
+                                nodes.splice(nodes.indexOf(this), 1);
+                                console.log(nodes);
+                                if (isStartNode && nodes.length > 0) {
+                                    startNode = nodes[nodes.length - 1];
+                                } else {
+                                    startNode = undefined;
+                                }
+                            }
+                        }
+                    },
+                });
             }
         }
     }
@@ -50,24 +83,16 @@ export class TileGrid {
     drawTileGrid(ctx) {
         const grid = this.tileGrid;
         for (let i = 0; i < grid.length; i++) {
-            if (grid[i].traversable === false && grid[i].node === false) {
-                this.drawTile(ctx, grid, i, `gray`);
-            } else if (grid[i].traversable === true && grid[i].node === false) {
-                this.drawTile(ctx, grid, i, `white`);
-            }
-            if (grid[i].node === true) {
-                this.drawTile(ctx, grid, i, `black`);
-            }
-            if (this.startNode === grid[i]) {
-                this.drawTile(ctx, grid, i, `red`);
-            }
+            grid[i].draw(ctx, this.startNode);
         }
     }
 
-    drawTile(ctx, grid, i, color) {
-        ctx.fillStyle = color;
-        ctx.fillRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-        ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+    updateTiles() {
+        const grid = this.tileGrid;
+            for (let i = 0; i < grid.length; i++) {
+                let tile = grid[i];
+                tile.checkState(this.nodes, this.startNode);
+            }
     }
 
     createNode(cursorX, cursorY) {
@@ -79,30 +104,30 @@ export class TileGrid {
             if (isPointOnTile(cursorX, grid, i, tileWidth, cursorY, tileHeight)) {
                 if (keyArr.includes("Control")) {
                     if (nodes.length === 1 && nodes.includes(grid[i])) { // remove first node
-                        this.removeNode(grid, i, nodes, 0);
+                        this.removeNode(grid, i, nodes);
                     } else if (nodes.includes(grid[i])) {
-                        this.removeNode(grid, i, nodes, 0);
+                        this.removeNode(grid, i, nodes);
                     }
                 } else if (!(keyArr.includes("Control"))) {
                     if (nodes.length === 0) { // create first node
                         this.addNode(grid, i, nodes);
                     } else if (this.startNode !== grid[i] && !(nodes.includes(grid[i])) && arePointsOnCoordinateLines(this.startNode, grid, i)) {
-                        this.addIfFreeChildNode(grid, i, nodes);
+                        this.addIfFreeChildNode(grid, i);
                     } else if (nodes.includes(grid[i])) {
                         if (keyArr.includes("Shift")) {
-                            this.connectNodes(grid, i);
-                        } else {
-                            this.startNode = grid[i];
+                            console.log("hi")
+                            this.connectNodes(grid, i, nodes);
                         }
+                        this.startNode = grid[i];
+                        console.log(grid[i])
                     }
+
                 }
-                this.updatePath();
             }
         }
-        console.log(nodes);
     }
 
-    connectNodes(grid, i) {
+    connectNodes(grid, i, nodes) {
         if (this.startNode.y > grid[i].y && grid[i].connectingNodes[2] === undefined && this.startNode.connectingNodes[0] === undefined) {
             this.startNode.connectingNodes[0] = grid[i];
             grid[i].connectingNodes[2] = this.startNode;
@@ -119,9 +144,12 @@ export class TileGrid {
             this.startNode.connectingNodes[3] = grid[i];
             grid[i].connectingNodes[1] = this.startNode;
         }
+
+        this.updatePath(grid, i, nodes, true);
     }
 
-    addIfFreeChildNode(grid, i, nodes) {
+    addIfFreeChildNode(grid, i) {
+        const nodes = this.nodes;
         if (grid[i].y < this.startNode.y && this.startNode.connectingNodes[0] === undefined) {
             this.addNode(grid, i, nodes);
         } else if (grid[i].x > this.startNode.x && this.startNode.connectingNodes[1] === undefined) {
@@ -134,51 +162,106 @@ export class TileGrid {
     }
 
     addNode(grid, i, nodes) {
-        let tile = grid[i];
-        if (this.startNode === undefined) {
-            this.startNode = grid[i];
+        grid[i].traversable = true;
+        grid[i].node = true;
+        if (this.startNode !== undefined) {
+            this.appendChildNode(grid, i, this.startNode);
         }
-        this.flipNode(grid, i);
-        nodes.push(tile);
-        this.appendChildNode(grid, i, this.startNode);
+        this.startNode = grid[i];
+        this.updatePath(grid, i, nodes, true);
     }
 
     removeNode(grid, i, nodes) {
+        this.updatePath(grid, i, nodes, false);
         let tile = grid[i];
-        let paths = this.paths;
         tile.node = false;
         tile.traversable = false;
-        this.clearConnectingNodes(tile, nodes)
-        nodes.splice(nodes.indexOf(tile), 1);
         if (this.startNode === tile) {
             this.startNode = nodes[nodes.length - 1];
         }
-        for (let k = 0; k < paths.length; k++) {
-            const path = paths[k];
-            if (path.includes(tile)) {
-                for (let l = 0; l < path.length; l++) {
-                    path[l].traversable = false;
+        this.clearConnectingNodes(tile)
+    }
+
+    updatePath(grid, i, nodes, add) {
+        const tiles = this.tiles;
+        const tile = grid[i];
+        if (nodes.length > 0) {
+            for (let i = 0; i < tile.connectingNodes.length; i++) {
+                const connectedNode = tile.connectingNodes[i];
+                const direction = !(i) && connectedNode !== undefined ? "north" : i === 1 ? "east" : i === 2 ? "south" : "west";
+                const increment = ({
+                    "north": -Math.sqrt(tiles),
+                    "east": 1,
+                    "south": Math.sqrt(tiles),
+                    "west": -1,
+                })[direction];
+                if (connectedNode !== undefined) {
+                    const conditional = ({
+                        "north": () => {
+                            for (let k = grid.indexOf(tile); k > grid.indexOf(connectedNode); k += increment) {
+                                if (add) {
+                                    grid[k].traversable = true;
+                                } else {
+                                    grid[k].traversable = false;
+                                }
+                            }
+                        },
+                        "east": () => {
+                            for (let k = grid.indexOf(tile); k < grid.indexOf(connectedNode); k += increment) {
+                                if (add) {
+                                    grid[k].traversable = true;
+                                } else {
+                                    grid[k].traversable = false;
+                                }
+                            }
+                        },
+                        "south": () => {
+                            for (let k = grid.indexOf(tile); k < grid.indexOf(connectedNode); k += increment) {
+                                if (add) {
+                                    grid[k].traversable = true;
+                                } else {
+                                    grid[k].traversable = false;
+                                }
+                            }
+                        },
+                        "west": () => {
+                            for (let k = grid.indexOf(tile); k > grid.indexOf(connectedNode); k += increment) {
+                                if (add) {
+                                    grid[k].traversable = true;
+                                } else {
+                                    grid[k].traversable = false;
+                                }
+                            }
+                        },
+                    })[direction];
+
+                    conditional();
                 }
             }
         }
     }
 
-    clearConnectingNodes(tile, nodes) {
+    clearConnectingNodes(tile) {
+
         for (let i = 0; i < tile.connectingNodes.length; i++) {
             let connectedNode = tile.connectingNodes[i];
+            const direction = ({
+                0: "north",
+                1: "east",
+                2: "south",
+                3: "west"
+            })[i];
+
+            const complementaryDirection = ({
+                "north": 2,
+                "east": 3,
+                "south": 0,
+                "west": 1
+            })[direction];
+
             if (connectedNode !== undefined) {
+                connectedNode.connectingNodes[complementaryDirection] = undefined;
                 tile.connectingNodes[i] = undefined;
-                for (let j = 0; j < connectedNode.connectingNodes.length; j++) {
-                    if (connectedNode.connectingNodes[j] === tile) {
-                        connectedNode.connectingNodes[j] = undefined;
-                        if (this.checkForConnectingNodes(connectedNode)) {
-                            console.log("removing: ", connectedNode)
-                            connectedNode.node = false;
-                            connectedNode.traversable = false;
-                            nodes.splice(nodes.indexOf(connectedNode), 1);
-                        }
-                    }
-                }
             }
         }
     }
@@ -205,95 +288,6 @@ export class TileGrid {
             }
         }
     }
-
-    isConnected(node1, grid, i) {
-        let lsnLength = node1.length;
-        return (
-            node1[lsnLength - 1].connectingNodes[0] === grid[i] ||
-            node1[lsnLength - 1].connectingNodes[1] === grid[i] ||
-            node1[lsnLength - 1].connectingNodes[2] === grid[i] ||
-            node1[lsnLength - 1].connectingNodes[3] === grid[i]
-        );
-    }
-
-
-    checkForConnectingNodes(tile) {
-        console.log(this.startNode)
-        let north = 0;
-        let east = 1;
-        let south = 2;
-        let west = 3;
-        return (tile.connectingNodes[north] === undefined && tile.connectingNodes[east] === undefined && tile.connectingNodes[south] === undefined && tile.connectingNodes[west] === undefined && this.startNode !== tile);
-    }
-
-    checkNumberOfCnNodes(grid, i) {
-        let count = 0;
-        for (let j = 0; j < grid[i].connectingNodes.length; j++) {
-            if (grid[i].connectingNodes[j] !== undefined) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    flipNode(grid, i) {
-        let tile = grid[i];
-        tile.node = !(tile.node);
-        tile.traversable = !(tile.traversable);
-    }
-
-    updatePath() {
-        let tiles = this.tiles;
-        let grid = this.tileGrid;
-        let nodes = this.nodes;
-        let paths = this.paths;
-        let north = 0;
-        let east = 1;
-        let south = 2;
-        let west = 3;
-        if (nodes.length > 1) {
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = 0; j < nodes[i].connectingNodes.length; j++) {
-                    if (nodes[i].connectingNodes[j] !== undefined) {
-                        createPath(j, grid, nodes, i, tiles, north, south, east, west, paths);
-                    }
-                }
-            }
-        }
-    }
-}
-
-function createPath(j, grid, nodes, i, tiles, north, south, east, west, paths) {
-    let path = [];
-    switch (j) {
-        case (north):
-            for (let k = grid.indexOf(nodes[i]); k >= grid.indexOf(nodes[i].connectingNodes[j]); k -= Math.sqrt(tiles)) {
-                grid[k].traversable = true;
-                path.push(grid[k]);
-            }
-            break;
-        case (south):
-            for (let k = grid.indexOf(nodes[i]); k <= grid.indexOf(nodes[i].connectingNodes[j]); k += Math.sqrt(tiles)) {
-                grid[k].traversable = true;
-                path.push(grid[k]);
-            }
-            break;
-        case (east):
-            for (let k = grid.indexOf(nodes[i]); k <= grid.indexOf(nodes[i].connectingNodes[j]); k++) {
-                grid[k].traversable = true;
-                path.push(grid[k]);
-            }
-            break;
-        case (west):
-            for (let k = grid.indexOf(nodes[i]); k >= grid.indexOf(nodes[i].connectingNodes[j]); k--) {
-                grid[k].traversable = true;
-                path.push(grid[k]);
-            }
-            break;
-        default:
-            break;
-    }
-    paths.push(path);
 }
 
 function arePointsOnCoordinateLines(startNode, grid, i) {

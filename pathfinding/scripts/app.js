@@ -1,12 +1,12 @@
 import { TileGrid } from "./TileGrid.js";
 import { InputHelper } from "./inputHelper.js";
+import { HelperFunctions } from "./helperFunctions.js";
 
 export const canvasElem = document.getElementById('canvas');
 const tileGrid = new TileGrid(1024);
 const inputHelper = new InputHelper();
 
 let prevTime;
-
 export let keyArr = [];
 
 tileGrid.createTileGrid();
@@ -35,7 +35,7 @@ function gameLoop(now) {
 }
 
 function update(dt) {
-    
+    tileGrid.updateTiles();
 }
 
 function physics(dt) {

@@ -6,7 +6,7 @@ export class InputHelper {
     }
 
     keyDownEventsHandler(e) {
-        if (e.key.startsWith('Control')) {
+        if (e.key.startsWith('Control') || e.key.startsWith("Shift")) {
             if (!(keyArr.includes(e.key))) {
                 keyArr.push(e.key);
                 if ((keyArr.length > 2)) {
@@ -19,7 +19,7 @@ export class InputHelper {
     
     
     keyUpEventsHandler(e) {
-        if (e.key.startsWith('Control')) {
+        if (e.key.startsWith('Control') || e.key.startsWith("Shift")) {
             if ((keyArr.includes(e.key))) {
                 keyArr.splice(keyArr.indexOf(e.key), 1);
             }
