@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="UI">
+        </div>
+        <canvas id="canvas" width="960" height="960">
+            Your browser does not support the canvas element!
+        </canvas>
+
+        <input type="range" min="3" max="200" value="3" id="sides">
+        <p id="sides-info"></p>
+
+        <input type="range" min="1" max="500" value="20" id="length">
+        <p id="length-info"></p>
+    </div>
+    <script src="./scripts/app.js" type="module"></script>
+</body>
+</html>
