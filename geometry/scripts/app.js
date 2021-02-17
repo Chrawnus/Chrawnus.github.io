@@ -29,6 +29,11 @@ aInfo.textContent = `${aText} ${geom.rotationAngle}`
 
 aSlider.step = `${1 * Math.PI/180}`
 aSlider.max = `${Math.PI * 2}`;
+aSlider.addEventListener("input", () => {
+    geom.rotationAngle = aSlider.value;
+    aInfo.textContent = `${aText} ${geom.rotationAngle}`
+});
+
 
 sRangeElem.addEventListener("input", () => {
     resizeGeom();
@@ -38,44 +43,13 @@ sLenSlider.addEventListener("input", () => {
     resizeGeom();
 });
 
-aSlider.addEventListener("input", () => {
-    geom.rotationAngle = aSlider.value;
-    aInfo.textContent = `${aText} ${geom.rotationAngle}`
-});
-
-
-
 canvasElem.addEventListener("mousemove", function(e) {
     if (mBtnState) {
         getCursorPos(canvasElem, e)
     } 
 });
 
-window.addEventListener("mousedown", () => {
-    mBtnState = true;
-});
-
-window.addEventListener("mouseup", () => {
-    mBtnState = false;
-});
-
-function resizeGeom() {
-    sQuant = sRangeElem.value;
-    sLen = sLenSlider.value;
-    geom.sideNumber = sQuant;
-    geom.internalAngle = (geom.determineAngle(geom.sideNumber));
-    geom.sideLength = sLenSlider.value / sQuant;
-    sInfo.textContent = `${sText} ${sQuant}`;
-    slInfo.textContent = `${slText} ${sLen/sQuant}`;
-}
-
-function getCursorPos(canvasElem, event) {
-    const rect = canvasElem.getBoundingClientRect()
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    geom.x = x;
-    geom.y = y;
-}
+mPressedFunction();
 
 requestAnimationFrame(gameLoop);
 
@@ -110,6 +84,32 @@ function getDelta(now) {
     return dt;
 }
 
+function mPressedFunction() {
+    window.addEventListener("mousedown", () => {
+        mBtnState = true;
+    });
 
+    window.addEventListener("mouseup", () => {
+        mBtnState = false;
+    });
+}
+
+function resizeGeom() {
+    sQuant = sRangeElem.value;
+    sLen = sLenSlider.value;
+    geom.sideNumber = sQuant;
+    geom.internalAngle = (geom.determineAngle(geom.sideNumber));
+    geom.sideLength = sLenSlider.value / sQuant;
+    sInfo.textContent = `${sText} ${sQuant}`;
+    slInfo.textContent = `${slText} ${sLen/sQuant}`;
+}
+
+function getCursorPos(canvasElem, event) {
+    const rect = canvasElem.getBoundingClientRect()
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    geom.x = x;
+    geom.y = y;
+}
 
 

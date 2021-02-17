@@ -9,24 +9,24 @@ export class RegularPolygon extends Geometry {
         this.rotationAngle = rotationAngle; // rotation angle
         this.internalAngle = (this.determineAngle(this.sideNumber)); //internal angle of vertices
         this.externalAngle = 180 - this.internalAngle;
-        this.center = this.determineCentroid(this.x, this.y, this.sideNumber, this.sideLength, this.externalAngle);
     }
 
     //function to determine internalAngle based on number of sides on the polygon;
     determineAngle = (sideNumber) => 180 * (sideNumber - 2) / sideNumber;
 
     determineCentroid(x, y, sideNumber, sideLength, externalAngle) {
-        let originPoint = new Point2d(x, y);
-        let pointsArr = this.getPolygonVertexCoords(sideNumber, x, y, sideLength, externalAngle, originPoint)
         let center = new Point2d(0, 0);
-        for (let i = 0; i < pointsArr.length - 1; i++) {
-            center.x += pointsArr[i].x;
-            center.y += pointsArr[i].y;
-        }
-        center.x = center.x / sideNumber;
-        center.y = center.y / sideNumber;
 
-        return center;
+            let originPoint = new Point2d(x, y);
+            let points = this.getPolygonVertexCoords(sideNumber, x, y, sideLength, externalAngle, originPoint)
+            for (let i = 0; i < points.length; i++) {
+                center.x += points[i].x;
+                center.y += points[i].y;
+            }
+            center.x = center.x / sideNumber;
+            center.y = center.y / sideNumber;
+    
+            return center;
     }
 
 
@@ -54,15 +54,20 @@ export class RegularPolygon extends Geometry {
         let pArr = new Array(sideNumber);
         let point = this.getCoordFromAngle(x, y, sideLength, externalAngle);
         pArr[0] = originPoint;
-        for (let i = 0; i < sideNumber; i++) {
+        for (let i = 0; i < sideNumber-1; i++) {
             const p = new Point2d(point[0], point[1]);
             pArr[i + 1] = p;
             point = this.getCoordFromAngle(point[0], point[1], sideLength, externalAngle * (i + 2));
         }
+
+        
+        
+        
         return pArr;
     }
 
     rotatePolygon(PointsArr, rotationAngle, center) {
+        
         let centerInvert = new Point2d(-center.x, -center.y);
 
         for (let i = 0; i < PointsArr.length; i++) {
@@ -73,28 +78,35 @@ export class RegularPolygon extends Geometry {
     }
 
     draw(ctx, dt) {
-        let originPoint = new Point2d(this.x, this.y);
+        let x = this.x;
+        let y = this.y;
+        let center = this.determineCentroid(x, y, this.sideNumber, this.sideLength, (180 - this.internalAngle));
+        x = x - Math.abs(x - center.x);
+        y = y + Math.abs(y - center.y); 
+        
         let externalAngle = 180 - this.internalAngle;
-        let pointsArr = this.getPolygonVertexCoords(this.sideNumber, this.x, this.y, this.sideLength, externalAngle, originPoint);
+        let originPoint = new Point2d(x, y);
+        let points = this.getPolygonVertexCoords(this.sideNumber, x, y, this.sideLength, externalAngle, originPoint);
 
-        this.rotatePolygon(pointsArr, this.rotationAngle, this.center);
-
-        this.drawPolygon(ctx, pointsArr);
-        this.drawCenter(ctx);
+        center = this.determineCentroid(x, y, this.sideNumber, this.sideLength, (180 - this.internalAngle));
+        
+        this.rotatePolygon(points, this.rotationAngle, center);
+        this.drawPolygon(ctx, points)
+        this.drawCenter(ctx, center);
     }
 
-    drawCenter(ctx) {
+    drawCenter(ctx, center) {
         ctx.beginPath();
-        ctx.moveTo(this.center.x, this.center.y);
-        ctx.arc(this.center.x, this.center.y, 5, 0, Math.PI * 2, true);
+        ctx.moveTo(center.x, center.y);
+        ctx.arc(center.x, center.y, 5, 0, Math.PI * 2, true);
         ctx.fill();
         ctx.stroke();
     }
 
     drawPolygon(ctx, pointsArr) {
         ctx.beginPath();
-        ctx.moveTo(pointsArr[pointsArr.length - 1].x, pointsArr[pointsArr.length - 1].y);
-        for (let i = 0; i < pointsArr.length - 1; i++) {
+        ctx.moveTo(pointsArr[0].x, pointsArr[0].y);
+        for (let i = 0; i < pointsArr.length; i++) {
             ctx.lineTo(pointsArr[i].x, pointsArr[i].y);
         }
         ctx.lineTo(pointsArr[0].x, pointsArr[0].y);
@@ -106,7 +118,6 @@ export class RegularPolygon extends Geometry {
     }
 
     update(dt) {
-        this.center = this.determineCentroid(this.x, this.y, this.sideNumber, this.sideLength, (180 - this.internalAngle));
         //this.rotationAngle += 1;
     }
 
@@ -121,6 +132,8 @@ export class RegularPolygon extends Geometry {
         }
         return points;
     }
+
+
 }
 
 
