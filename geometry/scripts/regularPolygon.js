@@ -6,27 +6,21 @@ export class RegularPolygon extends Geometry {
         this.sLen = sLen;                                   //side length
         this.s = s;                                         //number of sides
         this.sAngle = sAngle;                               //...
-        this.intAngle = (this.determineAngle(this.s));      //internal angle of vertices
+        this.iAngle = (this.determineAngle(this.s));      //internal angle of vertices
     }
-
-    determineCentroid(x, y, s, sLen, intAngle) {
+    determineCentroid(x, y, s, sLen, iAngle) {
         let coords = new Array(s);
-        let turnAngle = (180 - intAngle);
-        let endP = this.getCoordinateFromAngle(x, y, sLen, turnAngle)
+        let tAngle = (180 - iAngle);
+        let endP = this.getCoordinateFromAngle(x, y, sLen, tAngle)
         let c = [0, 0];
-
-        // determine coordinate points of shape based on turnAngle
-        for (let i = 0; i < s; i++) {
+        for (let i = 0; i < s; i++) { // determine coordinate points of shape based on turnAngle
             coords[i] = endP;
-            endP = this.getCoordinateFromAngle(endP[0], endP[1], sLen, turnAngle * (i + 2))
-
+            endP = this.getCoordinateFromAngle(endP[0], endP[1], sLen, tAngle * (i + 2))
         }
-
         for (let i = 0; i < coords.length; i++) {
             c[0] += coords[i][0];
             c[1] += coords[i][1];
         }
-
         c[0] = c[0] / s;
         c[1] = c[1] / s;
         return c;
@@ -37,15 +31,11 @@ export class RegularPolygon extends Geometry {
         let s = this.s;
         let x = this.x;
         let y = this.y;
-
-        let c = this.determineCentroid(x, y, s, len, this.intAngle);
-
+        let iAngle = this.iAngle;
+        let c = this.determineCentroid(x, y, s, len, iAngle);
         ({ x, y } = this.centerShape(x, c, y));
-
-        let tAngle = (180 - this.intAngle) + (this.sAngle);
-
+        let tAngle = (180 - this.iAngle) + (this.sAngle);
         let endP = this.getCoordinateFromAngle(x, y, len, tAngle);
-
         ctx.beginPath();
         ctx.moveTo(x, y);
         for (let i = 0; i < s; i++) {
@@ -69,10 +59,8 @@ export class RegularPolygon extends Geometry {
     //and a starting point [x, y]
     getCoordinateFromAngle(x, y, sLen, a) {
         const aRad = a * (Math.PI / 180);
-
         let x2 = sLen * Math.sin(aRad);
         let y2 = Math.sqrt((sLen) ** 2 - (x2 ** 2));
-
         if (a > 90 && a < 180) {
             return [x + x2, y - y2];
         } else if (a >= 180 && a < 270) {
@@ -83,7 +71,7 @@ export class RegularPolygon extends Geometry {
             return [x + x2, y + y2];
         }
     }
-    
+
     //function to determine what the angle at each intersection between two lines need to be 
     //so that the endpoint of the last line connects with the beginning point of the first line,
     //keeping all angles are equal;

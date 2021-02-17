@@ -65,7 +65,7 @@ function resizeGeometry() {
     sideAmount = sidesRangeElem.value;
     sideLength = sideLengthSlider.value;
     geometry.s = sideAmount;
-    geometry.intAngle = (geometry.determineAngle(geometry.s));
+    geometry.iAngle = (geometry.determineAngle(geometry.s));
     geometry.sLen = sideLengthSlider.value / sideAmount;
     sidesInfo.textContent = `${sidesText} ${sideAmount}`;
     sideLengthInfo.textContent = `${sideLengthText} ${sideLength/sideAmount}`;
