@@ -8,23 +8,21 @@ const aSlider = document.getElementById("angle");
 const sInfo = document.getElementById("sides-info");
 const slInfo = document.getElementById("length-info");
 const aInfo = document.getElementById("angle-info");
-let prevTime;
 
-let a = aSlider.value;
-let sAmount = sRangeElem.value;
-let sLen = sLenSlider.value;
-
-let geom = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sAmount, sLen/sAmount, a);
-
-
-const aText = "angle: ";
 const sText = "number of sides: ";
 const slText = "side length: ";
+const aText = "angle: ";
 
+let prevTime;
 let mBtnState = false;
 
+let sQuant = sRangeElem.value;
+let a = aSlider.value;
+let sLen = sLenSlider.value;
 
+let geom = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sQuant, sLen/sQuant, a);
 sLenSlider.value = geom.sLen;
+sLen = sLenSlider.value;
 
 sInfo.textContent = `${sText} ${geom.s}`
 slInfo.textContent = `${slText} ${geom.sLen}`
@@ -59,13 +57,13 @@ window.addEventListener("mouseup", () => {
 });
 
 function resizeGeom() {
-    sAmount = sRangeElem.value;
+    sQuant = sRangeElem.value;
     sLen = sLenSlider.value;
-    geom.s = sAmount;
+    geom.s = sQuant;
     geom.iAngle = (geom.determineAngle(geom.s));
-    geom.sLen = sLenSlider.value / sAmount;
-    sInfo.textContent = `${sText} ${sAmount}`;
-    slInfo.textContent = `${slText} ${sLen/sAmount}`;
+    geom.sLen = sLenSlider.value / sQuant;
+    sInfo.textContent = `${sText} ${sQuant}`;
+    slInfo.textContent = `${slText} ${sLen/sQuant}`;
 }
 
 function getCursorPos(canvasElem, event) {
