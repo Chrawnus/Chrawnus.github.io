@@ -1,47 +1,103 @@
 import { Geometry } from "./geometry.js";
+import { Point2d } from "./Point2d.js";
 
 export class RegularPolygon extends Geometry {
-    constructor(x, y, s, sLen, sAngle) {
+    constructor(x, y, sideNumber, sideLength, rotationAngle) {
         super(x, y)
-        this.sLen = sLen;                                   //side length
-        this.s = s;                                         //number of sides
-        this.sAngle = sAngle;                               //...
-        this.iAngle = (this.determineAngle(this.s));      //internal angle of vertices
-    }
-    determineCentroid(x, y, s, sLen, iAngle) {
-        let coords = new Array(s);
-        let tAngle = (180 - iAngle);
-        let endP = this.getCoordinateFromAngle(x, y, sLen, tAngle)
-        let c = [0, 0];
-        for (let i = 0; i < s; i++) { // determine coordinate points of shape based on turnAngle
-            coords[i] = endP;
-            endP = this.getCoordinateFromAngle(endP[0], endP[1], sLen, tAngle * (i + 2))
-        }
-        for (let i = 0; i < coords.length; i++) {
-            c[0] += coords[i][0];
-            c[1] += coords[i][1];
-        }
-        c[0] = c[0] / s;
-        c[1] = c[1] / s;
-        return c;
+        this.sideLength = sideLength; //side length
+        this.sideNumber = sideNumber; //number of sides
+        this.rotationAngle = rotationAngle; // rotation angle
+        this.internalAngle = (this.determineAngle(this.sideNumber)); //internal angle of vertices
+        this.externalAngle = 180 - this.internalAngle;
+        this.center = this.determineCentroid(this.x, this.y, this.sideNumber, this.sideLength, this.externalAngle);
     }
 
-    drawShape(ctx) {
-        let len = this.sLen;
-        let s = this.s;
-        let x = this.x;
-        let y = this.y;
-        let iAngle = this.iAngle;
-        let c = this.determineCentroid(x, y, s, len, iAngle);
-        ({ x, y } = this.centerShape(x, c, y));
-        let tAngle = (180 - this.iAngle) + (this.sAngle);
-        let endP = this.getCoordinateFromAngle(x, y, len, tAngle);
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        for (let i = 0; i < s; i++) {
-            ctx.lineTo(endP[0], endP[1]);
-            endP = this.getCoordinateFromAngle(endP[0], endP[1], len, tAngle * (i + 2));
+    //function to determine internalAngle based on number of sides on the polygon;
+    determineAngle = (sideNumber) => 180 * (sideNumber - 2) / sideNumber;
+
+    determineCentroid(x, y, sideNumber, sideLength, externalAngle) {
+        let originPoint = new Point2d(x, y);
+        let pointsArr = this.getPolygonVertexCoords(sideNumber, x, y, sideLength, externalAngle, originPoint)
+        let center = new Point2d(0, 0);
+        for (let i = 0; i < pointsArr.length - 1; i++) {
+            center.x += pointsArr[i].x;
+            center.y += pointsArr[i].y;
         }
+        center.x = center.x / sideNumber;
+        center.y = center.y / sideNumber;
+
+        return center;
+    }
+
+
+    //Determine the endpoint of a line given an angle 
+    //and a starting point [x, y]
+    getCoordFromAngle(x, y, sideLength, externalAngle) {
+        const externalAngleRadians = (externalAngle) * (Math.PI / 180);
+        let x2 = sideLength * (Math.sin(externalAngleRadians));
+        let y2 = Math.sqrt((sideLength) ** 2 - (x2 ** 2));
+
+        if (externalAngle > 90 && externalAngle < 180) {
+            return [x + x2, y - y2];
+        } else if (externalAngle >= 180 && externalAngle < 270) {
+            return [x + x2, y - y2];
+        } else if (externalAngle > 270 && externalAngle < 360) {
+            return [x + x2, y + y2];
+        } else {
+            return [x + x2, y + y2];
+        }
+    }
+
+
+    //Returns a points array of vertex coordinates for constructing the polygon
+    getPolygonVertexCoords(sideNumber, x, y, sideLength, externalAngle, originPoint) {
+        let pArr = new Array(sideNumber);
+        let point = this.getCoordFromAngle(x, y, sideLength, externalAngle);
+        pArr[0] = originPoint;
+        for (let i = 0; i < sideNumber; i++) {
+            const p = new Point2d(point[0], point[1]);
+            pArr[i + 1] = p;
+            point = this.getCoordFromAngle(point[0], point[1], sideLength, externalAngle * (i + 2));
+        }
+        return pArr;
+    }
+
+    rotatePolygon(PointsArr, rotationAngle, center) {
+        let centerInvert = new Point2d(-center.x, -center.y);
+
+        for (let i = 0; i < PointsArr.length; i++) {
+            PointsArr[i].translate(centerInvert);//  translate to origin
+            PointsArr[i].rotate(rotationAngle);//  rotate
+            PointsArr[i].translate(center);// translate back to it's original position
+        }
+    }
+
+    draw(ctx, dt) {
+        let originPoint = new Point2d(this.x, this.y);
+        let externalAngle = 180 - this.internalAngle;
+        let pointsArr = this.getPolygonVertexCoords(this.sideNumber, this.x, this.y, this.sideLength, externalAngle, originPoint);
+
+        this.rotatePolygon(pointsArr, this.rotationAngle, this.center);
+
+        this.drawPolygon(ctx, pointsArr);
+        this.drawCenter(ctx);
+    }
+
+    drawCenter(ctx) {
+        ctx.beginPath();
+        ctx.moveTo(this.center.x, this.center.y);
+        ctx.arc(this.center.x, this.center.y, 5, 0, Math.PI * 2, true);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    drawPolygon(ctx, pointsArr) {
+        ctx.beginPath();
+        ctx.moveTo(pointsArr[pointsArr.length - 1].x, pointsArr[pointsArr.length - 1].y);
+        for (let i = 0; i < pointsArr.length - 1; i++) {
+            ctx.lineTo(pointsArr[i].x, pointsArr[i].y);
+        }
+        ctx.lineTo(pointsArr[0].x, pointsArr[0].y);
         ctx.fillStyle = "red";
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
@@ -49,43 +105,22 @@ export class RegularPolygon extends Geometry {
         ctx.stroke();
     }
 
-    centerShape(x, c, y) {
-        x = x - Math.abs(x - c[0]);
-        y = y + Math.abs(y - c[1]);
-        return { x, y };
-    }
-
-    //Function to determine where the endpoint of a line will be given an angle 
-    //and a starting point [x, y]
-    getCoordinateFromAngle(x, y, sLen, a) {
-        const aRad = a * (Math.PI / 180);
-        let x2 = sLen * Math.sin(aRad);
-        let y2 = Math.sqrt((sLen) ** 2 - (x2 ** 2));
-        if (a > 90 && a < 180) {
-            return [x + x2, y - y2];
-        } else if (a >= 180 && a < 270) {
-            return [x + x2, y - y2];
-        } else if (a > 270 && a < 360) {
-            return [x + x2, y + y2];
-        } else {
-            return [x + x2, y + y2];
-        }
-    }
-
-    //function to determine what the angle at each intersection between two lines need to be 
-    //so that the endpoint of the last line connects with the beginning point of the first line,
-    //keeping all angles are equal;
-    determineAngle = (s) => 180 * (s - 2) / s;
-
-    draw(ctx) {
-        this.drawShape(ctx);
-    }
     update(dt) {
-        if (this.sAngle <= 0) {
-            this.sAngle = 0;
-        } if (this.sAngle >= 360) {
-            this.sAngle = 0;
+        this.center = this.determineCentroid(this.x, this.y, this.sideNumber, this.sideLength, (180 - this.internalAngle));
+        //this.rotationAngle += 1;
+    }
+
+    getRegularPolygonPoints(center, sideNumber, sideLength) {
+        let points = [];
+        let alpha = 2 * Math.PI / sideNumber;
+        for (let i = 0; i < sideNumber; i++) {
+            points.push(new Point2d(
+                center.x + sideLength * Math.cos(alpha * i),
+                center.y + sideLength * Math.sin(alpha * i))
+            )
         }
-        //this.startingAngle += Math.sqrt(dt**2/dt);
+        return points;
     }
 }
+
+

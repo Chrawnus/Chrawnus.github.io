@@ -16,17 +16,19 @@ const aText = "angle: ";
 let prevTime;
 let mBtnState = false;
 
-let sQuant = sRangeElem.value;
-let a = aSlider.value;
-let sLen = sLenSlider.value;
+let sQuant = 3;
+let sLen = 500;
 
-let geom = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sQuant, sLen/sQuant, a);
-sLenSlider.value = geom.sLen;
+let geom = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sQuant, sLen/sQuant, 0);
+sLenSlider.value = geom.sideLength;
 sLen = sLenSlider.value;
 
-sInfo.textContent = `${sText} ${geom.s}`
-slInfo.textContent = `${slText} ${geom.sLen}`
-aInfo.textContent = `${aText} ${geom.sAngle}`
+sInfo.textContent = `${sText} ${geom.sideNumber}`
+slInfo.textContent = `${slText} ${geom.sideLength}`
+aInfo.textContent = `${aText} ${geom.rotationAngle}`
+
+aSlider.step = `${1 * Math.PI/180}`
+aSlider.max = `${Math.PI * 2}`;
 
 sRangeElem.addEventListener("input", () => {
     resizeGeom();
@@ -34,13 +36,14 @@ sRangeElem.addEventListener("input", () => {
 
 sLenSlider.addEventListener("input", () => {
     resizeGeom();
-
 });
 
 aSlider.addEventListener("input", () => {
-    geom.sAngle = aSlider.value;
-    aInfo.textContent = `${aText} ${geom.sAngle}`
+    geom.rotationAngle = aSlider.value;
+    aInfo.textContent = `${aText} ${geom.rotationAngle}`
 });
+
+
 
 canvasElem.addEventListener("mousemove", function(e) {
     if (mBtnState) {
@@ -59,9 +62,9 @@ window.addEventListener("mouseup", () => {
 function resizeGeom() {
     sQuant = sRangeElem.value;
     sLen = sLenSlider.value;
-    geom.s = sQuant;
-    geom.iAngle = (geom.determineAngle(geom.s));
-    geom.sLen = sLenSlider.value / sQuant;
+    geom.sideNumber = sQuant;
+    geom.internalAngle = (geom.determineAngle(geom.sideNumber));
+    geom.sideLength = sLenSlider.value / sQuant;
     sInfo.textContent = `${sText} ${sQuant}`;
     slInfo.textContent = `${slText} ${sLen/sQuant}`;
 }
@@ -91,12 +94,13 @@ function physics(dt) {
     getPhysicsDelta(dt);
 }
 
-function draw() {
+function draw(dt) {
     const ctx = canvasElem.getContext('2d');
     ctx.clearRect(0, 0, 600, 480);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
-    geom.draw(ctx);
+    geom.draw(ctx, dt);
+
 }
 
 function getDelta(now) {
@@ -105,5 +109,7 @@ function getDelta(now) {
     prevTime = now;
     return dt;
 }
+
+
 
 
