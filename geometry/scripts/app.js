@@ -1,82 +1,79 @@
 import { Geometry } from "./geometry.js";
 import { RegularPolygon} from "./regularPolygon.js"
 const canvasElem = document.getElementById('canvas');
-const sidesRangeElem = document.getElementById('sides');
-const sideLengthSlider = document.getElementById("length");
-const angleSlider = document.getElementById("angle");
+const sRangeElem = document.getElementById('sides');
+const sLenSlider = document.getElementById("length");
+const aSlider = document.getElementById("angle");
 
-const sidesInfo = document.getElementById("sides-info");
-const sideLengthInfo = document.getElementById("length-info");
-const angleInfo = document.getElementById("angle-info");
+const sInfo = document.getElementById("sides-info");
+const slInfo = document.getElementById("length-info");
+const aInfo = document.getElementById("angle-info");
 let prevTime;
 
-let angle = angleSlider.value;
-let sideAmount = sidesRangeElem.value;
-let sideLength = sideLengthSlider.value;
+let a = aSlider.value;
+let sAmount = sRangeElem.value;
+let sLen = sLenSlider.value;
 
-let geometry = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sideAmount, sideLength/sideAmount, angle);
-
-
-const angleText = "angle: ";
-const sidesText = "number of sides: ";
-const sideLengthText = "side length: ";
-
-let mouseState = false;
+let geom = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sAmount, sLen/sAmount, a);
 
 
-sideLengthSlider.value = geometry.sLen;
+const aText = "angle: ";
+const sText = "number of sides: ";
+const slText = "side length: ";
 
-sidesInfo.textContent = `${sidesText} ${geometry.s}`
-sideLengthInfo.textContent = `${sideLengthText} ${geometry.sLen}`
-angleInfo.textContent = `${angleText} ${geometry.sAngle}`
+let mBtnState = false;
 
-sidesRangeElem.addEventListener("input", () => {
-    resizeGeometry();
+
+sLenSlider.value = geom.sLen;
+
+sInfo.textContent = `${sText} ${geom.s}`
+slInfo.textContent = `${slText} ${geom.sLen}`
+aInfo.textContent = `${aText} ${geom.sAngle}`
+
+sRangeElem.addEventListener("input", () => {
+    resizeGeom();
 });
 
-sideLengthSlider.addEventListener("input", () => {
-    resizeGeometry();
+sLenSlider.addEventListener("input", () => {
+    resizeGeom();
 
 });
 
-angleSlider.addEventListener("input", () => {
-    geometry.sAngle = angleSlider.value;
-    angleInfo.textContent = `${angleText} ${geometry.sAngle}`
-
-})
+aSlider.addEventListener("input", () => {
+    geom.sAngle = aSlider.value;
+    aInfo.textContent = `${aText} ${geom.sAngle}`
+});
 
 canvasElem.addEventListener("mousemove", function(e) {
-    if (mouseState) {
-        getCursorPosition(canvasElem, e)
-    }
-    
-    
-})
+    if (mBtnState) {
+        getCursorPos(canvasElem, e)
+    } 
+});
 
 window.addEventListener("mousedown", () => {
-    mouseState = true;
+    mBtnState = true;
 });
 
 window.addEventListener("mouseup", () => {
-    mouseState = false;
+    mBtnState = false;
 });
 
-function resizeGeometry() {
-    sideAmount = sidesRangeElem.value;
-    sideLength = sideLengthSlider.value;
-    geometry.s = sideAmount;
-    geometry.iAngle = (geometry.determineAngle(geometry.s));
-    geometry.sLen = sideLengthSlider.value / sideAmount;
-    sidesInfo.textContent = `${sidesText} ${sideAmount}`;
-    sideLengthInfo.textContent = `${sideLengthText} ${sideLength/sideAmount}`;
+function resizeGeom() {
+    sAmount = sRangeElem.value;
+    sLen = sLenSlider.value;
+    geom.s = sAmount;
+    geom.iAngle = (geom.determineAngle(geom.s));
+    geom.sLen = sLenSlider.value / sAmount;
+    sInfo.textContent = `${sText} ${sAmount}`;
+    slInfo.textContent = `${slText} ${sLen/sAmount}`;
 }
 
-function getCursorPosition(canvasElem, event) {
+function getCursorPos(canvasElem, event) {
     const rect = canvasElem.getBoundingClientRect()
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    geometry.x = x;
-    geometry.y = y;
+    geom.x = x;
+    geom.y = y;
 }
 
 requestAnimationFrame(gameLoop);
@@ -89,8 +86,7 @@ function gameLoop(now) {
 }
 
 function update(dt) {
-
-    geometry.update(dt);
+    geom.update(dt);
 }
 
 function physics(dt) {
@@ -102,8 +98,7 @@ function draw() {
     ctx.clearRect(0, 0, 600, 480);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
-    
-    geometry.draw(ctx);
+    geom.draw(ctx);
 }
 
 function getDelta(now) {
