@@ -3,8 +3,6 @@ import { Geometry } from "./geometry.js";
 export class RegularPolygon extends Geometry {
     constructor(x, y, s, sLen, sAngle) {
         super(x, y)
-
-        console.log(this.location)
         this.sLen = sLen;                                   //side length
         this.s = s;                                         //number of sides
         this.sAngle = sAngle;                               //...
