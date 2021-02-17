@@ -1,25 +1,34 @@
 import { Geometry } from "./geometry.js";
-
+import { RegularPolygon} from "./regularPolygon.js"
 const canvasElem = document.getElementById('canvas');
 const sidesRangeElem = document.getElementById('sides');
-const sidesInfo = document.getElementById("sides-info");
 const sideLengthSlider = document.getElementById("length");
+const angleSlider = document.getElementById("angle");
+
+const sidesInfo = document.getElementById("sides-info");
 const sideLengthInfo = document.getElementById("length-info");
+const angleInfo = document.getElementById("angle-info");
+let prevTime;
 
-const sidesText = "Number of sides: ";
-const lengthText = "size: ";
-
+let angle = angleSlider.value;
 let sideAmount = sidesRangeElem.value;
 let sideLength = sideLengthSlider.value;
-let prevTime;
-let geometry = new Geometry(canvasElem.width/2, canvasElem.height/2, 3, 20, 60);
+
+let geometry = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sideAmount, sideLength/sideAmount, angle);
 
 
+const angleText = "angle: ";
+const sidesText = "number of sides: ";
+const sideLengthText = "side length: ";
 
-sidesInfo.textContent = `${sidesText} ${geometry.sides}`
-sideLengthSlider.value = geometry.sideLengths;
-sideLengthInfo.textContent = `${lengthText} ${geometry.sideLengths}`
+let mouseState = false;
 
+
+sideLengthSlider.value = geometry.sLen;
+
+sidesInfo.textContent = `${sidesText} ${geometry.s}`
+sideLengthInfo.textContent = `${sideLengthText} ${geometry.sLen}`
+angleInfo.textContent = `${angleText} ${geometry.sAngle}`
 
 sidesRangeElem.addEventListener("input", () => {
     resizeGeometry();
@@ -30,21 +39,36 @@ sideLengthSlider.addEventListener("input", () => {
 
 });
 
-canvasElem.addEventListener("mousedown", function(e) {
-    getCursorPosition(canvasElem, e)
+angleSlider.addEventListener("input", () => {
+    geometry.sAngle = angleSlider.value;
+    angleInfo.textContent = `${angleText} ${geometry.sAngle}`
+
+})
+
+canvasElem.addEventListener("mousemove", function(e) {
+    if (mouseState) {
+        getCursorPosition(canvasElem, e)
+    }
+    
     
 })
 
+window.addEventListener("mousedown", () => {
+    mouseState = true;
+});
 
+window.addEventListener("mouseup", () => {
+    mouseState = false;
+});
 
 function resizeGeometry() {
     sideAmount = sidesRangeElem.value;
     sideLength = sideLengthSlider.value;
-    geometry.sides = sideAmount;
-    geometry.internalAngle = (geometry.determineAngle(geometry.sides));
-    geometry.sideLengths = sideLengthSlider.value / sideAmount;
+    geometry.s = sideAmount;
+    geometry.intAngle = (geometry.determineAngle(geometry.s));
+    geometry.sLen = sideLengthSlider.value / sideAmount;
     sidesInfo.textContent = `${sidesText} ${sideAmount}`;
-    sideLengthInfo.textContent = `${lengthText} ${sideLength}`;
+    sideLengthInfo.textContent = `${sideLengthText} ${sideLength/sideAmount}`;
 }
 
 function getCursorPosition(canvasElem, event) {
