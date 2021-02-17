@@ -88,6 +88,6 @@ export class Geometry {
         } if (this.startingAngle > 360) {
             this.startingAngle = this.startingAngle%360;
         }
-        this.startingAngle -= Math.PI*dt;
+        //this.startingAngle += 1*dt;
     }
 }

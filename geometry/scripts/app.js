@@ -7,7 +7,7 @@ const sideLengthSlider = document.getElementById("length");
 const sideLengthInfo = document.getElementById("length-info");
 
 const sidesText = "Number of sides: ";
-const lengthText = "side length: ";
+const lengthText = "size: ";
 
 let sideAmount = sidesRangeElem.value;
 let sideLength = sideLengthSlider.value;
@@ -22,19 +22,12 @@ sideLengthInfo.textContent = `${lengthText} ${geometry.sideLengths}`
 
 
 sidesRangeElem.addEventListener("input", () => {
-    sideAmount = sidesRangeElem.value;
-    geometry.sides = sideAmount;
-    geometry.internalAngle = (geometry.determineAngle(geometry.sides));
-    
-    sidesInfo.textContent = `${sidesText} ${sideAmount}`;
+    resizeGeometry();
 });
 
 sideLengthSlider.addEventListener("input", () => {
-    sideLength = sideLengthSlider.value;
-    geometry.sideLengths = sideLength;
-    
-    
-    sideLengthInfo.textContent = `${lengthText} ${sideLength}`;
+    resizeGeometry();
+
 });
 
 canvasElem.addEventListener("mousedown", function(e) {
@@ -43,6 +36,16 @@ canvasElem.addEventListener("mousedown", function(e) {
 })
 
 
+
+function resizeGeometry() {
+    sideAmount = sidesRangeElem.value;
+    sideLength = sideLengthSlider.value;
+    geometry.sides = sideAmount;
+    geometry.internalAngle = (geometry.determineAngle(geometry.sides));
+    geometry.sideLengths = sideLengthSlider.value / sideAmount;
+    sidesInfo.textContent = `${sidesText} ${sideAmount}`;
+    sideLengthInfo.textContent = `${lengthText} ${sideLength}`;
+}
 
 function getCursorPosition(canvasElem, event) {
     const rect = canvasElem.getBoundingClientRect()
