@@ -3,8 +3,6 @@ export class Helper {
 
     }
     static isMouseDown = false;
-    static mouseX = 0;
-    static mouseX = 0;
 
     static getRandomInt(min, max) {
         min = Math.ceil(min);

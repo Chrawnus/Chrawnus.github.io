@@ -6,11 +6,14 @@ export class Geometry {
         this.x = x;
         this.y = y;
         this.points = points;
-        this.sideLengths = [];
-        this.sideNumbers;
+        this.sideLength;
+        this.externalAngle;
+        this.sides;
         this.centroid;
-        this.createRandomShape(5);
+        this.createRandomRegularPolygon(Helper.getRandomInt(3, 12));
     }
+
+    determineAngle = (sideNumber) => 180 * (sideNumber - 2) / sideNumber;
 
     drawShape(ctx, points) {
         ctx.beginPath();
@@ -27,9 +30,42 @@ export class Geometry {
         ctx.closePath();
     }
 
-    createRandomShape(sides, sideLength = () => Helper.getRandomInt(30, 100)) {
-        for (let i = 0; i < sides; i++) {
-            console.log(sideLength());
+    createRandomRegularPolygon(sides, sideLength = Helper.getRandomInt(15, 30)) {
+        this.sides = sides;
+        this.sideLength = sideLength;
+
+        this.externalAngle = (180 - this.determineAngle(this.sides));
+        this.points = this.getPolygonVertexCoords(this.sides, this.x, this.y, this.sideLength, this.externalAngle)
+    }
+
+    getPolygonVertexCoords(sideNumber, x, y, sideLength, externalAngle) {
+        let originPoint = new Point2d(x, y);
+        let pArr = [];
+
+        let point = this.getCoordFromAngle(x, y, sideLength, externalAngle);
+
+        pArr[0] = originPoint;
+        for (let i = 0; i < sideNumber - 1; i++) {
+            const p = new Point2d(point[0], point[1]);
+            pArr.push(p);
+            
+            point = this.getCoordFromAngle(point[0], point[1], sideLength, externalAngle * (i + 2));
+        }
+        return pArr;
+    }
+
+    getCoordFromAngle(x, y, sideLength, externalAngle) {
+        const externalAngleRadians = (externalAngle) * (Math.PI / 180);
+        let x2 = sideLength * (Math.sin(externalAngleRadians));
+        let y2 = Math.sqrt((sideLength) ** 2 - (x2 ** 2));
+        if (externalAngle > 90 && externalAngle < 180) {
+            return [x + x2, y - y2];
+        } else if (externalAngle >= 180 && externalAngle < 270) {
+            return [x + x2, y - y2];
+        } else if (externalAngle > 270 && externalAngle < 360) {
+            return [x + x2, y + y2];
+        } else {
+            return [x + x2, y + y2];
         }
     }
 }
