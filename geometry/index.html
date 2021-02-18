@@ -11,20 +11,20 @@
 
 <body>
     <div class="wrapper">
-
+        <canvas id="canvas" width="780" height="780">
+            Your browser does not support the canvas element!
+        </canvas>
     
     
         <div class="UI">
-            <canvas id="canvas" width="780" height="780">
-                Your browser does not support the canvas element!
-            </canvas>
-            <input type="number" min="3" max="36" value="3" id="sides">
+
+            <input class="UI-element" type="number" min="3" max="36" value="3" id="sides">
             <p id="sides-info"></p>
     
-            <input type="range" min="1" max="3000" value="300" id="length">
+            <input class="UI-element" type="range" min="1" max="3000" value="300" id="length">
             <p id="length-info"></p>
     
-            <input type="range" step = "0.0175" min="0" max="0" value="0" id="angle">
+            <input class="UI-element" type="range" step = "0.0175" min="0" max="0" value="0" id="angle">
             <p id="angle-info"></p>
         </div>
     </div>

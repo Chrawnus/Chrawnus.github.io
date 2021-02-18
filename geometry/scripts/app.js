@@ -1,7 +1,10 @@
+import { Helper } from "./helperFunctions.js";
 import { Point2d } from "./Point2d.js";
 import { Geometry } from "./geometry.js";
 import { RegularPolygon} from "./regularPolygon.js"
-const canvasElem = document.getElementById('canvas');
+
+
+export const canvasElem = document.getElementById('canvas');
 const sRangeElem = document.getElementById('sides');
 const sLenSlider = document.getElementById("length");
 const aSlider = document.getElementById("angle");
@@ -12,43 +15,47 @@ const aInfo = document.getElementById("angle-info");
 
 const sText = "number of sides: ";
 const slText = "side length: ";
+
 const aText = "angle: ";
 
-let numPoints = getRandomInt(3, 13);
-let points = [];
+let numPoints = Helper.getRandomInt(3, 13);
+let start = new Point2d(250, 345);
+let points = [start];
 
-for (let i = 0; i < numPoints; i++) {
-    const point = new Point2d(getRandomInt(30, canvasElem.width-30), getRandomInt(30, canvasElem.height-30))
+/* for (let i = 0; i < numPoints; i++) {
+    const point = new Point2d(Helper.getRandomInt(30, canvasElem.width-30), Helper.getRandomInt(30, canvasElem.height-30))
     
     points.push(point);
-}
+} */
 console.log(points);
 
-//let geom = new Geometry(points[0].x, points[0].y, points);
-
-
+let geom = new Geometry(start.x, start.y, points);
 
 let prevTime;
-let mBtnState = false;
 
 let sQuant = 3;
 let sLen = 500;
+let angle = 0;
 
 let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, sQuant, sLen/sQuant, 0);
+sRangeElem.value = polygon.sideNumber;
 sLenSlider.value = polygon.sideLength;
-sLen = sLenSlider.value;
+aSlider.value = polygon.rotationAngle;
 
-sInfo.textContent = `${sText} ${polygon.sideNumber}`
-slInfo.textContent = `${slText} ${polygon.sideLength}`
-aInfo.textContent = `${aText} ${polygon.rotationAngle}`
+sQuant = polygon.sideNumber;
+sLen = polygon.sideLength;
+angle = polygon.rotationAngle;
+
+sInfo.textContent = `${sText} ${sQuant}`
+slInfo.textContent = `${slText} ${sLen.toFixed(2)}`
+aInfo.textContent = `${aText} ${angle.toFixed(2)}`
 
 aSlider.step = `${1 * Math.PI/180}`
 aSlider.max = `${Math.PI * 2}`;
-aSlider.addEventListener("input", () => {
-    polygon.rotationAngle = aSlider.value;
-    aInfo.textContent = `${aText} ${polygon.rotationAngle}`
-});
 
+aSlider.addEventListener("input", () => {
+    resizeGeom();
+});
 
 sRangeElem.addEventListener("input", () => {
     resizeGeom();
@@ -59,12 +66,12 @@ sLenSlider.addEventListener("input", () => {
 });
 
 canvasElem.addEventListener("mousemove", function(e) {
-    if (mBtnState) {
-        getCursorPos(canvasElem, e)
+    if (Helper.isMouseDown) {
+        let {x, y} = 0;
+        ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
+        [polygon.x, polygon.y] = [x, y]; 
     } 
 });
-
-mPressedFunction();
 
 requestAnimationFrame(gameLoop);
 
@@ -89,7 +96,7 @@ function draw(dt) {
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     polygon.draw(ctx, dt);
-    //geom.drawShape(ctx, geom.points);
+    geom.drawShape(ctx, geom.points);
 }
 
 function getDelta(now) {
@@ -99,37 +106,20 @@ function getDelta(now) {
     return dt;
 }
 
-function mPressedFunction() {
-    window.addEventListener("mousedown", () => {
-        mBtnState = true;
-    });
-
-    window.addEventListener("mouseup", () => {
-        mBtnState = false;
-    });
-}
-
 function resizeGeom() {
     sQuant = sRangeElem.value;
     sLen = sLenSlider.value;
+    angle = aSlider.value;
+    
     polygon.sideNumber = sQuant;
+    polygon.sideLength = sLen/sQuant;
+    polygon.rotationAngle = angle;
+    
     polygon.internalAngle = (polygon.determineAngle(polygon.sideNumber));
-    polygon.sideLength = sLenSlider.value / sQuant;
+    
     sInfo.textContent = `${sText} ${sQuant}`;
-    slInfo.textContent = `${slText} ${sLen/sQuant}`;
+    slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
+    aInfo.textContent = `${aText} ${parseFloat(angle).toFixed(2)}`
 }
 
-function getCursorPos(canvasElem, event) {
-    const rect = canvasElem.getBoundingClientRect()
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    polygon.x = x;
-    polygon.y = y;
-}
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-}
 
