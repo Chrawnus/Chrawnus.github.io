@@ -6,8 +6,8 @@ export class Geometry {
         this.x = x;
         this.y = y;
         this.points = points;
-        this.sideLength;
-        this.externalAngle;
+        this.sideLengths = [];
+        this.externalAngles = [];
         this.sides;
         this.centroid;
         this.createRandomRegularPolygon(Helper.getRandomInt(3, 12));
@@ -30,11 +30,13 @@ export class Geometry {
         ctx.closePath();
     }
 
-    createRandomRegularPolygon(sides, sideLength = Helper.getRandomInt(15, 30)) {
+    createRandomRegularPolygon(sides, sideLength = () => Helper.getRandomInt(15, 30), angle = () => Helper.getRandomInt(0, 360)) {
         this.sides = sides;
-        this.sideLength = sideLength;
+        for (let i = 0; i < sides; i++) {
+            this.sideLengths.push(sideLength());
+            this.externalAngles.push(angle());
+        }
 
-        this.externalAngle = (180 - this.determineAngle(this.sides));
         this.points = this.getPolygonVertexCoords(this.sides, this.x, this.y, this.sideLength, this.externalAngle)
     }
 

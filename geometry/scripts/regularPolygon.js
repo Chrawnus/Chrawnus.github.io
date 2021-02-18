@@ -100,7 +100,7 @@ export class RegularPolygon extends Geometry {
 
 
     update(dt) {
-        this.rotationAngle += 1*(Math.PI/180)*dt;
+        this.rotationAngle += 1*(Math.PI/180);
     }
 
     getRegularPolygonPoints(center, sideNumber, sideLength) {

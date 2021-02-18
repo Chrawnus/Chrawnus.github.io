@@ -6,17 +6,13 @@ import { RegularPolygon} from "./regularPolygon.js"
 const canvasElem = document.getElementById('canvas');
 const sRangeElem = document.getElementById('sides');
 const sLenSlider = document.getElementById("length");
-const aSlider = document.getElementById("angle");
-aSlider.step = `${1 * Math.PI/180}`
-aSlider.max = `${Math.PI * 2}`;
 
 const sInfo = document.getElementById("sides-info");
 const slInfo = document.getElementById("length-info");
-const aInfo = document.getElementById("angle-info");
 
 const sText = "number of sides: ";
 const slText = "side length: ";
-const aText = "angle: ";
+
 
 //let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
 //let points = [start];
@@ -27,7 +23,7 @@ let prevTime;
 
 let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
 
-/* resizeGeom(); */
+resizeGeom();
 
 requestAnimationFrame(gameLoop);
 
@@ -39,27 +35,24 @@ canvasElem.addEventListener("mousemove", function(e) {
     } 
 });
 
-/* document.addEventListener('input', event => {
-    if (event.target === aSlider || event.target === sRangeElem || event.target === sLenSlider) {
+document.addEventListener('input', event => {
+    if (event.target === sRangeElem || event.target === sLenSlider) {
         resizeGeom();
     } 
 
-}); */
+});
 
 function resizeGeom() {
     const sQuant = sRangeElem.value;
     const sLen = sLenSlider.value;
-    const angle = aSlider.value;
-    
+
     polygon.sideNumber = sQuant;
     polygon.sideLength = sLen/sQuant;
-    polygon.rotationAngle = angle;
-    
+
     polygon.internalAngle = (polygon.determineAngle(polygon.sideNumber));
     
     sInfo.textContent = `${sText} ${sQuant}`;
     slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
-    aInfo.textContent = `${aText} ${parseFloat(angle).toFixed(2)}`
 }
 
 function gameLoop(now) {
