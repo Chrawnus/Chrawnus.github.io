@@ -18,16 +18,16 @@ const sText = "number of sides: ";
 const slText = "side length: ";
 const aText = "angle: ";
 
-let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
-let points = [start];
+//let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
+//let points = [start];
 
-let geom = new Geometry(start.x, start.y, points);
+//let geom = new Geometry(start.x, start.y, points);
 
 let prevTime;
 
 let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
 
-resizeGeom();
+/* resizeGeom(); */
 
 requestAnimationFrame(gameLoop);
 
@@ -39,12 +39,13 @@ canvasElem.addEventListener("mousemove", function(e) {
     } 
 });
 
-document.addEventListener('input', event => {
+/* document.addEventListener('input', event => {
     if (event.target === aSlider || event.target === sRangeElem || event.target === sLenSlider) {
         resizeGeom();
     } 
 
-})
+}); */
+
 function resizeGeom() {
     const sQuant = sRangeElem.value;
     const sLen = sLenSlider.value;
@@ -82,7 +83,7 @@ function draw(dt) {
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     polygon.draw(ctx, dt);
-    geom.drawShape(ctx, geom.points);
+    //geom.drawShape(ctx, geom.points);
 }
 
 function getDelta(now) {
