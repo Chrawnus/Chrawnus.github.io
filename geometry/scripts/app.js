@@ -14,35 +14,35 @@ const sText = "number of sides: ";
 const slText = "side length: ";
 
 
-//let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
-//let points = [start];
+let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
+let points = [start];
 
-//let geom = new Geometry(start.x, start.y, points);
+let geom = new Geometry(start.x, start.y, points);
 
 let prevTime;
 
-let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
+//let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
 
-resizeGeom();
+//resizeGeom();
 
 requestAnimationFrame(gameLoop);
 
-canvasElem.addEventListener("mousemove", function(e) {
+/* canvasElem.addEventListener("mousemove", function(e) {
     if (Helper.isMouseDown) {
         let {x, y} = 0;
         ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
         [polygon.x, polygon.y] = [x, y]; 
     } 
-});
+}); */
 
-document.addEventListener('input', event => {
+/* document.addEventListener('input', event => {
     if (event.target === sRangeElem || event.target === sLenSlider) {
         resizeGeom();
     } 
 
-});
+}); */
 
-function resizeGeom() {
+/* function resizeGeom() {
     const sQuant = sRangeElem.value;
     const sLen = sLenSlider.value;
 
@@ -53,7 +53,7 @@ function resizeGeom() {
     
     sInfo.textContent = `${sText} ${sQuant}`;
     slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
-}
+} */
 
 function gameLoop(now) {
     let dt = getDelta(now);
@@ -63,7 +63,7 @@ function gameLoop(now) {
 }
 
 function update(dt) {
-    polygon.update(dt);
+    //polygon.update(dt);
 }
 
 function physics(dt) {
@@ -75,8 +75,8 @@ function draw(dt) {
     ctx.clearRect(0, 0, 600, 480);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
-    polygon.draw(ctx, dt);
-    //geom.drawShape(ctx, geom.points);
+    //polygon.draw(ctx, dt);
+    geom.drawShape(ctx, geom.points);
 }
 
 function getDelta(now) {
