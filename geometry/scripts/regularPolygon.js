@@ -1,3 +1,4 @@
+import { Helper } from "./helperFunctions.js";
 import { Geometry } from "./geometry.js";
 import { Point2d } from "./Point2d.js";
 
@@ -90,15 +91,16 @@ export class RegularPolygon extends Geometry {
     drawCenter(ctx, center) {
         ctx.beginPath();
         ctx.moveTo(center.x, center.y);
-        ctx.arc(center.x, center.y, 5, 0, Math.PI * 2, true);
+        ctx.arc(center.x, center.y, 2, 0, Math.PI * 2, true);
         ctx.fill();
         ctx.stroke();
+        ctx.closePath();
     }
 
 
 
     update(dt) {
-        //this.rotationAngle += 1*(Math.PI/180);
+        this.rotationAngle += 1*(Math.PI/180);
     }
 
     getRegularPolygonPoints(center, sideNumber, sideLength) {
