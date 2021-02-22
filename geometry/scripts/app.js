@@ -4,6 +4,7 @@ import { Geometry } from "./geometry.js";
 import { RegularPolygon} from "./regularPolygon.js"
 
 const canvasElem = document.getElementById('canvas');
+
 const sRangeElem = document.getElementById('sides');
 const sLenSlider = document.getElementById("length");
 
@@ -17,32 +18,33 @@ const slText = "side length: ";
 let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
 let points = [start];
 
-let geom = new Geometry(start.x, start.y, points);
 
+let geom = new Geometry(start.x, start.y, points);
+geom.createRandomPolygon(Helper.getRandomInt(3, 12));
 let prevTime;
 
-//let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
+let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
 
-//resizeGeom();
+resizeGeom();
 
 requestAnimationFrame(gameLoop);
 
-/* canvasElem.addEventListener("mousemove", function(e) {
+canvasElem.addEventListener("mousemove", function(e) {
     if (Helper.isMouseDown) {
         let {x, y} = 0;
         ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
         [polygon.x, polygon.y] = [x, y]; 
     } 
-}); */
+});
 
-/* document.addEventListener('input', event => {
+document.addEventListener('input', event => {
     if (event.target === sRangeElem || event.target === sLenSlider) {
         resizeGeom();
     } 
 
-}); */
+});
 
-/* function resizeGeom() {
+function resizeGeom() {
     const sQuant = sRangeElem.value;
     const sLen = sLenSlider.value;
 
@@ -53,7 +55,7 @@ requestAnimationFrame(gameLoop);
     
     sInfo.textContent = `${sText} ${sQuant}`;
     slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
-} */
+}
 
 function gameLoop(now) {
     let dt = getDelta(now);
@@ -63,21 +65,35 @@ function gameLoop(now) {
 }
 
 function update(dt) {
-    //polygon.update(dt);
+    polygon.update(dt);
 }
 
 function physics(dt) {
     getPhysicsDelta(dt);
 }
 
+
 function draw(dt) {
     const ctx = canvasElem.getContext('2d');
+
     ctx.clearRect(0, 0, 600, 480);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
-    //polygon.draw(ctx, dt);
-    geom.drawShape(ctx, geom.points);
+    polygon.draw(ctx, dt);
+    geom.drawShape(dt, ctx, geom.points);
+    geom.drawIntersectionPoints(ctx, geom.intersectionP);
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, 5, 0, Math.PI*2);
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "green";
+    ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
+    
 }
+
 
 function getDelta(now) {
     if (!prevTime) { prevTime = now; }

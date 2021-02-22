@@ -1,6 +1,5 @@
 import { Helper } from "./helperFunctions.js";
 import { Point2d } from "./Point2d.js";
-
 export class Geometry {
     constructor(x, y, points) {
         this.x = x;
@@ -10,22 +9,68 @@ export class Geometry {
         //this.externalAngles = [];
         this.sides;
         this.centroid;
-        this.createRandomPolygon(Helper.getRandomInt(3, 12));
+        
+        this.test = true;
+        this.intersectionP;
+        this.lastAngle;
     }
 
     determineAngle = (sideNumber) => 180 * (sideNumber - 2) / sideNumber;
 
-    drawShape(ctx, points) {
+    drawShape(dt, ctx, points) {
+        let start = this.points[0];
+        let end = this.points[this.points.length - 1];
+        let len = this.points.length;
+        let angle1 = this.lastAngle;
+        for (let i = 1; i < len - 2; i++) {
+            let intersects = this.intersects(start, end, this.points[i], this.points[i + 1]);
+            while (intersects) {
+                console.log(intersects)
+                console.log("!")
+                angle1 -= 1;
+                if (angle1 > 360) {
+                    angle1 = angle1 % 360;
+                } else if (angle1 < 0) {
+                    angle1 = 360 + angle1;
+                }
+                console.log(angle1)
+                this.points[len - 1] = this.getCoordFromAngle(start.x, start.y, this.sideLengths[this.sideLengths.length - 1], angle1)
+                end = this.points[len - 1];
+                intersects = this.intersects(start, end, this.points[i], this.points[i + 1]);
+            }
+
+        }
         ctx.beginPath();
+        while (this.test) {
+
+            this.test = false;
+        }
+
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 0; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
-            ctx.stroke();
+
         }
         ctx.lineTo(points[0].x, points[0].y);
         ctx.fillStyle = "red";
         ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+    }
+
+    drawIntersectionPoints(ctx, iP) {
+        ctx.beginPath();
+
+        for (let i = 0; i < iP.length; i++) {
+            ctx.moveTo(iP[i].x, iP[i].y)
+            ctx.arc(iP[i].x, iP[i].y, 4, 0, Math.PI * 2, false)
+        }
+        ctx.fillStyle = "green";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 0.05;
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
@@ -36,68 +81,53 @@ export class Geometry {
         for (let i = 0; i < sides; i++) {
             this.sideLengths.push(sideLength());
         }
-
+        let angle1;
         let p;
         for (let i = 0; i < this.sides; i++) {
+
             if (p === undefined) {
                 p = new Point2d(this.x, this.y);
             } else {
-                p = this.getCoordFromAngle(p.x, p.y, this.sideLengths[i], angle() * (2 + i))
-                if (this.points.length > 1) {
-                    for (let i = 0; i < this.points.length - 1; i++) {
-                        let sharePoints = this.shareAnyPoint(p, this.points[this.points.length - 1], this.points[i], this.points[i + 1])
-                        if (!sharePoints) {
-                            let intersects = this.intersects(p, this.points[this.points.length - 1], this.points[i], this.points[i + 1])
-                            if (intersects) {
-                                console.log("!")
-                                p = this.getCoordFromAngle(p.x, p.y, this.sideLengths[i], angle() * (2 + i));
-                                intersects = this.intersects(p, this.points[this.points.length - 1], this.points[i], this.points[i + 1])
-                            }
-                        }
-                    }
+
+                angle1 = angle();
+
+                p = this.getCoordFromAngle(p.x, p.y, this.sideLengths[i], angle1 * (2 + i))
+                if (i === this.sides - 1) {
+
+
                 }
+                this.points.push(p);
             }
-            this.points.push(p);
-        }
-    }
-
-
-    getPolygonVertexCoords(sideNumber, x, y, sideLengths, externalAngle) {
-        let originPoint = new Point2d(x, y);
-        let pA = [];
-        let point = this.getCoordFromAngle(x, y, sideLengths[0], externalAngle);
-
-        pA[0] = originPoint;
-        for (let i = 0; i < sideNumber - 1; i++) {
-
-            point = this.getCoordFromAngle(point[0], point[1], sideLengths[i + 1], externalAngle * (i + 2));
-            externalAngle = Helper.getRandomInt(0, 360);
-            let p = new Point2d(point[0], point[1]);
-            if (i > 1) {
-                for (let j = 0; j < pA.length - 1; j++) {
-
-                    let sharePoint = this.shareAnyPoint(p, pA[pA.length - 1], pA[j], pA[j + 1]);
-                    if (!sharePoint) {
-                        let intersects = this.intersects(p, pA[pA.length - 1], pA[j], pA[j + 1]);
-                        if (intersects) {
-                            console.log("!")
-                            externalAngle = Helper.getRandomInt(0, 361);
-                            point = this.getCoordFromAngle(point[0], point[1], sideLengths[i + 1], externalAngle * (i + 2));
-                            p = new Point2d(point[0], point[1]);
-                            intersects = this.intersects(p, pA[pA.length - 1], pA[j], pA[j + 1]);
-                        }
-                    }
-                }
-            }
-            pA.push(p);
-
+            this.lastAngle = angle1;
 
         }
-        console.log(sideNumber)
-        console.log(pA.length)
-        return pA;
+        console.log(this.lastAngle);
+        let intersectionP = [];
+        this.createIntersectionPoints(intersectionP);
+        this.intersectionP = intersectionP;
+
     }
 
+    createIntersectionPoints(intersectionP) {
+        /*         for (let i = 0; i < this.points.length-2; i++) {
+        
+          
+        
+                    let p1 = this.points[i]
+        
+                    for (let j = i; j < this.points.length-1; j++) {
+        
+                        let p2 = this.points[j]
+        
+                        let intersP = this.intersects(p1, this.points[i+1], p2, this.points[j+1]);
+                        intersectionP.push(intersP)
+                    }
+        
+                } */
+        intersectionP.push(this.points[0])
+        intersectionP.push(this.points[this.points.length - 1])
+    }
+    // [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]
     getCoordFromAngle(x, y, sideLength, externalAngle) {
         const externalAngleRadians = (externalAngle) * (Math.PI / 180);
         let x2 = sideLength * (Math.sin(externalAngleRadians));
@@ -124,78 +154,37 @@ export class Geometry {
     }
 
     intersects(p1, p2, p3, p4) {
-        let a1, a2, b1, b2, c1, c2;
-        let r1, r2, r3, r4;
-        let denom, offset, num;
 
-        // Compute a1, b1, c1, where line joining points 1 and 2
-        // is "a1 x + b1 y + c1 = 0".
-        a1 = p2.y - p1.y;
-        b1 = p1.x - p2.x;
-        c1 = (p2.x * p1.y) - (p1.x * p2.y);
-
-        // Compute r3 and r4.
-        r3 = ((a1 * p3.x) + (b1 * p3.y) + c1);
-        r4 = ((a1 * p4.x) + (b1 * p4.y) + c1);
-
-        // Check signs of r3 and r4. If both point 3 and point 4 lie on
-        // same side of line 1, the line segments do not intersect.
-        if ((r3 !== 0) && (r4 !== 0) && sameSign(r3, r4)) {
-            return 0; //return that they do not intersect
+        // Check if none of the lines are of length 0
+        if ((p1.x === p2.x && p1.y === p2.y) || (p3.x === p4.x && p3.y === p4.y)) {
+            return false
         }
 
-        // Compute a2, b2, c2
-        a2 = p4.y - p3.y;
-        b2 = p3.x - p4.x;
-        c2 = (p4.x * p3.y) - (p3.x * p4.y);
+        const denominator = ((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y))
 
-        // Compute r1 and r2
-        r1 = (a2 * p1.x) + (b2 * p1.y) + c2;
-        r2 = (a2 * p2.x) + (b2 * p2.y) + c2;
-
-        // Check signs of r1 and r2. If both point 1 and point 2 lie
-        // on same side of second line segment, the line segments do
-        // not intersect.
-        if ((r1 !== 0) && (r2 !== 0) && (sameSign(r1, r2))) {
-            return 0; //return that they do not intersect
+        // Lines are parallel
+        if (denominator === 0) {
+            return false
         }
 
-        //Line segments intersect: compute intersection point.
-        denom = (a1 * b2) - (a2 * b1);
-        //collinear  
+        let ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator
+        let ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator
 
-        if (denom === 0) {
-            const xBetween = (p1.x >= p3.x && p1.x <= p4.x || x2 >= p3.x && x2 <= p4.x || p3.x <= p1.x && p3.x >= x2);
-            const yBetween = (p1.y >= p3.y && p1.y <= p4.y || p2.y >= p3.y && p2.y <= p4.y || p3.y <= p1.y && p3.y >= p2.y);
-            if (xBetween && yBetween) {
-                return 1;
-            }
-            return 0;
+        // is the intersection along the segments
+        if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+            return false
         }
 
-        if (denom === 0) {
-            return 1; //collinear
-        }
-        // lines_intersect
-        return 1; //lines intersect, return true
+        // Return a object with the x and y coordinates of the intersection
+        let x = p1.x + ua * (p2.x - p1.x)
+        let y = p1.y + ua * (p2.y - p1.y)
+
+
+        return true;
     }
 
-    shareAnyPoint(A, B, C, D) {
-        if (this.isPointOnTheLine(A, B, C)) {
-            return true;
-        }
-        else if (this.isPointOnTheLine(A, B, D)) {
-            return true;
-        }
-        else if (this.isPointOnTheLine(C, D, A)) {
-            return true;
-        }
-        else if (this.isPointOnTheLine(C, D, B)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+    isPointOnSegment(p1, p2, x, y) {
+        return Math.min(p1.x, p2.x) <= x && Math.max(p1.x, p2.x) >= x && Math.min(p1.y, p2.y) <= y && Math.max(p1.y, p2.y) >= y;
     }
 
     isPointOnTheLine(A, B, P) {
@@ -223,27 +212,4 @@ function sameSign(a, b) {
     return Math.sign(a) == Math.sign(b);
 }
 
-
-/* turn(p1, p2, p3) {
-    const [a, b, c, d, e, f] = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y];
-    const A = (f - b) * (c - a);
-    const B = (d - b) * (e - a);
-    return (A > B + Number.EPSILON) ? 1 : (A + Number.EPSILON < B) ? -1 : 0;
-}
-
-intersects(p1, p2, p3, p4) {
-    return ((this.turn(p1, p3, p4) != this.turn(p2, p3, p4)) && (this.turn(p1, p2, p3) != this.turn(p1, p2, p4)));
-} */
-
-/*     intersects(x1, y1, x2, y2, x3, y3, x4, y4) {
-        let determinant, gamma, lambda;
-        determinant = (x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1);
-        if (determinant === 0) {
-            return false;
-        } else {
-            lambda = ((y4 - y3) * (x4 - x1) + (x3 - x4) * (y4 - y1)) / determinant;
-            gamma = ((y1 - y2) * (x4 - x1) + (x2 - x1) * (y4 - y1)) / determinant;
-            return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
-        }
-    } */
 
