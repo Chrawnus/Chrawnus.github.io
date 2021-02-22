@@ -1,7 +1,7 @@
 import { Ball } from "/physics-sandbox/scripts/Ball.js";
 //import { Platform } from "/physics-sandbox/scripts/Platform.js";
 import { PhysicsWorld } from "/physics-sandbox/scripts/PhysicsWorld.js";
-import { QuadTree } from "/physics-sandbox/scripts/QuadTree.js";
+
 
 
 export const canvasElem = document.getElementById('canvas');
@@ -10,25 +10,16 @@ let prevTime;
 let accumulator = 0;
 
 let gameObjects = [];
-let collisionSectors = {
-    "topSector1": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": 0 },
-    "topSector2": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": 0 },
-    "topSector3": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": 0, "y": (canvasElem.height / 2)},
-    "sector4": { "width": canvasElem.width / 2, "height": canvasElem.height / 2, "x": (canvasElem.width / 2), "y": (canvasElem.height / 2)},
-}
-
-let collisionIndex = Object.keys(collisionSectors);
 
 const world = new PhysicsWorld();
 
-for (let i = 0; i < 500; i++) {
-    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 0.4, 2));
+for (let i = 0; i < 25; i++) {
+    gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), 8, 24));
     //gameObjects.push(new Ball(getRandomInt(15, canvasElem.width - 15), getRandomInt(15, canvasElem.height - 15), getRandomInt(50,100), 25));
 }
 
 world.add(gameObjects);
 
-let quadTree = new QuadTree(world.children);
 
 requestAnimationFrame(gameLoop);
 
@@ -53,7 +44,7 @@ function update(dt) {
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update(dt);
     }
-    quadTree.manageTree();
+
 }
 
 function physics(dt) {
@@ -70,11 +61,6 @@ function draw() {
     //platform1.draw(ctx);
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].draw(ctx);
-    }
-    for (let i = 0; i < collisionIndex.length; i++) {
-        ctx.beginPath();
-        ctx.rect(collisionSectors[collisionIndex[i]].x, collisionSectors[collisionIndex[i]].y, collisionSectors[collisionIndex[i]].width, collisionSectors[collisionIndex[i]].height)
-        ctx.stroke();
     }
 }
 
