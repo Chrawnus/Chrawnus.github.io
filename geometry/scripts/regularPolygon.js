@@ -28,8 +28,8 @@ export class RegularPolygon extends Geometry {
         return center;
     }
 
-    //Determine the endpoint of a line given an angle 
-    //and a starting point [x, y]
+    //Determine the endpoint of a line given an angle, length,
+    //and starting point [x, y]
     getCoordFromAngle(x, y, sideLength, externalAngle) {
         const externalAngleRadians = (externalAngle) * (Math.PI / 180);
         let x2 = sideLength * (Math.sin(externalAngleRadians));
@@ -82,14 +82,10 @@ export class RegularPolygon extends Geometry {
     }
 
     drawShape(ctx, points) {
-        
-
         ctx.beginPath();
-
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 0; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
-
         }
         ctx.lineTo(points[0].x, points[0].y);
         ctx.fillStyle = "red";
@@ -98,7 +94,6 @@ export class RegularPolygon extends Geometry {
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-
     }
 
     centerOrigin(x, y) {

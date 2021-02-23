@@ -2,6 +2,7 @@ import { Helper } from "./helperFunctions.js";
 import { Point2d } from "./Point2d.js";
 import { Geometry } from "./geometry.js";
 import { RegularPolygon} from "./regularPolygon.js"
+import { Circle } from "./circle.js";
 
 const canvasElem = document.getElementById('canvas');
 
@@ -14,6 +15,7 @@ const slInfo = document.getElementById("length-info");
 const sText = "number of sides: ";
 const slText = "side length: ";
 
+let prevTime;
 
 let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
 let points = [start];
@@ -21,19 +23,24 @@ let points = [start];
 
 let geom = new Geometry(start.x, start.y, points);
 geom.createRandomPolygon(Helper.getRandomInt(3, 12));
-let prevTime;
 
 let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
+
+let circle = new Circle(250, 250, 100, "red", "black", 2, 4);
 
 resizeGeom();
 
 requestAnimationFrame(gameLoop);
 
 canvasElem.addEventListener("mousemove", function(e) {
+    let {x, y} = 0;
+    ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
+    let point = findClosestPointToMouse(x, y, geom);
+    geom.getSelectedPoint(point);
     if (Helper.isMouseDown) {
-        let {x, y} = 0;
-        ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
-        [polygon.x, polygon.y] = [x, y]; 
+
+        [point.x, point.y] = [x, y]; 
+        
     } 
 });
 
@@ -81,16 +88,9 @@ function draw(dt) {
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     polygon.draw(ctx, dt);
     geom.drawShape(dt, ctx, geom.points);
-    geom.drawIntersectionPoints(ctx, geom.intersectionP);
+    geom.drawActivePoint(ctx);
 
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.arc(0, 0, 5, 0, Math.PI*2);
-    ctx.strokeStyle = "black";
-    ctx.fillStyle = "green";
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
+    circle.draw(ctx);
     
 }
 
@@ -100,4 +100,22 @@ function getDelta(now) {
     let dt = (now - prevTime) / 1000;
     prevTime = now;
     return dt;
+}
+
+function findClosestPointToMouse(mouseX, mouseY, geom){
+    let distance;
+    let index;
+    for (let i = 0; i < geom.points.length; i++) {
+        let point = geom.points[i];
+        if (distance === undefined) {
+            distance = Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2);
+            index = i;point
+        } else {
+            if (Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2) < distance) {
+                distance = Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2);
+                index = i;
+            }
+        }
+    }
+    return geom.points[index];
 }
