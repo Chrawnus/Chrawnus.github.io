@@ -1,4 +1,4 @@
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Point2d } from "./Point2d.js";
 export class Geometry {
     constructor(x, y, points) {
@@ -10,17 +10,19 @@ export class Geometry {
         this.intersectionP;
         this.lastAngle;
         this.activePoint;
+        this.activePoints;
     }
 
     determineAngle = (sideNumber) => 180 * (sideNumber - 2) / sideNumber;
 
-    drawShape(dt, ctx, points) {
+    draw(ctx) {
+        this.drawShape(ctx, this.points)
+        this.drawActivePoint(ctx);
+        this.drawActivePoints(ctx);
+    }
+
+    drawShape(ctx, points) {
         ctx.beginPath();
-        while (this.test) {
-
-            this.test = false;
-        }
-
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 0; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
@@ -50,6 +52,24 @@ export class Geometry {
             ctx.closePath();
         }
 
+    }
+
+    drawActivePoints(ctx) {
+        let points = this.activePoints;
+        if (points) {
+            for (let i = 0; i < points.length; i++) {
+                const point = points[i];
+                ctx.beginPath();
+                ctx.moveTo(point.x, point.y);
+                ctx.arc(point.x, point.y, 4, 0, Math.PI*2);
+                ctx.fillStyle = "green";
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 0.5;
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
     }
 
     createRandomPolygon(sides = () => Helper.getRandomInt(3, 12), sideLength = () => Helper.getRandomInt(15, 30), angle = () => Helper.getRandomInt(0, 360)) {
@@ -82,6 +102,7 @@ export class Geometry {
     getSelectedPoint(point) {
         this.activePoint = new Point2d(point.x, point.y);
     }
+
 
     getCoordFromAngle(x, y, sideLength, externalAngle) {
         const externalAngleRadians = (externalAngle) * (Math.PI / 180);

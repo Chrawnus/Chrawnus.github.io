@@ -1,47 +1,55 @@
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
+import { keyArr } from "./KeyArr.js";
+import { canvasElem, sRangeElem, sLenSlider, sInfo, sText, slInfo, slText } from "./DOMElements.js";
+import { findClosestPointToMouse, getNewPoint, getPolygonLines } from "./mGeomManip.js";
+import { geom, circle, polygon } from "./geomObjects.js";
 import { Point2d } from "./Point2d.js";
-import { Geometry } from "./geometry.js";
-import { RegularPolygon} from "./regularPolygon.js"
-import { Circle } from "./circle.js";
-
-const canvasElem = document.getElementById('canvas');
-
-const sRangeElem = document.getElementById('sides');
-const sLenSlider = document.getElementById("length");
-
-const sInfo = document.getElementById("sides-info");
-const slInfo = document.getElementById("length-info");
-
-const sText = "number of sides: ";
-const slText = "side length: ";
 
 let prevTime;
-
-let start = new Point2d(canvasElem.width/2, canvasElem.height/2);
-let points = [start];
-
-
-let geom = new Geometry(start.x, start.y, points);
-geom.createRandomPolygon(Helper.getRandomInt(3, 12));
-
-let polygon = new RegularPolygon(canvasElem.width/2, canvasElem.height/2, 3, 500, 0);
-
-let circle = new Circle(250, 250, 100, "red", "black", 2, 4);
 
 resizeGeom();
 
 requestAnimationFrame(gameLoop);
 
-canvasElem.addEventListener("mousemove", function(e) {
+canvasElem.addEventListener("click", function(e) {
     let {x, y} = 0;
     ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
     let point = findClosestPointToMouse(x, y, geom);
-    geom.getSelectedPoint(point);
-    if (Helper.isMouseDown) {
+    geom.getSelectedPoint(point[0]);
 
-        [point.x, point.y] = [x, y]; 
-        
-    } 
+    console.log(keyArr);
+    if (keyArr.includes('Shift')) {
+        let lines = getPolygonLines(geom);
+        console.log(lines)
+    } else {
+        if (keyArr.includes('Control') && geom.points.length > 3) {
+            geom.points.splice(geom.points.indexOf(point[0]), 1);
+            point[0] = getNewPoint(point, x, y);
+        } else {
+            [point.x, point.y] = [x, y]; 
+            point[0] = getNewPoint(point, x, y);
+        }
+    }
+
+});
+
+canvasElem.addEventListener("mousemove", function (e) {
+    let { x, y } = 0;
+    ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
+    
+    if (keyArr.includes('Shift')) {
+        geom.activePoint = undefined;
+        geom.activePoints = findClosestPointToMouse(x, y, geom);
+
+    } else {
+        geom.activePoints = undefined;
+        let point = findClosestPointToMouse(x, y, geom);
+        geom.getSelectedPoint(point[0]);
+        if (Helper.isMouseDown) {
+            [point[0].x, point[0].y] = [x, y];
+        }
+    }
+
 });
 
 document.addEventListener('input', event => {
@@ -50,19 +58,6 @@ document.addEventListener('input', event => {
     } 
 
 });
-
-function resizeGeom() {
-    const sQuant = sRangeElem.value;
-    const sLen = sLenSlider.value;
-
-    polygon.sideNumber = sQuant;
-    polygon.sideLength = sLen/sQuant;
-
-    polygon.internalAngle = (polygon.determineAngle(polygon.sideNumber));
-    
-    sInfo.textContent = `${sText} ${sQuant}`;
-    slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
-}
 
 function gameLoop(now) {
     let dt = getDelta(now);
@@ -87,11 +82,8 @@ function draw(dt) {
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
     polygon.draw(ctx, dt);
-    geom.drawShape(dt, ctx, geom.points);
-    geom.drawActivePoint(ctx);
-
-    circle.draw(ctx);
-    
+    geom.draw(ctx);
+    circle.draw(ctx); 
 }
 
 
@@ -102,20 +94,15 @@ function getDelta(now) {
     return dt;
 }
 
-function findClosestPointToMouse(mouseX, mouseY, geom){
-    let distance;
-    let index;
-    for (let i = 0; i < geom.points.length; i++) {
-        let point = geom.points[i];
-        if (distance === undefined) {
-            distance = Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2);
-            index = i;point
-        } else {
-            if (Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2) < distance) {
-                distance = Math.sqrt((point.x-mouseX)**2+(point.y-mouseY)**2);
-                index = i;
-            }
-        }
-    }
-    return geom.points[index];
+function resizeGeom() {
+    const sQuant = sRangeElem.value;
+    const sLen = sLenSlider.value;
+
+    polygon.sideNumber = sQuant;
+    polygon.sideLength = sLen/sQuant;
+
+    polygon.internalAngle = (polygon.determineAngle(polygon.sideNumber));
+    
+    sInfo.textContent = `${sText} ${sQuant}`;
+    slInfo.textContent = `${slText} ${parseFloat(sLen/sQuant).toFixed(2)}`;
 }

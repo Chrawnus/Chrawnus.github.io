@@ -1,5 +1,5 @@
-import { Helper } from "./helperFunctions.js";
-import { Geometry } from "./geometry.js";
+import { Helper } from "./HelperFunctions.js";
+import { Geometry } from "./Geometry.js";
 import { Point2d } from "./Point2d.js";
 
 export class RegularPolygon extends Geometry {
