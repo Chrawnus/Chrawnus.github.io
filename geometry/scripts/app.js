@@ -1,7 +1,7 @@
 import { Helper } from "./HelperFunctions.js";
 import { keyArr } from "./KeyArr.js";
 import { canvasElem, sRangeElem, sLenSlider, sInfo, sText, slInfo, slText } from "./DOMElements.js";
-import { findClosestPointToMouse, getNewPoint, getPolygonLines } from "./mGeomManip.js";
+import { addNewPoint, closestPoint, findClosestPointToMouse, getNewPoint, getPolygonLines } from "./mGeomManip.js";
 import { geom, circle, polygon } from "./geomObjects.js";
 import { Point2d } from "./Point2d.js";
 
@@ -14,15 +14,15 @@ requestAnimationFrame(gameLoop);
 canvasElem.addEventListener("click", function(e) {
     let {x, y} = 0;
     ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
-    let point = findClosestPointToMouse(x, y, geom);
-    geom.getSelectedPoint(point[0]);
-
-    console.log(keyArr);
+    const mouseC = new Point2d(x, y);
+    let point;
     if (keyArr.includes('Shift')) {
-        let lines = getPolygonLines(geom);
-        console.log(lines)
+        addNewPoint(geom, mouseC);
+        geom.activePoint = undefined;
+        geom.activePoint = closestPoint(geom, mouseC);
     } else {
-        if (keyArr.includes('Control') && geom.points.length > 3) {
+        point = findClosestPointToMouse(x, y, geom);
+        if (keyArr.includes('Control') && geom.points.length > 1) {
             geom.points.splice(geom.points.indexOf(point[0]), 1);
             point[0] = getNewPoint(point, x, y);
         } else {
@@ -36,10 +36,10 @@ canvasElem.addEventListener("click", function(e) {
 canvasElem.addEventListener("mousemove", function (e) {
     let { x, y } = 0;
     ({ x, y } = Helper.getCursorPos(canvasElem, e, x, y));
-    
+    let mouseC = new Point2d(x, y);
     if (keyArr.includes('Shift')) {
         geom.activePoint = undefined;
-        geom.activePoints = findClosestPointToMouse(x, y, geom);
+        geom.activePoint = closestPoint(geom, mouseC);
 
     } else {
         geom.activePoints = undefined;

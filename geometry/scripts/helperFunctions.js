@@ -1,3 +1,5 @@
+import { Point2d } from "./Point2d.js";
+
 export class Helper {
     constructor() {
 
@@ -15,7 +17,7 @@ export class Helper {
         x = event.clientX - rect.left;
         y = event.clientY - rect.top;
 
-        return { x, y }
+        return new Point2d(x, y)
     }
 
     static numDigits(x) {
