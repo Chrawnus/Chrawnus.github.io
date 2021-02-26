@@ -1,4 +1,5 @@
 import { Helper } from "./HelperFunctions.js";
+import { GeomHelper } from "./geomHelpers.js";
 import { keyArr } from "./KeyArr.js";
 import { canvasElem } from "./DOMElements.js";
 import { Point2d } from "./Point2d.js";
@@ -21,7 +22,8 @@ canvasElem.addEventListener("click", function(e) {
     } else {
         
         if (keyArr.includes('Control') && point.points.length !== 0) {
-           point.removePoint();
+            const delPoint = GeomHelper.findClosestPointToMouse(x, y, point);
+            point.removePoint(delPoint);
         } else if (!(keyArr.includes('Control'))) {
            point.addPoint(mouseC);
         }

@@ -1,9 +1,12 @@
 import { GeomHelper } from "./geomHelpers.js";
+import { keyArr } from "./KeyArr.js";
+import { LineSegment } from "./lineSegment.js";
 
 export class Geometry {
     constructor(strokeStyle, fillStyle, lineWidth, filled, stroked) {
         this.pos;
         this.points = [];
+        this.sides = [];
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
         this.lineWidth = lineWidth;
@@ -12,32 +15,70 @@ export class Geometry {
     }
 
     addPoint(position) {
+
         const len = this.points.length;
         if (len === 0) {
             this.pos = position;
             this.points.push(position);
         } else {
             if (len < 2) {
+                this.sides.push(new LineSegment(this.points[len - 1], position));
                 this.points.push(position);
                 this.pos = GeomHelper.getLineSegmentMiddle(this.points[0], this.points[1]);
+            }
+
+            if (len >= 2 && keyArr.includes('Shift')) {
+
+                this.sides.push(new LineSegment(this.points[len - 1], position));
+                this.sides.push(new LineSegment(position, this.points[0]));
+                this.points.push(position);
+            } else if (!(keyArr.includes('Shift'))) {
+                this.sides.push(new LineSegment(this.points[len - 1], position));
+                this.points.push(position);
+
+
+
             }
         }
     }
 
-    removePoint() {
+    removePoint(point) {
+        
         const len = this.points.length;
+        const index = this.getIndex(point);
+
         if (len === 1) {
-            this.points.splice(0, 1);
+            this.points.splice(index, 1);
             this.pos = undefined;
+        } else if (len === 2) {
+            this.points.splice(index, 1);
+            this.pos = this.points[0];
+            this.sides.splice(0, 1);
         }
     }
 
+    getIndex(point) {
+        for (let i = 0; i < this.points.length; i++) {
+            const pointInPoints = this.points[i];
+            if (pointInPoints.x === point.x && pointInPoints.y === point.y) {
+                return i;
+            }
+        }
+        const index = getIndex(point);
+        return index;
+    }
+
+
     draw(ctx) {
         const len = this.points.length;
+        this.drawOrigin(ctx);
         if (len === 1) {
             this.drawPoint(ctx);
         } else if (len === 2) {
             this.drawLine(ctx);
+        } else if (len > 2) {
+            this.drawShape(ctx);
+
         }
     }
 
@@ -57,30 +98,41 @@ export class Geometry {
     }
 
     drawLine(ctx) {
-        const len = this.points.length;
-        ctx.beginPath();
+        const len = this.sides.length;
         for (let i = 0; i < len; i++) {
-            const point = this.points[i];
-            if (i === 0) {
-                ctx.moveTo(point.x, point.y);
-            } else {
-                ctx.lineTo(point.x, point.y);
-            }
+            const side = this.sides[i];
+            side.draw(ctx, this.strokeStyle, this.lineWidth);
         }
-        ctx.fillStyle = this.fillStyle;
-        ctx.strokeStyle = this.strokeStyle;
-        ctx.lineWidth = this.lineWidth;
-        ctx.fill();
-        ctx.stroke();
-        ctx.closePath();
+    }
 
+    drawShape(ctx) {
+        const len = this.sides.length;
+        for (let i = 0; i < len; i++) {
+            const side = this.sides[i];
+            side.draw(ctx, this.strokeStyle, this.lineWidth);
+        }
+    }
+
+    drawOrigin(ctx) {
+        if (this.pos !== undefined) {
+            const x = this.pos.x;
+            const y = this.pos.y;
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2, false);
+            ctx.fillStyle = "green";
+            ctx.strokeStyle = this.strokeStyle;
+            ctx.lineWidth = this.lineWidth;
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+        }
     }
 
     fillOrStroke() {
         if (this.stroked) {
- 
+
             if (this.filled) {
-  
+
             }
         } else {
             if (this.filled) {
