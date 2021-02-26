@@ -30,21 +30,24 @@ export function getNewPoint(point, x, y) {
     return point;
 }
 
-export function closestPoint(geom, point) {
+
+export function closestPoint(geom, point, pressed) {
     const lines = getPolygonLines(geom);
     const nearestLine = distanceToClosestLine(lines, point);
-   
     const coord = getClosestPoint(point, nearestLine[0], nearestLine[1])
-    return coord;
+    if (!pressed) {
+        return coord;
+    } else {
+        geom.points.splice(geom.points.indexOf(nearestLine[1]), 0, coord);
+    }
+    
 }
 
+
 export function addNewPoint(geom, point) {
-    
     const lines = getPolygonLines(geom);
     const nearestLine = distanceToClosestLine(lines, point, undefined);
-   
     const coord = getClosestPoint(point, nearestLine[0], nearestLine[1])
-
     geom.points.splice(geom.points.indexOf(nearestLine[1]), 0, coord);
 }
 

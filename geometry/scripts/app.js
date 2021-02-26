@@ -17,12 +17,12 @@ canvasElem.addEventListener("click", function(e) {
     const mouseC = new Point2d(x, y);
     let point;
     if (keyArr.includes('Shift')) {
-        addNewPoint(geom, mouseC);
+        closestPoint(geom, mouseC, true);
         geom.activePoint = undefined;
         geom.activePoint = closestPoint(geom, mouseC);
     } else {
         point = findClosestPointToMouse(x, y, geom);
-        if (keyArr.includes('Control') && geom.points.length > 1) {
+        if (keyArr.includes('Control') && geom.points.length > 2) {
             geom.points.splice(geom.points.indexOf(point[0]), 1);
             point[0] = getNewPoint(point, x, y);
         } else {
@@ -39,7 +39,7 @@ canvasElem.addEventListener("mousemove", function (e) {
     let mouseC = new Point2d(x, y);
     if (keyArr.includes('Shift')) {
         geom.activePoint = undefined;
-        geom.activePoint = closestPoint(geom, mouseC);
+        geom.activePoint = closestPoint(geom, mouseC, false);
 
     } else {
         geom.activePoints = undefined;
