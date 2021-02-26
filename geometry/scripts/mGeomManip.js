@@ -9,7 +9,7 @@ export function findClosestPointToMouse(mouseX, mouseY, geom) {
         let point = geom.points[i];
         if (distance === undefined) {
             distance = Math.sqrt((point.x - mouseX) ** 2 + (point.y - mouseY) ** 2);
-            closest = i; point;
+            closest = i; 
         } else {
             if (Math.sqrt((point.x - mouseX) ** 2 + (point.y - mouseY) ** 2) < distance) {
                 distance = Math.sqrt((point.x - mouseX) ** 2 + (point.y - mouseY) ** 2);
@@ -32,7 +32,7 @@ export function getNewPoint(point, x, y) {
 
 export function closestPoint(geom, point) {
     const lines = getPolygonLines(geom);
-    const nearestLine = distanceToClosestLine(lines, point, undefined);
+    const nearestLine = distanceToClosestLine(lines, point);
    
     const coord = getClosestPoint(point, nearestLine[0], nearestLine[1])
     return coord;
