@@ -37,7 +37,6 @@ function previewFile() {
 
 }
 
-
 function fileValidation() { 
     const filePath = imagePreview.value; 
   
