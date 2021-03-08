@@ -1,6 +1,6 @@
 const image = document.getElementById('output');
 
-let imgData = window.localStorage.getItem("imgData")
+let imgData = window.sessionStorage.getItem("imgData")
 
 let base64str = imgData.split('base64,')[1];
 let decoded = atob(base64str);

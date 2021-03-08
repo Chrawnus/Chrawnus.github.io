@@ -25,9 +25,9 @@ function previewFile() {
             // convert image file to base64 string
             image.src = reader.result;
             (function (global) {
-                    global.localStorage.setItem("imgData", reader.result);
+                    global.sessionStorage.setItem("imgData", reader.result);
             }(window));
-            console.log(window.localStorage.getItem("imgData"))
+            console.log(window.sessionStorage.getItem("imgData"))
         }, false);
     
         if (imageFile) {
