@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Categorization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <img id="preview" width=200>
+        <form action="results.html" method="GET" style="text-align: center;" enctype="multipart/form-data">
+            <div class="input-div">
+                <p><label for="file" style="cursor: pointer;">Ladda Upp Bild</label></p>
+                <input type="file" accept="image/*" name="filename" id="file" style="display: none;">
+            </div>
+            <div class="input-div">
+                <label for="name">Bildens titel</label>
+                <input type="text" name="name" id="name" placeholder="bildnamn" required>
+            </div>
+            <div class="input-div">
+                <label for="source">Bildkälla</label>
+                <input type="text" name="source" id="source" placeholder="source">
+            </div>
+            <div class="input-div">
+                <label for="description">Beskriv bildens innehåll</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <button type="submit">Skicka</button>
+        </form>
+    </div>
+    
+    <script src="./scripts/app.js" type="module"></script>
+</body>
+
+</html>
