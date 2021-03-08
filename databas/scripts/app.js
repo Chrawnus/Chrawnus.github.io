@@ -25,28 +25,28 @@ function previewFile() {
             // convert image file to base64 string
             image.src = reader.result;
             (function (global) {
-                    global.sessionStorage.setItem("imgData", reader.result);
+                global.sessionStorage.setItem("imgData", reader.result);
             }(window));
             console.log(window.sessionStorage.getItem("imgData"))
         }, false);
-    
+
         if (imageFile) {
             reader.readAsDataURL(imageFile);
         }
     }
 }
 
-function fileValidation() { 
-    const filePath = imagePreview.value; 
-  
+function fileValidation() {
+    const filePath = imagePreview.value;
+
     // Allowing file type 
-    const allowedExtensions =  
-            /(\.jpg|\.jpeg|\.svg|\.WebP|\.png)$/i; 
-      
-    if (!allowedExtensions.exec(filePath)) { 
-        alert('Invalid file type'); 
-        imagePreview.value = ''; 
-        return; 
-    }  
-} 
+    const allowedExtensions =
+        /(\.jpg|\.jpeg|\.svg|\.WebP|\.png)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Invalid file type');
+        imagePreview.value = '';
+        return;
+    }
+}
 
