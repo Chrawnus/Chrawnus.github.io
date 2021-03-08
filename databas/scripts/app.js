@@ -34,7 +34,6 @@ function previewFile() {
             reader.readAsDataURL(imageFile);
         }
     }
-
 }
 
 function fileValidation() { 
