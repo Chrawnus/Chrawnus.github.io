@@ -15,19 +15,40 @@ const imagePreview = document.getElementById('file');
 imagePreview.addEventListener("change", previewFile)
 
 function previewFile() {
-    const image = document.getElementById('preview')
-    const reader = new FileReader();
-    let imageFile = document.getElementById('file').files[0];
-    reader.addEventListener("load", function () {
-        // convert image file to base64 string
-        image.src = reader.result;
-        (function (global) {
-                global.localStorage.setItem("imgData", reader.result);
-        }(window));
-        console.log(window.localStorage.getItem("imgData"))
-    }, false);
-
-    if (imageFile) {
-        reader.readAsDataURL(imageFile);
+    if (fileValidation()) {
+        return;
+    } else {
+        const image = document.getElementById('preview')
+        const reader = new FileReader();
+        let imageFile = document.getElementById('file').files[0];
+        reader.addEventListener("load", function () {
+            // convert image file to base64 string
+            image.src = reader.result;
+            (function (global) {
+                    global.localStorage.setItem("imgData", reader.result);
+            }(window));
+            console.log(window.localStorage.getItem("imgData"))
+        }, false);
+    
+        if (imageFile) {
+            reader.readAsDataURL(imageFile);
+        }
     }
+
 }
+
+
+function fileValidation() { 
+    const filePath = imagePreview.value; 
+  
+    // Allowing file type 
+    const allowedExtensions =  
+            /(\.jpg|\.jpeg|\.svg|\.WebP|\.png)$/i; 
+      
+    if (!allowedExtensions.exec(filePath)) { 
+        alert('Invalid file type'); 
+        imagePreview.value = ''; 
+        return; 
+    }  
+} 
+
