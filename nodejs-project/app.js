@@ -1,8 +1,10 @@
 const fs = require('fs');
 const util = require('util');
 
+// read JSON file and convert to javascript-code
 let info = fs.readFileSync('./data/info.json');
 let processed = JSON.parse(info);
+
 
 let obj6 = {
     "val0": 6,
@@ -12,18 +14,18 @@ let obj6 = {
     "val4": true
 }
 
-console.log(isObjInArr(processed, obj6))
-
-function isObjInArr(arrayOfObj, obj) {
+//function that loops through an array of objects and checks every obj in array for equality with compObj
+function isObjInArr(arrayOfObj, compObj) {
     for (let i = 0; i < arrayOfObj.length; i++) {
         const obj1 = arrayOfObj[i];
-        if(util.isDeepStrictEqual(obj1, obj)) {
+        if(util.isDeepStrictEqual(obj1, compObj)) {
             return true;
         }
     }
     return false;
     
 }
+
 
 if (!(isObjInArr(processed, obj6))) {
     processed.push(obj6);
@@ -32,8 +34,6 @@ if (!(isObjInArr(processed, obj6))) {
 }
 
 let processedJSON = JSON.stringify(processed, null, 4);
-
-console.log(processedJSON); 
 
 
 fs.writeFile('./data/info.json', processedJSON, err => {
