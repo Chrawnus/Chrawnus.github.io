@@ -27,6 +27,8 @@ function isObjInArr(arrayOfObj, obj) {
 
 if (!(isObjInArr(processed, obj6))) {
     processed.push(obj6);
+} else {
+    processed.pop();
 }
 
 let processedJSON = JSON.stringify(processed, null, 4);
