@@ -22,19 +22,27 @@ function isObjInArr(arrayOfObj, compObj) {
             return true;
         }
     }
-    return false;
-    
+    return false;   
 }
 
+//get index of compObj in arrayOfObj
+function getIndexOfObj(arrayOfObj, compObj) {
+    for (let i = 0; i < arrayOfObj.length; i++) {
+        const obj1 = arrayOfObj[i];
+        if(util.isDeepStrictEqual(obj1, compObj)) {
+            return i;
+        }
+    }  
+}
 
 if (!(isObjInArr(processed, obj6))) {
     processed.push(obj6);
 } else {
-    processed.pop();
+    const index = getIndexOfObj(processed, obj6); 
+    processed.splice(index, 1);
 }
 
 let processedJSON = JSON.stringify(processed, null, 4);
-
 
 fs.writeFile('./data/info.json', processedJSON, err => {
     if (err) {
