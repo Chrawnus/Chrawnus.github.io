@@ -15,14 +15,6 @@ app.use(express.urlencoded(expressURLEncodedOptions));
 
 app.listen(port, () => console.log(`listening at port ${port}`));
 
-
-app.post('/', (req, res) => {
-    console.log(req.body);
-    res.status(201).send('Created User');
-});
-
-
-
 app.post('/api', (req, res) => {
     console.log(req.body);
     const data = req.body;
