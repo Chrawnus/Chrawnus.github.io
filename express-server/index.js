@@ -15,7 +15,7 @@ app.use(express.urlencoded(expressURLEncodedOptions));
 
 app.listen(port, () => console.log(`listening at port ${port}`));
 
-app.get('/api', (req, res) => {
+app.post('/api', (req, res) => {
     console.log(req.body);
     const data = req.body;
     res.json({

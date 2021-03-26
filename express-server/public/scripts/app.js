@@ -32,7 +32,7 @@ function displayPositionInDOM(latElem, lat, lonElem, lon) {
 async function fetchLocationData(lat, lon) {
     const data = { lat, lon };
     const options = {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-type': 'application/json'
         },
