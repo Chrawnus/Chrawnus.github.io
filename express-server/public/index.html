@@ -10,11 +10,23 @@
 
 <body>
 
-
-    <p>
-        latitude: <span id="latitude"></span>&deg; <br />
-        longitude: <span id="longitude"></span>&deg;
-    </p>
+    <div class="wrapper">
+        <form id="image-form" method="POST" style="text-align: center;" enctype="multipart/form-data">
+            <div class="input-div">
+                <label for="name">Bildens titel</label>
+                <input type="text" name="name" id="name" placeholder="bildnamn" required>
+            </div>
+            <div class="input-div">
+                <label for="source">Bildkälla</label>
+                <input type="text" name="source" id="source" placeholder="source">
+            </div>
+            <div class="input-div">
+                <label for="description">Beskriv bildens innehåll</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <button type="submit">Skicka</button>
+        </form>
+    </div>
 
     <script src="./scripts/app.js" type="module"></script>
 </body>
