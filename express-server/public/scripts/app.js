@@ -9,6 +9,7 @@
 const { nameElem, sourceElem, descriptionElem, submitElem, imageFormElem } = getDomElements(); 
 
 imageFormElem.addEventListener('submit', () => {
+    event.preventDefault();
     const name = nameElem.value; 
     const source = sourceElem.value; 
     const description = descriptionElem.value;

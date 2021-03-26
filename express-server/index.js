@@ -5,39 +5,32 @@ const { urlencoded } = require('express');
 const app = express();
 const port = 3000;
 
-
-// read JSON file and convert to javascript-code
-let info = fs.readFileSync('./data/info.json');
-let processed = JSON.parse(info);
-
-let imgInfo;
-
-
 const expressJSONOptions = {
     limit: '1mb'
 };
 
 const expressURLEncodedOptions = {
-    extended: true
+    extended: false
 }
 
 app.use(express.static('public'));
 app.use(express.json(expressJSONOptions));
 app.use(express.urlencoded(expressURLEncodedOptions));
 
+
+// read JSON file and convert to javascript-code
+let info = fs.readFileSync('./data/info.json');
+let processed = JSON.parse(info);
+
 app.listen(port, () => console.log(`listening at port ${port}`));
-
-
 
 // POST method route
 app.post('/', (req, res) => {
-    imgInfo = req.body;
-
+    const imgInfo = req.body;
     if (!(isObjInArr(processed, imgInfo))) {
         processed.push(imgInfo);
-        console.log(processed, "hi");
     }
-    
+    console.log(processed);
     const processedJSON = JSON.stringify(processed, null, 4);
     fs.writeFile('./data/info.json', processedJSON, err => {
         if (err) {
@@ -48,7 +41,6 @@ app.post('/', (req, res) => {
     });
     //res.end();
 });
-
 //function that loops through an array of objects and checks every obj in array for equality with compObj
 function isObjInArr(arrayOfObj, compObj) {
     for (let i = 0; i < arrayOfObj.length; i++) {
