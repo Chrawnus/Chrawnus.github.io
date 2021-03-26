@@ -11,7 +11,7 @@
 <body>
 
     <div class="wrapper">
-        <form id="image-form" method="POST" style="text-align: center;" enctype="multipart/form-data">
+        <form action="api" id="image-form" method="POST" style="text-align: center;" enctype="multipart/form-data">
             <div class="input-div">
                 <label for="name">Bildens titel</label>
                 <input type="text" name="name" id="name" placeholder="bildnamn" required>
@@ -24,7 +24,7 @@
                 <label for="description">Beskriv bildens innehåll</label>
                 <textarea id="description" name="description"></textarea>
             </div>
-            <button type="submit">Skicka</button>
+            <button type="submit" id="submit-button">Skicka</button>
         </form>
     </div>
 

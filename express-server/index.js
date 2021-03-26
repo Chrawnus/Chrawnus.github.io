@@ -12,11 +12,12 @@ let processed = JSON.parse(info);
 
 
 
-const expressJSONOptions = { 
-    limit: '1mb'};
+const expressJSONOptions = {
+    limit: '1mb'
+};
 
 const expressURLEncodedOptions = {
-    extended: false 
+    extended: false
 }
 
 app.use(express.static('public'));
@@ -25,7 +26,7 @@ app.use(express.urlencoded(expressURLEncodedOptions));
 
 app.listen(port, () => console.log(`listening at port ${port}`));
 
-app.post('/api', (req, res) => {
+/* app.post('/api', (req, res) => {
     console.log(req.body);
     const data = req.body;
     res.json({
@@ -33,13 +34,12 @@ app.post('/api', (req, res) => {
         latitude: data.lat,
         longitude: data.lon
     }); 
-});
+}); */
 
 // POST method route
-app.post('/', (req, res) => {
-    res.send('POST request to the homepage')
-    console.log(res)
-  })
+app.post('/api', (req, res) => {
+    console.log(req.body)
+});
 
 
 let processedJSON = JSON.stringify(processed, null, 4);
