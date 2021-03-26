@@ -1,5 +1,6 @@
 //const reader = new FileReader();
 
+
 /* const loadFile = function(e) {	
     console.log(e.target.files)
     image.src = URL.createObjectURL(e.target.files[0]);
@@ -14,13 +15,18 @@ imageFormElem.addEventListener('submit', () => {
     
     const data = { name, source, description }
 
-    console.log(data);
+
 
     const options = {
         method: 'POST',
-        body: data
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     };
-    fetch('api', options);
+    console.log(data);
+    fetch('/', options);
     
 })
 
