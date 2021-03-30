@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skicka data till en server</title>
+</head>
+<body>
+    <form id="skicka" action="/data" method="GET">
+        <div>
+            <label for="name">Skriv ditt namn:</label>
+            <input type="text" id="name" name="namn"  placeholder="användarnamn"></input>
+        </div>
+        <div>
+            <label for="password">Lösenord:</label>
+            <input type="password" name="lösen" id="password" placeholder="lösenord">
+        </div>
+        <div>
+            <label for="email">E-post</label>
+            <input type="email" name="epost" id="email" placeholder="mail">
+        </div>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>
