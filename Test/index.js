@@ -4,6 +4,8 @@ const app = express();
 
 app.use(express.static("public")); //mappen som du lägger in index.html, style.css o.s.v.
 
+
+
 app.get('/data', function(req, res){
   const Name = req.query.namn;
   res.end(Name);
