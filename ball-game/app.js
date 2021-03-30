@@ -20,8 +20,8 @@ let objMovement = {
     "Right": player.velocity,
 }
 
-window.addEventListener("keydown", inputHelper.keyDownEventsHandler);
-window.addEventListener("keyup", inputHelper.keyUpEventsHandler);
+window.addEventListener("keydown", keyDownEventsHandler);
+window.addEventListener("keyup", keyUpEventsHandler);
 
 requestAnimationFrame(gameLoop);
 
