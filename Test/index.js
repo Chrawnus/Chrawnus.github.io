@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.static("public")); //mappen som du lägger in index.html, style.css o.s.v.
 
-mongoose.connect('mongodb://localhost:27017/db');
+mongoose.connect('mongodb://localhost:27017/db', { useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', function(err) {
