@@ -17,6 +17,13 @@ export class Helper {
         return {x, y};
     }
 
+    static getCursorPosAlt(x, y) {
+        const rect = document.querySelector('canvas').getBoundingClientRect();
+        x = clientX - rect.left;
+        y = clientY - rect.top;
+        return {x, y};
+    }
+
     static numDigits(x) {
         if (x > 2147483647) {
             return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
