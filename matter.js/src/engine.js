@@ -15,7 +15,7 @@ export const Engine = Matter.Engine,
 
 export const engine = Engine.create();
 
-
+let start;
 
 
 /* const render = Render.create({
@@ -64,10 +64,20 @@ let mouseConstraint = Matter.MouseConstraint.create(engine, {
 World.add(engine.world, [box1, ground, circle1, circle2, circle3, circle4, circle5, circle6, mouseConstraint]);
 //Render.run(render);
 
-function gameLoop() {
+function gameLoop(timestamp) {
+/*     if (start === undefined)
+        start = timestamp;
+    const elapsed = Math.floor(timestamp - start); */
+    
     playerUpdate();
     Engine.update(engine);
-    render();
+    if (!Math.floor(timestamp%2)) {
+        console.log(timestamp)
+        render();
+    }
+    
+
+
     requestAnimationFrame(gameLoop);
 }
 
