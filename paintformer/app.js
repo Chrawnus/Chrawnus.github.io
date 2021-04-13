@@ -1,9 +1,9 @@
-import { createPlatform, drawPlatforms } from "./lib/platforms.js";
+import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid } from "./lib/platforms.js";
 import { drawPlayer, updatePlayer, playerRect } from "./lib/player.js";
 
 export const canvas = document.querySelector('canvas');
-canvas.width = 800;
-canvas.height = 450;
+canvas.width = 480;
+canvas.height = 480;
 
 const context = canvas.getContext('2d');
 
@@ -15,9 +15,17 @@ const camera = {
     y: 0
 }
 
-createPlatform(200, canvas.height - 100, 120, 40);
-createPlatform(400, canvas.height - 40, 40, 40);
-createPlatform(500, canvas.height - 100, 40, 40, 'magenta');
+createTileGrid();
+
+for (let i = 0; i < tileGrid.length; i++) {
+    const tile = tileGrid[i];
+    if (tile.traversable < 0.25) {
+        createPlatform(tile.x, tile.y, 1, 1);
+    }
+    
+}
+
+
 
 //
 // Start game loop
@@ -42,7 +50,8 @@ function gameLoop() {
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+
+    drawTileGrid(context, camera)
     drawPlatforms(context, camera);
     drawPlayer(context, camera);
-
 }

@@ -14,18 +14,18 @@ export function createCanvas(height, width) {
     const wrapper = document.querySelector('.wrapper');
     wrapper.appendChild(canvas);
 }
-export function render() {
+export function render(camera) {
     const bodies = Composite.allBodies(engine.world);
     context.fillStyle = '#000';
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
     for (let i = 0; i < bodies.length; i += 1) {
         const vertices = bodies[i].vertices;
-        context.moveTo(vertices[0].x, vertices[0].y);
+        context.moveTo(vertices[0].x - camera.x, vertices[0].y - camera.y);
         for (var j = 1; j < vertices.length; j += 1) {
-            context.lineTo(vertices[j].x, vertices[j].y);
+            context.lineTo(vertices[j].x - camera.x, vertices[j].y - camera.y);
         }
-        context.lineTo(vertices[0].x, vertices[0].y);
+        context.lineTo(vertices[0].x - camera.x, vertices[0].y - camera.y);
     }
     context.lineWidth = 1;
     context.strokeStyle = '#999';

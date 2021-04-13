@@ -11,8 +11,9 @@ export const Engine = Matter.Engine,
     World = Matter.World,
     Bodies = Matter.Bodies,
     Body = Matter.Body,
-    Composite = Matter.Composite;
-
+    Composite = Matter.Composite,
+    Mouse = Matter.Mouse;
+    
 export const engine = Engine.create();
 
 let start;
@@ -33,6 +34,10 @@ circle4 = Bodies.circle(450, 40, 15),
 circle5 = Bodies.circle(450, 50, 15),
 circle6 = Bodies.circle(450, 60, 15);
 
+const camera = {
+    x: 0,
+    y: 0
+}
 
 
 function playerUpdate() {
@@ -68,15 +73,14 @@ function gameLoop(timestamp) {
 /*     if (start === undefined)
         start = timestamp;
     const elapsed = Math.floor(timestamp - start); */
-    
+    Mouse.setOffset(mouse, camera)
+    camera.x = circle1.position.x - canvas.width / 4;
     playerUpdate();
     Engine.update(engine);
-    if (!Math.floor(timestamp%2)) {
-        console.log(timestamp)
-        render();
-    }
-    
+    render(camera);
 
+    
+    
 
     requestAnimationFrame(gameLoop);
 }
