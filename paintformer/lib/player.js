@@ -4,15 +4,15 @@ import { platforms } from "./platforms.js";
 
 
 const startPos = {
-    x: -200,
-    y: 480 - 40
+    x: 120,
+    y: 0 - 24
 }
 
 export const playerRect = {
     x: startPos.x,
     y: startPos.y,
-    width: 32,
-    height: 32
+    width: 24,
+    height: 24
 };
 
 
@@ -33,7 +33,6 @@ export function updatePlayer() {
     jumpStrength = -12.4;
     if (grounded) {
         dblJumpTimer = 30;
-        console.log(dblJumpTimer)
     }
     vx = 0;
     vx -= getKey(keyCodes.leftArrow) ? speed : 0;
@@ -47,16 +46,14 @@ export function updatePlayer() {
         vy = jumpStrength;
         grounded = false;
         dblJumpTimer--;
-
-        console.log(dblJumpTimer)
     }
 
     moveCollideX(vx, playerRect, platforms, onCollideX)
     moveCollideY(vy, playerRect, platforms, onCollideY)
 
 
-    if (playerRect.y > 480 - playerRect.height) {
-        playerRect.y = 480 - playerRect.height;
+    if (playerRect.y > 1024 - playerRect.height) {
+        playerRect.y = 1024 - playerRect.height;
         vy = 0;
         grounded = true;
     }
@@ -68,8 +65,8 @@ export function updatePlayer() {
 export function drawPlayer(context, camera) {
     context.fillStyle = color;
     context.fillRect(
-        playerRect.x - camera.x,
-        playerRect.y - camera.y,
+        playerRect.x,
+        playerRect.y,
         playerRect.width,
         playerRect.height
     );

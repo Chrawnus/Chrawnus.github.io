@@ -1,9 +1,12 @@
-import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid } from "./lib/platforms.js";
+import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid, tileGridSize, platforms } from "./lib/platforms.js";
 import { drawPlayer, updatePlayer, playerRect } from "./lib/player.js";
 
+
+
 export const canvas = document.querySelector('canvas');
-canvas.width = 480;
-canvas.height = 480;
+canvas.width = 1024;
+canvas.height = 720;
+let playerPosCanvas = 0;
 
 const context = canvas.getContext('2d');
 
@@ -19,11 +22,25 @@ createTileGrid();
 
 for (let i = 0; i < tileGrid.length; i++) {
     const tile = tileGrid[i];
-    if (tile.traversable < 0.25) {
+    if (tile.traversable < 0.33) {
         createPlatform(tile.x, tile.y, 1, 1);
     }
-    
 }
+
+for (let i = 0; i < platforms.length; i++) {
+    const tile = platforms[i];
+    if (tileHasNoNeighbours(tile)) {
+        platforms.splice(platforms.indexOf(tile), 1)
+        i = i - 1;
+    }
+
+    if (tileIsUnreachable(tile)) {
+            platforms.splice(platforms.indexOf(tile), 1)
+            i = i - 1;
+    }
+
+}
+
 
 
 
@@ -32,6 +49,24 @@ for (let i = 0; i < tileGrid.length; i++) {
 //
 
 requestAnimationFrame(gameLoop);
+
+function tileIsUnreachable(tile) {
+    return (platforms.filter(e => e.x === tile.x && e.y === tile.y - 32).length > 0) &&
+        (platforms.filter(e => e.x === tile.x && e.y === tile.y + 32).length > 0) &&
+        (platforms.filter(e => e.x - 32 === tile.x && e.y === tile.y).length > 0) &&
+        (platforms.filter(e => e.x + 32 === tile.x && e.y === tile.y).length > 0);
+}
+
+function tileHasNoNeighbours(tile) {
+    return !(platforms.filter(e => e.x === tile.x - 32 && e.y === tile.y - 32).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x - 32 && e.y === tile.y).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x - 32 && e.y === tile.y + 32).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x && e.y === tile.y - 32).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x && e.y === tile.y + 32).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x + 32 && e.y === tile.y - 32).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x + 32 && e.y === tile.y).length > 0) &&
+        !(platforms.filter(e => e.x === tile.x + 32 && e.y === tile.y + 32).length > 0);
+}
 
 function gameLoop() {
     requestAnimationFrame(gameLoop);
@@ -42,16 +77,54 @@ function gameLoop() {
 
 
     updatePlayer();
-    camera.x = playerRect.x - canvas.width / 4;
+    playerPosCanvas = getPlayerPos(canvas);
+
+    if (playerPosCanvas.x > tileGridSize*0.03 && playerPosCanvas.x < tileGridSize*0.84) {
+        camera.x = playerRect.x - tileGridSize*0.03;
+    }
+
+    if (playerPosCanvas.y < canvas.height && playerPosCanvas.y > 0 + canvas.height*0.54) {
+        camera.y = playerRect.y - canvas.height *0.54;
+    } else if (playerPosCanvas.y < canvas.height*0.54 ) {
+        camera.y = -24;
+    } 
 
     //
     // Draw
     //
+    
+    draw();   
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
 
 
-    drawTileGrid(context, camera)
-    drawPlatforms(context, camera);
-    drawPlayer(context, camera);
+}
+
+function getPlayerPos(canvas) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: (playerRect.x - rect.left) / (rect.right - rect.left) * canvas.width,
+        y: (playerRect.y - rect.top) / (rect.bottom - rect.top) * canvas.height
+    };
+}
+
+function draw() {
+    context.setTransform(1,0,0,1,0,0);//reset the transform matrix as it is cumulative
+    context.clearRect(0, 0, canvas.width, canvas.height);//clear the viewport AFTER the matrix is reset
+
+    //Clamp the camera position to the world bounds while centering the camera around the player                                             
+    var camX = clamp(canvas.width/2 - playerRect.x, -tileGridSize*0.77, 0);
+    var camY = clamp(canvas.height/2 - playerRect.y, -332, 24);
+
+    context.translate( camX, camY );    
+
+    //Draw everything
+    drawTileGrid(context)
+    drawPlatforms(context);
+    drawPlayer(context);
+}
+
+function clamp(value, min, max){
+    if(value < min) return min;
+    else if(value > max) return max;
+    return value;
 }
