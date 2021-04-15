@@ -1,21 +1,22 @@
 export const platforms = [];
-
-const tileSize = {
-    width: 32,
-    height: 32
+export const tileSize = 64;
+const tileGridDimensions = {
+    width: tileSize,
+    height: tileSize
 }
 
-export const tileGridSize = 4096;
+export const tileGridSize = 16384;
 
 export const tileGrid = [];
 
-export function createPlatform(x, y, width, height, color = 'white') {
+export function createPlatform(x, y, width, height, color = 'white', unreachable = true) {
     platforms.push({
         x,
         y,
-        width: width * tileSize.width,
-        height: height * tileSize.height,
-        color
+        width: width * tileGridDimensions.width,
+        height: height * tileGridDimensions.height,
+        color,
+        unreachable
     });
 }
 
@@ -40,23 +41,31 @@ export function createTileGrid() {
     let y = 0;
     for (let i = 0; i < tileGridSize; i++) {
 
-        if (!(i % tileSize.height)) {
-            x += tileSize.width;
+        if (!(i % tileGridDimensions.height)) {
+            x += tileGridDimensions.width;
             y = 0;
         } else {
-            y += tileSize.height;
+            y += tileGridDimensions.height;
         }
 
-        tileGrid.push({ "width": tileSize.width, "height": tileSize.height, "x": x, "y": y, traversable: Math.random() })
+        tileGrid.push({ "width": tileGridDimensions.width, "height": tileGridDimensions.height, "x": x, "y": y, traversable: Math.random(), unreachable: true})
     }
 
 }
 
- export function drawTileGrid(ctx) {
+ export function drawTileGrid(context) {
     const grid = tileGrid;
     for (let i = 0; i < grid.length; i++) {
-        ctx.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
-        ctx.fillStyle = "red";
-        ctx.fillRect(grid[i].x, grid[i], grid[i].width, grid[i].height);
+        if (grid[i].unreachable) {
+            context.strokeStyle = 'red';
+        } else if (grid[i].traversable === 1) {
+            context.strokeStyle = 'blue';
+        } else {
+            context.strokeStyle = 'green';
+        }
+        
+        context.strokeRect(grid[i].x, grid[i].y, grid[i].width, grid[i].height);
+        context.fillStyle = "red";
+        context.fillRect(grid[i].x, grid[i], grid[i].width, grid[i].height);
     }
 }

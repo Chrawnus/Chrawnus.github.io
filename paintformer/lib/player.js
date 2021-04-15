@@ -4,8 +4,8 @@ import { platforms } from "./platforms.js";
 
 
 const startPos = {
-    x: 120,
-    y: 0 - 24
+    x: 64,
+    y: 512
 }
 
 export const playerRect = {
@@ -18,7 +18,8 @@ export const playerRect = {
 
 
 const gravity = 1;
-let jumpStrength = -12.4;
+const maxJumpStrength = -32;
+let jumpStrength = -12;
 const speed = 5;
 
 const color = 'lime';
@@ -26,14 +27,9 @@ const color = 'lime';
 let vx = 0;
 let vy = 0;
 let grounded = false;
-let dblJumpTimer = 30;
-let wallJumpTimer = 50;
 
 export function updatePlayer() {
-    jumpStrength = -12.4;
-    if (grounded) {
-        dblJumpTimer = 30;
-    }
+
     vx = 0;
     vx -= getKey(keyCodes.leftArrow) ? speed : 0;
     vx += getKey(keyCodes.rightArrow) ? speed : 0;
@@ -42,10 +38,10 @@ export function updatePlayer() {
     vy += gravity;
 
 
-    if (dblJumpTimer && getKey(keyCodes.upArrow)) {
+    if (getKey(keyCodes.upArrow) && jumpStrength > maxJumpStrength) {
+        jumpStrength -= maxJumpStrength/100;
         vy = jumpStrength;
         grounded = false;
-        dblJumpTimer--;
     }
 
     moveCollideX(vx, playerRect, platforms, onCollideX)
@@ -55,6 +51,7 @@ export function updatePlayer() {
     if (playerRect.y > 1024 - playerRect.height) {
         playerRect.y = 1024 - playerRect.height;
         vy = 0;
+        jumpStrength = -12;
         grounded = true;
     }
 };
@@ -76,13 +73,15 @@ export function drawPlayer(context, camera) {
 function onCollideX(rect, otherRect) {
     getKey(keyCodes.z) ? platforms.splice(platforms.indexOf(otherRect), 1) : 0;
     vx = 0;
-    
+    vy = 0;
+    jumpStrength = -12;
     return true;
 }
 
 function onCollideY(rect, otherRect) {
     getKey(keyCodes.z) ? platforms.splice(platforms.indexOf(otherRect), 1) : 0;
     if (vy >= 0) {
+        jumpStrength = -12;
         grounded = true;
     }
     vy = 0;
