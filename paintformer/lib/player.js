@@ -71,7 +71,6 @@ export function drawPlayer(context, camera) {
 
 
 function onCollideX(rect, otherRect) {
-    getKey(keyCodes.z) ? platforms.splice(platforms.indexOf(otherRect), 1) : 0;
     vx = 0;
     vy = 0;
     jumpStrength = -12;
@@ -79,7 +78,6 @@ function onCollideX(rect, otherRect) {
 }
 
 function onCollideY(rect, otherRect) {
-    getKey(keyCodes.z) ? platforms.splice(platforms.indexOf(otherRect), 1) : 0;
     if (vy >= 0) {
         jumpStrength = -12;
         grounded = true;

@@ -37,7 +37,9 @@ export function moveCollideY(distanceY, rect, collisionRects, collisionCallback)
                 ? rect.y + rect.height - colObj.y
                 : rect.y - (colObj.y + colObj.height)
             rect.y -= collisionOffset;
+
             colObj.color = 'magenta';
+
             rect.jumpStrength = -6.2;
         }
     }

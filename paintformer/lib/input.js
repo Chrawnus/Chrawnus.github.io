@@ -17,5 +17,6 @@ export const keyCodes = {
     upArrow: 'ArrowUp',
     rightArrow: 'ArrowRight',
     downArrow: 'ArrowDown',
-    z: 'z'
+    z: 'z',
+    x: 'x'
 }

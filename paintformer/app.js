@@ -1,5 +1,6 @@
-import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid, tileGridSize, platforms, tileSize } from "./lib/platforms.js";
+import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid, tileGridSize, platforms, tileSize, manageVisiblePlatforms } from "./lib/platforms.js";
 import { drawPlayer, updatePlayer, playerRect } from "./lib/player.js";
+import { getKey, keyCodes } from "./lib/input.js";
 
 
 
@@ -7,6 +8,9 @@ export const canvas = document.querySelector('canvas');
 canvas.width = 1024;
 canvas.height = 720;
 let playerPosCanvas = 0;
+
+
+
 
 const context = canvas.getContext('2d');
 
@@ -18,28 +22,30 @@ const camera = {
     y: 0
 }
 
+export const drawDistance = {
+    x: playerRect.x + playerRect.width / 2 - (canvas.width*1.5)/2,
+    y: playerRect.y + + playerRect.height / 2 - - (canvas.width*1.5)/2,
+    height: canvas.height * 0.4,
+    width: canvas.width * 0.4
+}
+
 createTileGrid();
 
 for (let i = 0; i < tileGrid.length; i++) {
     const tile = tileGrid[i];
-    if (tile.traversable < 0.33 && 
-        tile.y > 0 && 
-        tile.y < 960 && 
+    if (tile.traversable < 0.33 &&
+        tile.y > 0 &&
+        tile.y < 960 &&
         !(tile.y === 448 || tile.y === 512 || tile.y === 576)) {
         createPlatform(tile.x, tile.y, 1, 1);
     }
 }
 
-
-console.log(tileGrid[0].y)
-
-
+fourWayFloodFill(tileGrid[tileGrid.findIndex(e => e.x === tileSize && e.y === 512)]);
 pruneTileGrid();
 
 tileGrid[tileGrid.findIndex(e => e.x === tileSize && e.y === 512)].traversable = 1;
 
-
-console.log(platforms.length)
 
 
 
@@ -50,17 +56,16 @@ console.log(platforms.length)
 requestAnimationFrame(gameLoop);
 
 function pruneTileGrid() {
-    let floodFilled = false;
     for (let i = 0; i < platforms.length; i++) {
         const tile = platforms[i];
-        
+
         if (tileHasNoNeighbours(tile)) {
             platforms.splice(platforms.indexOf(tile), 1);
             if (i > 0) {
                 i -= 1;
             }
-            
-        } 
+
+        }
 
         if (tileHasOnlyDiagonalNeighbours(tile)) {
             platforms.splice(platforms.indexOf(tile), 1);
@@ -68,11 +73,6 @@ function pruneTileGrid() {
                 i -= 1;
             }
         }
-
-        if (floodFilled === false) {
-            fourWayFloodFill(tileGrid[tileGrid.findIndex(e => e.x === tileSize && e.y === 512)]);
-            floodFilled = true;
-        }        
 
         if (tileIsUnreachable(tile)) {
             platforms.splice(platforms.indexOf(tile), 1);
@@ -117,6 +117,8 @@ function gameLoop() {
 
 
     updatePlayer();
+    updateView();
+    manageVisiblePlatforms();
     playerPosCanvas = getPlayerPos(canvas);
 
     if (playerPosCanvas.x > tileGridSize * 0.03 && playerPosCanvas.x < tileGridSize * 0.84) {
@@ -139,6 +141,20 @@ function gameLoop() {
 
 }
 
+function updateView() {
+    if (getKey(keyCodes.z)) {
+        drawDistance.height *= 1.05;
+        drawDistance.width *= 1.05;
+    }
+    if (getKey(keyCodes.x)) {
+        drawDistance.height *= 0.96;
+        drawDistance.width *= 0.96;
+    }
+    drawDistance.x = (playerRect.x + 0.5*playerRect.width) - drawDistance.width/2;
+    drawDistance.y = (playerRect.y + 0.5*playerRect.height) - drawDistance.height/2;
+}
+
+
 function getPlayerPos(canvas) {
     var rect = canvas.getBoundingClientRect();
     return {
@@ -158,10 +174,18 @@ function draw() {
     context.translate(camX, camY);
 
     //Draw everything
-    drawTileGrid(context);    
+    //drawTileGrid(context);
     drawPlatforms(context);
 
     drawPlayer(context);
+    drawView();
+}
+
+function drawView() {
+    context.beginPath();
+    context.strokeStyle = 'blue';
+    context.strokeRect(drawDistance.x, drawDistance.y, drawDistance.width, drawDistance.height);
+    context.closePath();
 }
 
 function clamp(value, min, max) {
@@ -183,24 +207,19 @@ function fourWayFloodFill(tile) {
     const right = tileGrid.findIndex(e => e.x === tile.x + tileSize && e.y === tile.y)
     const down = tileGrid.findIndex(e => e.x === tile.x && e.y === tile.y + tileSize)
     const left = tileGrid.findIndex(e => e.x === tile.x - tileSize && e.y === tile.y)
-    
+
     if (up > -1 && tileGrid[up].unreachable) {
         fourWayFloodFill(tileGrid[up])
     }
-    if (down > -1  && tileGrid[down].unreachable) {
+    if (down > -1 && tileGrid[down].unreachable) {
         fourWayFloodFill(tileGrid[down])
-    }
-    if (right > -1 && tileGrid[right].unreachable) {
-        fourWayFloodFill(tileGrid[right])
     }
     if (left > -1 && tileGrid[left].unreachable && (tile.y > 576 || tile.y < 448)) {
         fourWayFloodFill(tileGrid[left])
     }
-
-
-
-
-
+    if (right > -1 && tileGrid[right].unreachable) {
+        fourWayFloodFill(tileGrid[right])
+    }
 
 
 }
