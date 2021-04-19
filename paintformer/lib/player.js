@@ -17,10 +17,10 @@ export const playerRect = {
 
 
 
-const gravity = 1;
-const maxJumpStrength = -32;
-let jumpStrength = -12;
-const speed = 5;
+const gravity = 16;
+const maxJumpStrength = -840;
+let jumpStrength = -420;
+const speed = 150;
 
 const color = 'lime';
 
@@ -28,19 +28,19 @@ let vx = 0;
 let vy = 0;
 let grounded = false;
 
-export function updatePlayer() {
+export function updatePlayer(dt) {
 
     vx = 0;
-    vx -= getKey(keyCodes.leftArrow) ? speed : 0;
-    vx += getKey(keyCodes.rightArrow) ? speed : 0;
+    vx -= getKey(keyCodes.leftArrow) ? speed * dt : 0;
+    vx += getKey(keyCodes.rightArrow) ? speed * dt : 0;
 
 
-    vy += gravity;
+    vy += gravity * dt;
 
 
     if (getKey(keyCodes.upArrow) && jumpStrength > maxJumpStrength) {
         jumpStrength -= maxJumpStrength/100;
-        vy = jumpStrength;
+        vy = jumpStrength * dt;
         grounded = false;
     }
 
@@ -51,7 +51,7 @@ export function updatePlayer() {
     if (playerRect.y > 1024 - playerRect.height) {
         playerRect.y = 1024 - playerRect.height;
         vy = 0;
-        jumpStrength = -12;
+        jumpStrength = -420;
         grounded = true;
     }
 };
@@ -73,13 +73,13 @@ export function drawPlayer(context, camera) {
 function onCollideX(rect, otherRect) {
     vx = 0;
     vy = 0;
-    jumpStrength = -12;
+    jumpStrength = -420;
     return true;
 }
 
 function onCollideY(rect, otherRect) {
     if (vy >= 0) {
-        jumpStrength = -12;
+        jumpStrength = -420;
         grounded = true;
     }
     vy = 0;

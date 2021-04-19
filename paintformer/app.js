@@ -2,7 +2,8 @@ import { createPlatform, drawPlatforms, createTileGrid, drawTileGrid, tileGrid, 
 import { drawPlayer, updatePlayer, playerRect } from "./lib/player.js";
 import { getKey, keyCodes } from "./lib/input.js";
 
-
+let prevTime;
+let accumulator = 0;
 
 export const canvas = document.querySelector('canvas');
 canvas.width = 1024;
@@ -108,15 +109,15 @@ function tileHasNoNeighbours(tile) {
         !(platforms.filter(e => e.x === tile.x + tileSize && e.y === tile.y + tileSize).length > 0);
 }
 
-function gameLoop() {
+function gameLoop(now) {
     requestAnimationFrame(gameLoop);
 
     //
     // update
     //
+    const dt = getDelta(now);
 
-
-    updatePlayer();
+    updatePlayer(dt);
     updateView();
     manageVisiblePlatforms();
     playerPosCanvas = getPlayerPos(canvas);
@@ -222,4 +223,23 @@ function fourWayFloodFill(tile) {
     }
 
 
+}
+
+
+function getDelta(now) {
+    if (!prevTime) { prevTime = now; }
+    let dt = (now - prevTime) / 1000;
+    prevTime = now;
+    return dt;
+}
+
+function getPhysicsDelta(dt) {
+    let pdt = 0.01;
+    accumulator += dt;
+
+    while (accumulator >= pdt) {
+
+        accumulator -= pdt;
+
+    }
 }
