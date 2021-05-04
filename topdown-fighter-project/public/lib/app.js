@@ -1,4 +1,4 @@
-import { AddPlatformsToGrid, createTileGrid } from "./tilegrid.js";
+import { AddPlatformsToGrid, createTileGrid, connectTileGrid, tileGrid } from "./tilegrid.js";
 import { pruneObstacles } from "./platform-pruner.js";
 import { draw } from "./draw.js";
 import { setPlayerStartPosition } from "./player.js";
@@ -10,8 +10,10 @@ let prevTime;
 createTileGrid();
 AddPlatformsToGrid();
 pruneObstacles(0);
+connectTileGrid();
 setPlayerStartPosition();
 
+console.log(tileGrid);
 requestAnimationFrame(gameLoop);
 
 function gameLoop(now) {

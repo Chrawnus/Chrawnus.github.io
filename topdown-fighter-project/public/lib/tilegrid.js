@@ -26,7 +26,21 @@ export function createTileGrid() {
         } else {
             x += tileGridDimensions.height;
         }
-        tileGrid.push({ "width": tileGridDimensions.width, "height": tileGridDimensions.height, "x": x, "y": y, traversable: 1, isUnreachable: true, isCenter: false})
+        tileGrid.push({ 
+            "width": tileGridDimensions.width, 
+            "height": tileGridDimensions.height, 
+            "x": x, 
+            "y": y, 
+            nodes: {
+                north: undefined, 
+                south: undefined, 
+                west: undefined, 
+                east: undefined
+            }, 
+            traversable: 1, 
+            isUnreachable: true, 
+            isCenter: false
+        });
     }
 }
 
@@ -79,7 +93,14 @@ function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, left
         !(middleOfRightWall) && rightWall ||
         !(middleOfLowerWall) && lowerWall) {
         createPlatform(tile.x, tile.y, 1, 1, "white");
+        tile.traversable = 0;
     };
+    if ((middleOfUpperWall) && upperWall ||
+    (middleOfLeftWall) && leftWall ||
+    (middleOfRightWall) && rightWall ||
+    (middleOfLowerWall) && lowerWall) {
+        tile.traversable = 1;
+    }
 }
 
 function getGateTiles(wallLength, i) {
@@ -143,6 +164,42 @@ function determineObstacles(grid, i, seed) {
         return grid[i].traversable = myrng() + 0.22;
     } else {
         return grid[i].traversable = myrng();
+    }  
+}
+
+export function connectTileGrid() {
+    for (let i = 0; i < tileGrid.length; i++) {
+        const tile = tileGrid[i];
+        
+        if (tile.traversable >= 0.33 &&
+            ((i + 1) % wallLength) &&
+            tileGrid[i + 1].traversable >= 0.33
+        ) {
+            tile.nodes.east = i + 1;
+        }
+
+        if (tile.traversable >= 0.33 &&
+            ((i - 1) % wallLength) &&
+            tileGrid[i - 1].traversable >= 0.33
+        ) {
+            tile.nodes.west = i - 1;
+        }
+
+        if (i - wallLength >= 0) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i - wallLength].traversable >= 0.33
+            ) {
+                tile.nodes.north = i - wallLength;
+            }
+        }
+
+        if (i + wallLength < tileGrid.length) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i + wallLength].traversable >= 0.33
+            ) {
+                tile.nodes.south = i + wallLength;
+            }
+        }
+
     }
-    
 }

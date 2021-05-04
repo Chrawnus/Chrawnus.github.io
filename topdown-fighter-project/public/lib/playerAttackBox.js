@@ -8,8 +8,8 @@ export const attackBox = {
     direction: undefined,
     color: 'red',
     isActive: false,
-    originalLifetime:50,
-    lifetime: 50,
+    originalLifetime: 100,
+    lifetime: 100,
 };
 
 /**
@@ -39,22 +39,22 @@ export function createAttackBox(direction) {
 
     if (direction === 'up') {
         attackBox.width = playerRect.width * 4.2;
-        attackBox.height = -playerRect.height * 2.4;
+        attackBox.height = -playerRect.height * 2.8;
     }
 
     if (direction === 'right') {
-        attackBox.width = playerRect.width * 2.4;
+        attackBox.width = playerRect.width * 2.8;
         attackBox.height = playerRect.height * 4.2;
     }
 
     if (direction === 'left') {
-        attackBox.width = -playerRect.width * 2.4;
+        attackBox.width = -playerRect.width * 2.8;
         attackBox.height = playerRect.height * 4.2;
     }
 
     if (direction === 'down') {
         attackBox.width = playerRect.width * 4.2;
-        attackBox.height = playerRect.height * 2.4;
+        attackBox.height = playerRect.height * 2.8;
     }
     
     attackBox.isActive = true;

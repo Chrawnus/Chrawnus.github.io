@@ -1,6 +1,6 @@
-import { clamp, intersectingRect } from "./helperFunctions.js";
+import { clamp } from "./helperFunctions.js";
 import { canvas, ctx } from "./canvas.js";
-import { tileGrid, floodGrid, visibleTileGrid, visibleObstacles, tileGridSize } from "./tilegrid.js";
+import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
 import { drawDistance } from "./update.js";
 import { attackBox, drawAttackBox } from "./playerAttackBox.js";
@@ -21,7 +21,6 @@ export function draw() {
     //Draw everything
     drawTileGrid(ctx);
     drawPlatforms(ctx);
-    drawFloodGrid(ctx);
     drawPlayer(ctx);
     if (attackBox.isActive === true) {
         drawAttackBox(ctx);
@@ -32,21 +31,20 @@ export function draw() {
 export function drawTileGrid(ctx) {
     const wallLength = Math.sqrt(tileGridSize);
 
-    const grid = visibleTileGrid;
+    const grid = tileGrid;
     for (let i = 0; i < grid.length; i++) {
-        if (grid[i].unreachable) {
-            ctx.strokeStyle = 'red';
-        } else if (grid[i].traversable === 1) {
+        const tile = grid[i];
+        if (tile.traversable === 1) {
             ctx.strokeStyle = 'blue';
         } else {
             ctx.strokeStyle = 'green';
         }
-        const gridSection = intersectingRect(grid[i], drawDistance);
+
         ctx.strokeRect(
-            gridSection.x,
-            gridSection.y,
-            gridSection.width,
-            gridSection.height
+            tile.x,
+            tile.y,
+            tile.width,
+            tile.height
         );
         ctx.fillStyle = "red";
     }
@@ -57,15 +55,14 @@ export function drawTileGrid(ctx) {
  * @param {CanvasRenderingContext2D} ctx
  */
 export function drawPlatforms(ctx) {
-    for (let i = 0; i < visibleObstacles.length; i++) {
-        const platform = visibleObstacles[i];
-        const platformSection = intersectingRect(platform, drawDistance);
+    for (let i = 0; i < obstacles.length; i++) {
+        const platform = obstacles[i];
         ctx.fillStyle = platform.color;
         ctx.fillRect(
-            platformSection.x,
-            platformSection.y,
-            platformSection.width,
-            platformSection.height
+            platform.x,
+            platform.y,
+            platform.width,
+            platform.height
         );
     }
 }
@@ -86,11 +83,11 @@ export function drawFloodGrid(ctx) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} context
+ * @param {CanvasRenderingContext2D} ctx
  */
- export function drawPlayer(context) {
-    context.fillStyle = playerRect.color;
-    context.fillRect(
+ export function drawPlayer(ctx) {
+    ctx.fillStyle = playerRect.color;
+    ctx.fillRect(
         playerRect.x,
         playerRect.y,
         playerRect.width,
