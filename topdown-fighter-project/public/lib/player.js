@@ -10,8 +10,8 @@ export const startPos = {
 
 
 export function setPlayerStartPosition() {
-    const x = tileGrid[Math.sqrt(tileGridSize)/2].x
-    const y = tileGrid[tileGridSize/2].y
+    const x = tileGrid[Math.sqrt(tileGridSize) / 2].x
+    const y = tileGrid[tileGridSize / 2].y
     startPos.x = x;
     startPos.y = y;
 }
@@ -20,8 +20,8 @@ export const playerRect = {
     x: startPos.x,
     y: startPos.y,
     placed: 0,
-    width: tileSize*0.8,
-    height: tileSize*0.8,
+    width: tileSize * 0.8,
+    height: tileSize * 0.8,
     color: 'lime',
     speed: 150,
     startingAttackDelay: 800,
@@ -46,35 +46,42 @@ export function playerMove(dt) {
 }
 
 export function playerAttack(dt) {
-    if (!attackBox.isActive) {
-        if (getKey(keyCodes.arrowUp) && playerRect.attackDelay > 0) {
-            playerRect.attackDelay -= dt * 1000;
-        } else if (getKey(keyCodes.arrowUp) && playerRect.attackDelay <= 0) {
-            console.log('attack up');
-            createAttackBox('up');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
+    if (!(attackBox.isActive)) {
+        if (playerRect.attackDelay > 0) {
+            const isArrowKeyPressed = getKey(keyCodes.arrowUp) ||
+                getKey(keyCodes.arrowRight) ||
+                getKey(keyCodes.arrowDown) ||
+                getKey(keyCodes.arrowLeft);
+                
+            if (isArrowKeyPressed) {
+                playerRect.attackDelay -= dt * 1000;
+            }
+        } else if (playerRect.attackDelay <= 0) {
+            if (getKey(keyCodes.arrowUp)) {
+                console.log('attack up');
+                createAttackBox('up');
+    
+                playerRect.attackDelay = playerRect.startingAttackDelay;
+            }
+    
+            if (getKey(keyCodes.arrowRight)) {
+                console.log('attack right');
+                createAttackBox('right');
+                playerRect.attackDelay = playerRect.startingAttackDelay;
+            }
+            if (getKey(keyCodes.arrowDown)) {
+                console.log('attack down');
+                createAttackBox('down');
+                playerRect.attackDelay = playerRect.startingAttackDelay;
+            }
+    
+            if (getKey(keyCodes.arrowLeft)) {
+                console.log('attack left');
+                createAttackBox('left');
+                playerRect.attackDelay = playerRect.startingAttackDelay;
+            }
         }
-        if (getKey(keyCodes.arrowRight) && playerRect.attackDelay > 0) {
-            playerRect.attackDelay -= dt * 1000;
-        } else if (getKey(keyCodes.arrowRight) && playerRect.attackDelay <= 0) {
-            console.log('attack right');
-            createAttackBox('right');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-        if (getKey(keyCodes.arrowDown) && playerRect.attackDelay > 0) {
-            playerRect.attackDelay -= dt * 1000;
-        } else if (getKey(keyCodes.arrowDown) && playerRect.attackDelay <= 0) {
-            console.log('attack down');
-            createAttackBox('down');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-        if (getKey(keyCodes.arrowLeft) && playerRect.attackDelay > 0) {
-            playerRect.attackDelay -= dt * 1000;
-        } else if (getKey(keyCodes.arrowLeft) && playerRect.attackDelay <= 0) {
-            console.log('attack left');
-            createAttackBox('left');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
+        
     }
 
 }

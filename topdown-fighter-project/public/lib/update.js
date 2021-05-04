@@ -1,7 +1,7 @@
 import { rectanglesIntersect } from "./helperFunctions.js";
 import { canvas } from "./canvas.js";
 import { startPos, playerRect, getPlayerPos, playerAttack, playerMove } from "./player.js";
-import { getKey, keyCodes } from "./input.js";
+import { getKey, keyCodes, keys } from "./input.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { camera } from "./camera.js";
 import { obstacles, visibleObstacles, tileGridSize, tileGrid, visibleTileGrid } from "./tilegrid.js";
@@ -22,6 +22,7 @@ export function update(dt, now) {
     updateView();
     updateCamera();
     manageVisiblePlatforms();
+
 }
 
 

@@ -1,4 +1,4 @@
-const keys = [];
+export const keys = [];
 
 window.addEventListener('keydown', e => {
     keys[e.key] = true;
