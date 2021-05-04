@@ -53,5 +53,6 @@ export const keyCodes = {
     arrowRight: 'ArrowRight',
     arrowDown: 'ArrowDown',
     arrowLeft: 'ArrowLeft',
-    shift: 'Shift'
+    shift: 'Shift',
+    space: ' '
 }

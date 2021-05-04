@@ -8,15 +8,21 @@ import { obstacles } from "./tilegrid.js";
 
 
 export class Player {
-    constructor(x, y, width, height, speed) {
-        this.idle = false;
-        this.speed = 250;
+    constructor(x, y, width, height, speed, health, damage, speed) {
         this.pos = {
             x: x,
             y: y
         }
-
-
+        this.width = width;
+        this.height = height;
+        this.health = health;
+        this.damage = damage;
+        this.speed = speed;
+        this.prevPos = {
+            x: undefined,
+            y: undefined
+        }
+        
         this.vx = 0;
         this.vy = 0;
         this.dx;
@@ -27,6 +33,7 @@ export class Player {
                 y: undefined
             },
         };
+        this.idle = true;
     }
 
 

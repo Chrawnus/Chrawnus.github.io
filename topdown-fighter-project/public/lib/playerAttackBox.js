@@ -8,8 +8,10 @@ export const attackBox = {
     direction: undefined,
     color: 'red',
     isActive: false,
-    originalLifetime: 100,
-    lifetime: 100,
+    originalLifetime: 20,
+    lifetime: 20,
+    originalDelay: 100,
+    delay: 100
 };
 
 /**
@@ -61,19 +63,27 @@ export function createAttackBox(direction) {
 }
 
 export function updateAttackBox(dt) {
-    if (attackBox.isActive && attackBox.lifetime > 0) {
-        if (attackBox.direction === 'up' || attackBox.direction === 'down') {
-            attackBox.x = playerRect.x - 1.6 * playerRect.width;
-            attackBox.y = playerRect.y + 0.5 * playerRect.height;
+
+    if (attackBox.delay > 0) {
+
+       attackBox.delay -= 1000 * dt; 
+    } else {
+        if (attackBox.isActive && attackBox.lifetime > 0) {
+            if (attackBox.direction === 'up' || attackBox.direction === 'down') {
+                attackBox.x = playerRect.x - 1.6 * playerRect.width;
+                attackBox.y = playerRect.y + 0.5 * playerRect.height;
+            }
+        
+            if (attackBox.direction === 'left' || attackBox.direction === 'right') {
+                attackBox.x = playerRect.x + 0.5 * playerRect.width;
+                attackBox.y = playerRect.y - 1.6 * playerRect.height;
+            }
+            attackBox.lifetime -= 1000*dt;
+        } else if (attackBox.isActive && attackBox.lifetime <= 0) {
+                attackBox.isActive = false;
+                attackBox.lifetime = attackBox.originalLifetime;
+                attackBox.delay = attackBox.originalDelay;
         }
-    
-        if (attackBox.direction === 'left' || attackBox.direction === 'right') {
-            attackBox.x = playerRect.x + 0.5 * playerRect.width;
-            attackBox.y = playerRect.y - 1.6 * playerRect.height;
-        }
-        attackBox.lifetime -= 1000*dt
-    } else if (attackBox.isActive && attackBox.lifetime <= 0) {
-        attackBox.isActive = false;
-        attackBox.lifetime = attackBox.originalLifetime;
+        attackBox.delay = attackBox.originalDelay;
     }
 }
