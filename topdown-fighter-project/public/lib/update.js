@@ -4,7 +4,7 @@ import { playerRect, updatePlayer } from "./player.js";
 import { getKey, keyCodes } from "./input.js";
 import { updateCamera } from "./camera.js";
 import { obstacles, visibleObstacles, tileGridSize, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
-
+import { enemy } from './app.js'
 
 
 
@@ -22,6 +22,7 @@ export function update(dt, now) {
     updateCamera();
     updateView();
     manageVisiblePlatforms();
+
 
 }
 

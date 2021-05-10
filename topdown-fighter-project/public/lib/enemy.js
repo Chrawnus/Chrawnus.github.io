@@ -1,4 +1,3 @@
-
 import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
 import { getKey, keyCodes, keys } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
@@ -6,82 +5,163 @@ import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
 
 
+export const startPos = {
+    x: 0,
+    y: 0
+}
 
-export class Player {
-    constructor(x, y, width, height, speed, health, damage, speed) {
-        this.pos = {
-            x: x,
-            y: y
+export const inputBuffer = [];
+
+export const playerRect = {
+    x: startPos.x,
+    y: startPos.y,
+    placed: 0,
+    width: tileSize * 0.8,
+    height: tileSize * 0.8,
+    color: 'lime',
+    speed: 200,
+    storedAttacks: 4,
+    startingAttackDelay: 300,
+    attackDelay: 300,
+
+    vx: 0,
+    vy: 0,
+};
+
+export function updatePlayer(dt) {
+    playerRect.vx = 0;
+    playerRect.vy = 0;
+    if (playerRect.placed === 0) {
+        placePlayer();
+    }
+
+    playerAttack(dt);
+    updateAttackBox(dt);
+    inputBufferUpdate(dt);
+
+
+    playerMove(dt);
+    moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
+    moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
+};
+
+export function getPlayerPos(canvas) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: (playerRect.x - rect.left) / (rect.right - rect.left) * canvas.width,
+        y: (playerRect.y - rect.top) / (rect.bottom - rect.top) * canvas.height
+    };
+}
+
+function placePlayer() {
+    playerRect.x = startPos.x;
+    playerRect.y = startPos.y;
+    playerRect.placed = 1;
+}
+
+export function setPlayerStartPosition() {
+    const x = tileGrid[Math.sqrt(tileGridSize) / 2].x
+    const y = tileGrid[tileGridSize / 2].y
+    startPos.x = x;
+    startPos.y = y;
+}
+
+export function playerMove(dt) {
+    playerRect.vy -= getKey(keyCodes.w) || getKey(keyCodes.W) ? playerRect.speed * dt : 0;
+    playerRect.vx -= getKey(keyCodes.a) || getKey(keyCodes.A) ? playerRect.speed * dt : 0;
+    playerRect.vy += getKey(keyCodes.s) || getKey(keyCodes.S) ? playerRect.speed * dt : 0;
+    playerRect.vx += getKey(keyCodes.d) || getKey(keyCodes.D) ? playerRect.speed * dt : 0;
+}
+
+export function playerAttack(dt) {
+    if (inputBuffer.length < playerRect.storedAttacks && getKey(keyCodes.shift)) {
+        multiDirectionalSlash();
+    }
+    if (inputBuffer.length < 1 && !getKey(keyCodes.shift)) {
+        attackSlash();
+    }
+
+    function multiDirectionalSlash() {
+        if (getKey(keyCodes.arrowUp) && !(inputBuffer.includes('up'))) {
+            console.log('attack up');
+            inputBuffer.push('up');
+            console.log(inputBuffer);
+            console.log(inputBuffer.length);
+            playerRect.attackDelay = playerRect.startingAttackDelay;
         }
-        this.width = width;
-        this.height = height;
-        this.health = health;
-        this.damage = damage;
-        this.speed = speed;
-        this.prevPos = {
-            x: undefined,
-            y: undefined
+
+        if (getKey(keyCodes.arrowRight) && !(inputBuffer.includes('right'))) {
+            console.log('attack right');
+            inputBuffer.push('right');
+            console.log(inputBuffer);
+            console.log(inputBuffer.length);
+            playerRect.attackDelay = playerRect.startingAttackDelay;
         }
-        
-        this.vx = 0;
-        this.vy = 0;
-        this.dx;
-        this.dy;
-        this.target = {
-            "pos": {
-                x: undefined,
-                y: undefined
-            },
-        };
-        this.idle = true;
+        if (getKey(keyCodes.arrowDown) && !(inputBuffer.includes('down'))) {
+            console.log('attack down');
+            inputBuffer.push('down');
+            console.log(inputBuffer);
+            console.log(inputBuffer.length);
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
+
+        if (getKey(keyCodes.arrowLeft) && !(inputBuffer.includes('left'))) {
+            console.log('attack left');
+            inputBuffer.push('left');
+            console.log(inputBuffer);
+            console.log(inputBuffer.length);
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
     }
 
+    function attackSlash() {
+        if (getKey(keyCodes.arrowUp)) {
+            console.log('attack up');
+            inputBuffer.push('up');
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
 
+        if (getKey(keyCodes.arrowRight)) {
+            console.log('attack right');
+            inputBuffer.push('right');
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
+        if (getKey(keyCodes.arrowDown)) {
+            console.log('attack down');
+            inputBuffer.push('down');
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
 
-    update(delta) {
-        this.movementHandler(delta);
-        this.movement(delta);
-
+        if (getKey(keyCodes.arrowLeft)) {
+            console.log('attack left');
+            inputBuffer.push('left');
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
     }
+}
 
-    movementHandler(delta) {
-
+export function inputBufferUpdate(dt) {
+    if (inputBuffer.length > 0 && attackBox.isActive === false) {
+        if (playerRect.attackDelay > 0) {
+            playerRect.attackDelay -= dt * 1000;
+        } else if (playerRect.attackDelay <= 0 && !getKey(keyCodes.shift)) {
+            createAttackBox(inputBuffer[0]);
+            inputBuffer.splice(0, 1);
+        }
+        if (inputBuffer.length === 0) {
+            playerRect.attackDelay = playerRect.startingAttackDelay;
+        }
     }
+}
 
-    movement(delta) {
-        this.pos.y += this.vy * delta;
-        this.pos.x += this.vx * delta;
-    }
+function onCollideX(rect, otherRect) {
+    playerRect.vx = 0;
+    return true;
+}
 
-    enemyMove(dt) {
-        this.vx -= getKey(keyCodes.a) ? this.speed * dt : 0;
-        this.vx += getKey(keyCodes.d) ? this.speed * dt : 0;
-        this.vy += getKey(keyCodes.s) ? this.speed * dt : 0;
-        this.vy -= getKey(keyCodes.w) ? this.speed * dt : 0;
-    }
-
-    draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        )
-    }
-
-    getPrevXAndPrevY() {
-        if (!this.prevPos.x) { this.prevPos.x = this.pos.x; }
-        if (!this.prevPos.y) { this.prevPos.y = this.pos.y; }
-
-        this.dx = this.pos.x - this.prevPos.x;
-        this.dy = this.pos.y - this.prevPos.y;
-
-        this.prevPos.x = this.pos.x;
-        this.prevPos.y = this.pos.y;
-    }
-
-
+function onCollideY(rect, otherRect) {
+    playerRect.vy = 0;
+    return true;
 }
 
 

@@ -4,13 +4,14 @@ import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
 import { drawDistance } from "./update.js";
 import { attackBox, drawAttackBox } from "./playerAttackBox.js";
+import { enemy } from './app.js'
 
 
 
 export function draw() {
     ctx.setTransform(1, 0, 0, 1, 0, 0); //reset the transform matrix as it is cumulative
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
-
+ 
 
     //Clamp the camera position to the world bounds while centering the camera around the player                                             
     var camX = clamp(canvas.width / 2 - playerRect.x, -tileGridSize * 0.77, 0);
