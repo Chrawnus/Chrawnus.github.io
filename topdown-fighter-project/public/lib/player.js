@@ -1,5 +1,5 @@
 import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
-import { getKey, keyCodes, keys } from "./input.js";
+import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";

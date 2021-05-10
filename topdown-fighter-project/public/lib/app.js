@@ -3,7 +3,7 @@ import { pruneObstacles } from "./platform-pruner.js";
 import { draw } from "./draw.js";
 import { setPlayerStartPosition } from "./player.js";
 import { update } from "./update.js";
-import { Enemy } from "./enemy.js";
+
 
 
 let prevTime;

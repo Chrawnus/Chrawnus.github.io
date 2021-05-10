@@ -4,7 +4,7 @@ import { playerRect, updatePlayer } from "./player.js";
 import { getKey, keyCodes } from "./input.js";
 import { updateCamera } from "./camera.js";
 import { obstacles, visibleObstacles, tileGridSize, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
-import { enemy } from './app.js'
+import { enemyRect, updateEnemy } from './enemy.js'
 
 
 
@@ -19,6 +19,7 @@ console.log(drawDistance)
 
 export function update(dt, now) {
     updatePlayer(dt, now);
+    updateEnemy(dt)
     updateCamera();
     updateView();
     manageVisiblePlatforms();

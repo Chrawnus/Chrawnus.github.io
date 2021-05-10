@@ -4,7 +4,8 @@ import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
 import { drawDistance } from "./update.js";
 import { attackBox, drawAttackBox } from "./playerAttackBox.js";
-import { enemy } from './app.js'
+
+import { enemyRect } from "./enemy.js";
 
 
 
@@ -23,6 +24,7 @@ export function draw() {
     drawTileGrid(ctx);
     drawPlatforms(ctx);
     drawPlayer(ctx);
+    drawEnemy(ctx);
     if (attackBox.isActive === true) {
         drawAttackBox(ctx);
     }
@@ -93,6 +95,16 @@ export function drawFloodGrid(ctx) {
         playerRect.y,
         playerRect.width,
         playerRect.height
+    );
+}
+
+function drawEnemy(ctx) {
+    ctx.fillStyle = enemyRect.color;
+    ctx.fillRect(
+        enemyRect.x,
+        enemyRect.y,
+        enemyRect.width,
+        enemyRect.height
     );
 }
 
