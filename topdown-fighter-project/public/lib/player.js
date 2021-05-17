@@ -1,9 +1,11 @@
-import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
+import { tileGridSize, tileGrid, tileSize, visibleTileGrid } from "./tilegrid.js";
+import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
 
+const intersectingTiles = [];
 
 export const startPos = {
     x: 0,
@@ -18,12 +20,12 @@ export const playerRect = {
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
+    currentInhabitedTile: undefined,
     color: 'lime',
     speed: 200,
     storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,
-
     vx: 0,
     vy: 0,
 };
@@ -43,6 +45,8 @@ export function updatePlayer(dt) {
     playerMove(dt);
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
+    getEntityPosOnTileGrid(playerRect, tileGrid);
+
 };
 
 export function getPlayerPos(canvas) {

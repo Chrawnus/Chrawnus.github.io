@@ -29,3 +29,16 @@ export function rectsOverlaps(rect1, rect2) {
         rect1.y + rect1.height > rect2.y
     );
 }
+
+export function getEntityPosOnTileGrid(entity, tileGrid) {
+    
+    for (let i = 0; i < tileGrid.length; i++) {
+        const tile = tileGrid[i];
+        if ((entity.x + entity.width / 2 > tile.x &&
+            entity.x + entity.width / 2 < tile.x + tile.width &&
+            entity.y + entity.height / 2 > tile.y &&
+            entity.y + entity.height / 2 < tile.y + tile.height)) {
+            entity.currentInhabitedTile = i;
+        }
+    }
+}

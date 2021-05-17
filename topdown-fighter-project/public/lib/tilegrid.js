@@ -40,6 +40,7 @@ export function createTileGrid() {
             traversable: 1, 
             isUnreachable: true, 
             isCenter: false
+            
         });
     }
 }

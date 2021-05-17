@@ -24,7 +24,6 @@ export function update(dt, now) {
     updateView();
     manageVisiblePlatforms();
 
-
 }
 
 function updateView() {

@@ -1,4 +1,5 @@
-import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
+import { tileGridSize, tileGrid, tileSize, visibleTileGrid } from "./tilegrid.js";
+import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { playerRect } from "./player.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
@@ -9,12 +10,15 @@ export const startPos = {
     y: 640
 }
 
+let pathToPlayer = [undefined, undefined];
+
 export const enemyRect = {
     x: startPos.x,
     y: startPos.y,
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
+    currentInhabitedTile: undefined,
     color: 'red',
     speed: 200,
     storedAttacks: 4,
@@ -33,10 +37,12 @@ export function updateEnemy(dt) {
     }
 
     EnemyAttack(dt);
-    EnemyMove(dt);
+    enemyMove(dt);
 
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
+    getEntityPosOnTileGrid(enemyRect, tileGrid);
+    getPathToPlayer(tileGrid, pathToPlayer);
 };
 
 export function getEnemyPos(canvas) {
@@ -53,7 +59,7 @@ function placeEnemy() {
     enemyRect.placed = 1;
 }
 
-export function EnemyMove(dt) {
+export function enemyMove(dt) {
     const dx = playerRect.x - enemyRect.x;
     const dy = playerRect.y - enemyRect.y;
     const angle = Math.atan2(dy, dx);
@@ -80,4 +86,13 @@ function onCollideY(rect, otherRect) {
     return true;
 }
 
+function getPathToPlayer(tileGrid, pathToPlayer) {
+    getStartAndEndNodes(pathToPlayer);
+}
+
+function getStartAndEndNodes(pathToPlayer) {
+    pathToPlayer[0] = enemyRect.currentInhabitedTile
+    pathToPlayer[pathToPlayer.length - 1] = playerRect.currentInhabitedTile
+
+}
 
