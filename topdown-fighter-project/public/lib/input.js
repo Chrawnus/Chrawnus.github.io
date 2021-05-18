@@ -2,7 +2,6 @@ export const keys = [];
 
 window.addEventListener('keydown', e => {
     keys[e.key] = true;
-    console.log(keys)
 });
 
 window.addEventListener('keyup', e => {
@@ -30,7 +29,7 @@ window.addEventListener('keyup', e => {
     
 
     keys[e.key] = false;
-    console.log(keys)
+
 });
 
 export function getKey(key) {

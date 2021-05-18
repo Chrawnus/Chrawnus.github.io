@@ -72,7 +72,6 @@ export function AddPlatformsToGrid() {
             determineObstacles(tileGrid, i, Math.random());
             placeObstacles(tile);
         } else {
-            console.log(tile, i)
             tile.traversable = 1;
             tile.isCenter = true;
         }
@@ -155,7 +154,6 @@ function addToFloodGrid(tile) {
 
 function determineObstacles(grid, i, seed) {
     const myrng = new Math.seedrandom(seed + i);
-    //console.log(myrng())
     const wallLength = Math.floor(Math.sqrt(tileGridSize));
     const middleOfHorizontalWall = Math.floor(wallLength/2);
     const middleOfVerticalWall = Math.floor(tileGridSize/2);

@@ -15,7 +15,6 @@ pruneObstacles(0);
 connectTileGrid();
 setPlayerStartPosition();
 
-console.log(tileGrid);
 requestAnimationFrame(gameLoop);
 
 function gameLoop(now) {

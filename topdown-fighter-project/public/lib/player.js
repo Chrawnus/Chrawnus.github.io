@@ -87,57 +87,41 @@ export function playerAttack(dt) {
 
     function multiDirectionalSlash() {
         if (getKey(keyCodes.arrowUp) && !(inputBuffer.includes('up'))) {
-            console.log('attack up');
             inputBuffer.push('up');
-            console.log(inputBuffer);
-            console.log(inputBuffer.length);
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
 
         if (getKey(keyCodes.arrowRight) && !(inputBuffer.includes('right'))) {
-            console.log('attack right');
             inputBuffer.push('right');
-            console.log(inputBuffer);
-            console.log(inputBuffer.length);
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
         if (getKey(keyCodes.arrowDown) && !(inputBuffer.includes('down'))) {
-            console.log('attack down');
             inputBuffer.push('down');
-            console.log(inputBuffer);
-            console.log(inputBuffer.length);
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
 
         if (getKey(keyCodes.arrowLeft) && !(inputBuffer.includes('left'))) {
-            console.log('attack left');
             inputBuffer.push('left');
-            console.log(inputBuffer);
-            console.log(inputBuffer.length);
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
     }
 
     function attackSlash() {
         if (getKey(keyCodes.arrowUp)) {
-            console.log('attack up');
             inputBuffer.push('up');
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
 
         if (getKey(keyCodes.arrowRight)) {
-            console.log('attack right');
             inputBuffer.push('right');
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
         if (getKey(keyCodes.arrowDown)) {
-            console.log('attack down');
             inputBuffer.push('down');
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }
 
         if (getKey(keyCodes.arrowLeft)) {
-            console.log('attack left');
             inputBuffer.push('left');
             playerRect.attackDelay = playerRect.startingAttackDelay;
         }

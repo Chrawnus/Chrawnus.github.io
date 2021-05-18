@@ -15,8 +15,6 @@ export const drawDistance = {
     width: tileSize * 5
 };
 
-console.log(drawDistance)
-
 export function update(dt, now) {
     updatePlayer(dt, now);
     updateEnemy(dt)

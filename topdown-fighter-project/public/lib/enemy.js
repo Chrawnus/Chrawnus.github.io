@@ -1,5 +1,5 @@
 import { tileGridSize, tileGrid, tileSize, visibleTileGrid } from "./tilegrid.js";
-import { getEntityPosOnTileGrid } from "./helperFunctions.js";
+import { getEntityPosOnTileGrid, getDistanceBetweenPoints } from "./helperFunctions.js";
 import { playerRect } from "./player.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
@@ -10,6 +10,7 @@ export const startPos = {
     y: 640
 }
 
+let nodeToExplore;
 let pathToPlayer = [undefined, undefined];
 
 export const enemyRect = {
@@ -24,7 +25,7 @@ export const enemyRect = {
     storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,
-
+    target: undefined,
     vx: 0,
     vy: 0,
 };
@@ -37,13 +38,25 @@ export function updateEnemy(dt) {
     }
 
     EnemyAttack(dt);
+    getNewEnemyTarget();
     enemyMove(dt);
 
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
     getEntityPosOnTileGrid(enemyRect, tileGrid);
+
     getPathToPlayer(tileGrid, pathToPlayer);
 };
+
+function getNewEnemyTarget() {
+    if (enemyRect.target === undefined) {
+        enemyRect.target = nodeToExplore;
+    }
+   
+    if (enemyRect.target !== undefined && getDistanceBetweenPoints(enemyRect.x, enemyRect.y, enemyRect.target.x, enemyRect.target.y) < 5) {
+        enemyRect.target = nodeToExplore;
+    }
+}
 
 export function getEnemyPos(canvas) {
     var rect = canvas.getBoundingClientRect();
@@ -60,12 +73,14 @@ function placeEnemy() {
 }
 
 export function enemyMove(dt) {
-    const dx = playerRect.x - enemyRect.x;
-    const dy = playerRect.y - enemyRect.y;
-    const angle = Math.atan2(dy, dx);
-
-    enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
-    enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
+    if (enemyRect.target !== undefined) {
+        const dx = (enemyRect.target.x + enemyRect.target.width/2) - enemyRect.x;
+        const dy = (enemyRect.target.y + enemyRect.target.height/2) - enemyRect.y;
+        const angle = Math.atan2(dy, dx);
+    
+        enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
+        enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
+    }
 
 
 }
@@ -73,7 +88,7 @@ export function enemyMove(dt) {
 export function EnemyAttack(dt) {
 
 
-    
+
 }
 
 function onCollideX(rect, otherRect) {
@@ -88,6 +103,51 @@ function onCollideY(rect, otherRect) {
 
 function getPathToPlayer(tileGrid, pathToPlayer) {
     getStartAndEndNodes(pathToPlayer);
+    let exploredNodes = [];
+
+    const startTile = tileGrid[enemyRect.currentInhabitedTile];
+    const goalTile = tileGrid[playerRect.currentInhabitedTile];
+    if (nodeToExplore === undefined) {
+        nodeToExplore = startTile;
+    }
+
+    const northCost = getCost(startTile, tileGrid[nodeToExplore.nodes.north], goalTile);
+    const eastCost = getCost(startTile, tileGrid[nodeToExplore.nodes.east], goalTile);
+    const southCost = getCost(startTile, tileGrid[nodeToExplore.nodes.south], goalTile);
+    const westCost = getCost(startTile, tileGrid[nodeToExplore.nodes.west], goalTile); 
+
+    const costArr = [northCost, eastCost, southCost, westCost];
+    const direction = (costArr.indexOf(Math.min(...costArr)))
+    if (direction === 0) {
+        nodeToExplore = tileGrid[nodeToExplore.nodes.north];
+    }
+    if (direction === 1) {
+        nodeToExplore = tileGrid[nodeToExplore.nodes.east];
+    }
+    if (direction === 2) {
+        nodeToExplore = tileGrid[nodeToExplore.nodes.south];
+    }
+    if (direction === 3) {
+        nodeToExplore = tileGrid[nodeToExplore.nodes.west];
+    }
+}
+
+function getCost(startTile, nodeToExplore, goalTile) {
+    if (nodeToExplore === undefined) {
+        return;
+    }
+    const startX = startTile.x + startTile.width / 2;
+    
+    const startY = startTile.y + startTile.height / 2;
+    
+    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
+    
+    const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
+    
+    const goalX = goalTile.x + goalTile.width / 2;
+    const goalY = goalTile.y + goalTile.height / 2;
+
+    return getDistanceBetweenPoints(startX, startY, nodeX, nodeY) + getDistanceBetweenPoints(nodeX, nodeY, goalX, goalY);
 }
 
 function getStartAndEndNodes(pathToPlayer) {
