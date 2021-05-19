@@ -31,6 +31,7 @@ export function createTileGrid() {
             "height": tileGridDimensions.height, 
             "x": x, 
             "y": y, 
+            "color": "green",
             nodes: {
                 north: undefined, 
                 south: undefined, 

@@ -37,11 +37,8 @@ export function drawTileGrid(ctx) {
     const grid = tileGrid;
     for (let i = 0; i < grid.length; i++) {
         const tile = grid[i];
-        if (tile.traversable === 1) {
-            ctx.strokeStyle = 'blue';
-        } else {
-            ctx.strokeStyle = 'green';
-        }
+        ctx.strokeStyle = tile.color;
+        
 
         ctx.strokeRect(
             tile.x,
