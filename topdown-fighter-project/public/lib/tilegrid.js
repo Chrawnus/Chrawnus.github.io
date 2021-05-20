@@ -32,11 +32,13 @@ export function createTileGrid() {
             "x": x,
             "y": y,
             "color": "green",
-            nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+            "index": i,
+            nodes: [undefined, undefined, undefined, undefined],
             traversable: 1,
             isUnreachable: true,
-            isCenter: false
-
+            isCenter: false,
+            gCost: 0,
+            previous: undefined
         });
     }
 }

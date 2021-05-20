@@ -40,7 +40,7 @@ export function updateEnemy(dt) {
     }
 
 
-    getPathToPlayer(tileGrid, pathToPlayer);
+    getPathToPlayer(enemyRect);
 
     enemyMove(dt);
 
@@ -63,6 +63,26 @@ function placeEnemy() {
 }
 
 export function enemyMove(dt) {
+    if (pathToPlayer.length > 2) {
+        const last = pathToPlayer.length - 1;
+
+        if (getDistanceBetweenPoints(enemyRect.x + enemyRect.width / 2, enemyRect.y + enemyRect.height/2, pathToPlayer[0].x + pathToPlayer.width/2, pathToPlayer[0].y + pathToPlayer.height / 2) < 5) {
+            pathToPlayer.splice(last, 1);
+        } else {
+            
+            const dx = (pathToPlayer[0].x + pathToPlayer.width / 2) - (enemyRect.x + enemyRect.width / 2);
+            const dy = (pathToPlayer[0].y + pathToPlayer.height / 2) - (enemyRect.y + enemyRect.height / 2);
+
+            const angle = Math.atan2(dy, dx)
+            
+            enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
+            enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
+        }
+    }
+
+
+    
+
 
 }
 
@@ -82,15 +102,20 @@ function onCollideY(rect, otherRect) {
     return true;
 }
 
-function getPathToPlayer(tileGrid, pathToPlayer) {
+function getPathToPlayer(enemyRect) {
     getEntityPosOnTileGrid(enemyRect, tileGrid);
-    getStartAndEndNodes(pathToPlayer);
-    const startTile = pathToPlayer[0];
-    const goalTile = pathToPlayer[pathToPlayer.length - 1];
+
+    
+    const startTile = tileGrid[enemyRect.currentInhabitedTile];
+    const goalTile = tileGrid[playerRect.currentInhabitedTile];
+    
+    let currentCost = 0;
     
     const openList = new MinHeap();
+    
     openList.push(startTile, 0);
     const cameFrom = [];
+
 
     
 
@@ -100,21 +125,37 @@ function getPathToPlayer(tileGrid, pathToPlayer) {
         //add current to CLOSED
 
 
-        const nodeToExplore = openList.pop().value;
-        nodeToExplore.color = "green"
+        let nodeToExplore = openList.pop().value;
+
         cameFrom.push(nodeToExplore);
+        nodeToExplore.color = "green"
+        
         if (nodeToExplore === goalTile) {
+            while (nodeToExplore.previous) {
+                
+                nodeToExplore.color = "blue";
+                if (!(pathToPlayer.includes(nodeToExplore))) {
+                    pathToPlayer.splice(pathToPlayer.length - 2, 0, nodeToExplore);
+                }
+                
+                nodeToExplore = nodeToExplore.previous;
+            }
             break;
         }
+        currentCost += 1;
         //for neighbors of current:
         for (let i = 0; i < nodeToExplore.nodes.length; i++) {
             if (nodeToExplore.nodes[i] !== undefined) {
                 const tile = tileGrid[nodeToExplore.nodes[i]];
+                tile.gCost = currentCost;
                 //cost = g(current) + movementcost(current, neighbor)
-                const cost = g(startTile, tile) + h(tile, goalTile);
+                const cost = tile.gCost + h(tile, goalTile);
+
+ 
 
                 if (!(cameFrom.includes(tile))) {
                     tile.color = "red"
+                    tile.previous = nodeToExplore;
                     openList.push(tile, cost);
                 }
             }
