@@ -46,6 +46,7 @@ export function updatePlayer(dt) {
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
     getEntityPosOnTileGrid(playerRect, tileGrid);
+    console.log(playerRect.currentInhabitedTile)
 
 };
 

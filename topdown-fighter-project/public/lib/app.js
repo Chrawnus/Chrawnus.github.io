@@ -15,19 +15,6 @@ pruneObstacles(0);
 connectTileGrid();
 setPlayerStartPosition();
 
-let minHeap = new MinHeap();
-
-for (let i = 0; i < 50; i++) {
-    let val = Math.ceil(Math.random() * (i + 1) * 10);
-    minHeap.insert(val, val);
-}
-
-let smallest = minHeap.extractMin();
-console.log(minHeap);
-console.log(smallest);
-console.log(minHeap);
-
-
 
 requestAnimationFrame(gameLoop);
 

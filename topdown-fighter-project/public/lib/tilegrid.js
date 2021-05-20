@@ -26,22 +26,17 @@ export function createTileGrid() {
         } else {
             x += tileGridDimensions.height;
         }
-        tileGrid.push({ 
-            "width": tileGridDimensions.width, 
-            "height": tileGridDimensions.height, 
-            "x": x, 
-            "y": y, 
+        tileGrid.push({
+            "width": tileGridDimensions.width,
+            "height": tileGridDimensions.height,
+            "x": x,
+            "y": y,
             "color": "green",
-            nodes: {
-                north: undefined, 
-                south: undefined, 
-                west: undefined, 
-                east: undefined
-            }, 
-            traversable: 1, 
-            isUnreachable: true, 
+            nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+            traversable: 1,
+            isUnreachable: true,
             isCenter: false
-            
+
         });
     }
 }
@@ -97,16 +92,16 @@ function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, left
         tile.traversable = 0;
     };
     if ((middleOfUpperWall) && upperWall ||
-    (middleOfLeftWall) && leftWall ||
-    (middleOfRightWall) && rightWall ||
-    (middleOfLowerWall) && lowerWall) {
+        (middleOfLeftWall) && leftWall ||
+        (middleOfRightWall) && rightWall ||
+        (middleOfLowerWall) && lowerWall) {
         tile.traversable = 1;
     }
 }
 
 function getGateTiles(wallLength, i) {
     const middleOfHorizontalWall = wallLength / 2;
-    const middleOfUpperWall = i > middleOfHorizontalWall - wallLength/6 && i < middleOfHorizontalWall + wallLength/6;
+    const middleOfUpperWall = i > middleOfHorizontalWall - wallLength / 6 && i < middleOfHorizontalWall + wallLength / 6;
     const middleOfLowerWall = i > tileGridSize - middleOfHorizontalWall - 4 && i < tileGridSize - middleOfHorizontalWall + 4;
     const middleOfVerticalWall = tileGridSize / 2;
     const middleOfLeftWall = i > middleOfVerticalWall - 4 * wallLength && i < middleOfVerticalWall + 4 * wallLength;
@@ -126,9 +121,9 @@ function getWallTiles(i) {
 export function getCenterTile() {
     for (let i = 0; i < tileGrid.length; i++) {
         const tile = tileGrid[i];
-        
+
         if (isCenterTile(tile)) {
-            
+
             return {
                 x: tile.x,
                 y: tile.y
@@ -139,8 +134,8 @@ export function getCenterTile() {
 
 function isCenterTile(tile) {
     const wallLength = Math.floor(Math.sqrt(tileGridSize));
-    const middleOfHorizontalWall = Math.floor(wallLength/2);
-    const middleOfVerticalWall = Math.floor(tileGridSize/2);
+    const middleOfHorizontalWall = Math.floor(wallLength / 2);
+    const middleOfVerticalWall = Math.floor(tileGridSize / 2);
 
     return tile.x === tileGrid[middleOfHorizontalWall].x && tile.y === tileGrid[middleOfVerticalWall].y;
 }
@@ -156,50 +151,93 @@ function addToFloodGrid(tile) {
 function determineObstacles(grid, i, seed) {
     const myrng = new Math.seedrandom(seed + i);
     const wallLength = Math.floor(Math.sqrt(tileGridSize));
-    const middleOfHorizontalWall = Math.floor(wallLength/2);
-    const middleOfVerticalWall = Math.floor(tileGridSize/2);
+    const middleOfHorizontalWall = Math.floor(wallLength / 2);
+    const middleOfVerticalWall = Math.floor(tileGridSize / 2);
 
-    if ((grid[i].x > grid[middleOfHorizontalWall - 4].x && grid[i].x < grid[middleOfHorizontalWall + 4].x) || 
-    (grid[i].y > grid[middleOfVerticalWall - 4*wallLength].y && grid[i].y < grid[middleOfVerticalWall + 4*wallLength].y)) {
+    if ((grid[i].x > grid[middleOfHorizontalWall - 4].x && grid[i].x < grid[middleOfHorizontalWall + 4].x) ||
+        (grid[i].y > grid[middleOfVerticalWall - 4 * wallLength].y && grid[i].y < grid[middleOfVerticalWall + 4 * wallLength].y)) {
         return grid[i].traversable = myrng() + 0.22;
     } else {
         return grid[i].traversable = myrng();
-    }  
+    }
 }
 
 export function connectTileGrid() {
     for (let i = 0; i < tileGrid.length; i++) {
         const tile = tileGrid[i];
-        
-        if (tile.traversable >= 0.33 &&
-            ((i + 1) % wallLength) &&
-            tileGrid[i + 1].traversable >= 0.33
-        ) {
-            tile.nodes.east = i + 1;
-        }
 
-        if (tile.traversable >= 0.33 &&
-            ((i - 1) % wallLength) &&
-            tileGrid[i - 1].traversable >= 0.33
-        ) {
-            tile.nodes.west = i - 1;
-        }
-
+        // if north tile is empty, add as north neighbour
         if (i - wallLength >= 0) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i - wallLength].traversable >= 0.33
             ) {
-                tile.nodes.north = i - wallLength;
+                tile.nodes[0] = i - wallLength;
             }
         }
 
+        //if northeast tile is empty, add as northeast neighbour
+/*         if (i - wallLength + 1 >= 0) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i - wallLength + 1].traversable >= 0.33
+            ) {
+                tile.nodes[1] = i - wallLength + 1;
+            }
+        } */
+
+        // if east tile is empty, add as east neighbour
+        if (tile.traversable >= 0.33 &&
+            ((i + 1) % wallLength) &&
+            tileGrid[i + 1].traversable >= 0.33
+        ) {
+            tile.nodes[1] = i + 1;
+        }
+
+        // if southeast tile is empty add as southeast neighbour
+/*         if (i + wallLength + 1 < tileGrid.length) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i + wallLength + 1].traversable >= 0.33
+            ) {
+                tile.nodes[3] = i + wallLength + 1;
+            }
+        } */
+
+        // if south tile is empty add as south neighbour
         if (i + wallLength < tileGrid.length) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i + wallLength].traversable >= 0.33
             ) {
-                tile.nodes.south = i + wallLength;
+                tile.nodes[2] = i + wallLength;
             }
         }
+        
+        // if southwest tile is empty add as southwest neighbour
+/*         if (i + wallLength - 1 < tileGrid.length) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i + wallLength - 1].traversable >= 0.33
+            ) {
+                tile.nodes[5] = i + wallLength - 1;
+            }
+        } */
+
+        // if west tile is empty, add as west neighbour
+        if (tile.traversable >= 0.33 &&
+            ((i - 1) % wallLength) &&
+            tileGrid[i - 1].traversable >= 0.33
+        ) {
+            tile.nodes[3] = i - 1;
+        }
+
+        // if northwest tile is empty, add as northwest neighbour
+/*         if (i - wallLength - 1 >= 0) {
+            if (tile.traversable >= 0.33 &&
+                tileGrid[i - wallLength - 1].traversable >= 0.33
+            ) {
+                tile.nodes[0] = i - wallLength - 1;
+            }
+        } */
+
+
+
 
     }
 }

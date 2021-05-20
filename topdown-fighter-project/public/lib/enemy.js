@@ -3,6 +3,7 @@ import { getEntityPosOnTileGrid, getDistanceBetweenPoints } from "./helperFuncti
 import { playerRect } from "./player.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
+import { MinHeap } from "./minHeap.js";
 
 
 export const startPos = {
@@ -10,8 +11,8 @@ export const startPos = {
     y: 640
 }
 
-let nodeToExplore;
-let exploredNodes = [];
+
+
 let pathToPlayer = [undefined, undefined];
 
 export const enemyRect = {
@@ -39,28 +40,19 @@ export function updateEnemy(dt) {
     }
 
 
-
+    getPathToPlayer(tileGrid, pathToPlayer);
 
     enemyMove(dt);
 
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
-    getNewEnemyTarget();
-    getEntityPosOnTileGrid(enemyRect, tileGrid);
-    getPathToPlayer(tileGrid, pathToPlayer);
+
+
+
 
 };
 
-function getNewEnemyTarget() {
-    if (enemyRect.target === undefined) {
-        enemyRect.target = nodeToExplore;
-    }
 
-    if (enemyRect.target !== undefined && getDistanceBetweenPoints(enemyRect.x, enemyRect.y, enemyRect.target.x, enemyRect.target.y) < 1) {
-
-        enemyRect.target = nodeToExplore;
-    }
-}
 
 
 
@@ -71,23 +63,7 @@ function placeEnemy() {
 }
 
 export function enemyMove(dt) {
-    if (exploredNodes.length > 0) {
-        let enemyX = enemyRect.x + enemyRect.width / 2;
-        let enemyY = enemyRect.y + enemyRect.height / 2;
-        let tileX = exploredNodes[0].x + exploredNodes[0].width / 2;
-        let tileY = exploredNodes[0].y + exploredNodes[0].height / 2;
 
-        if (getDistanceBetweenPoints(enemyX, enemyY, tileX, tileY) > 5) {
-            const dx = (tileX) - enemyX;
-            const dy = (tileY) - enemyY;
-            const angle = Math.atan2(dy, dx);
-            enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
-            enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
-        } else if (getDistanceBetweenPoints(enemyX, enemyY, tileX, tileY) <= 5) {
-            exploredNodes[0].color = "green";
-            exploredNodes.length = 0;
-        } 
-    }
 }
 
 export function EnemyAttack(dt) {
@@ -107,88 +83,102 @@ function onCollideY(rect, otherRect) {
 }
 
 function getPathToPlayer(tileGrid, pathToPlayer) {
-
+    getEntityPosOnTileGrid(enemyRect, tileGrid);
     getStartAndEndNodes(pathToPlayer);
-
-
     const startTile = pathToPlayer[0];
     const goalTile = pathToPlayer[pathToPlayer.length - 1];
+    
+    const openList = new MinHeap();
+    openList.push(startTile, 0);
+    const cameFrom = [];
 
-    if (nodeToExplore === undefined) {
-        nodeToExplore = startTile;
+    
+
+    // while lowest rank in OPEN is not the GOAL:
+    while (openList.heap[0] !== undefined) {
+        //  current = remove lowest rank item from OPEN
+        //add current to CLOSED
+
+
+        const nodeToExplore = openList.pop().value;
+        nodeToExplore.color = "green"
+        cameFrom.push(nodeToExplore);
+        if (nodeToExplore === goalTile) {
+            break;
+        }
+        //for neighbors of current:
+        for (let i = 0; i < nodeToExplore.nodes.length; i++) {
+            if (nodeToExplore.nodes[i] !== undefined) {
+                const tile = tileGrid[nodeToExplore.nodes[i]];
+                //cost = g(current) + movementcost(current, neighbor)
+                const cost = g(startTile, tile) + h(tile, goalTile);
+
+                if (!(cameFrom.includes(tile))) {
+                    tile.color = "red"
+                    openList.push(tile, cost);
+                }
+            }
+        }
     }
 
-        const northCost = getCost(startTile, tileGrid[nodeToExplore.nodes.north], goalTile);
-        const eastCost = getCost(startTile, tileGrid[nodeToExplore.nodes.east], goalTile);
-        const southCost = getCost(startTile, tileGrid[nodeToExplore.nodes.south], goalTile);
-        const westCost = getCost(startTile, tileGrid[nodeToExplore.nodes.west], goalTile);
-
-        let costArr = [];
-        if (northCost !== undefined) {
-            costArr.push(northCost)
-        }
-        if (eastCost !== undefined) {
-            costArr.push(eastCost)
-        }
-        if (southCost !== undefined) {
-            costArr.push(southCost)
-        }
-        if (westCost !== undefined) {
-            costArr.push(westCost)
-        }
 
 
-        const direction = (costArr.indexOf(Math.min(...costArr)));
-        
-        if (direction === 0) {
-            nodeToExplore.color = "red"
-            exploredNodes.push(nodeToExplore);
-            nodeToExplore = tileGrid[nodeToExplore.nodes.north];
-            
-        }
-        if (direction === 1) {
-            nodeToExplore.color = "red"
-            exploredNodes.push(nodeToExplore);
-            nodeToExplore = tileGrid[nodeToExplore.nodes.east];
-            
-        }
-        if (direction === 2) {
-            nodeToExplore.color = "red"
-            exploredNodes.push(nodeToExplore);
-            nodeToExplore = tileGrid[nodeToExplore.nodes.south];
-            
-        }
-        if (direction === 3) {
-            nodeToExplore.color = "red"
-            exploredNodes.push(nodeToExplore);
-            nodeToExplore = tileGrid[nodeToExplore.nodes.west];
-            
-        }
 
-  
+
+
     
-        
-    
+/* 
+        if neighbor in OPEN and cost less than g(neighbor):
+    remove neighbor from OPEN, because new path is better
+    if neighbor in CLOSED and cost less than g(neighbor): ⁽²⁾
+    remove neighbor from CLOSED
+    if neighbor not in OPEN and neighbor not in CLOSED:
+    set g(neighbor) to cost
+    add neighbor to OPEN
+    set priority queue rank to g(neighbor) + h(neighbor)
+    set neighbor's parent to current */
+
+
 
 }
 
-function getCost(startTile, nodeToExplore, goalTile) {
+function g(startTile, nodeToExplore) {
     if (nodeToExplore === undefined) {
         return;
     }
+    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
+    const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
 
     const startX = startTile.x + startTile.width / 2;
-
     const startY = startTile.y + startTile.height / 2;
 
-    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
+    return (Math.abs(startX - nodeX) + Math.abs(startY - nodeY));
+}
 
+function h(nodeToExplore, goalTile) {
+    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
     const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
 
     const goalX = goalTile.x + goalTile.width / 2;
     const goalY = goalTile.y + goalTile.height / 2;
+    const dx = Math.abs(nodeX - goalX)
+    const dy = Math.abs(nodeY - goalY)
+    const D = nodeToExplore.width;
+    return D * (dx + dy);
+}
 
-    return getDistanceBetweenPoints(nodeX, nodeY, goalX, goalY) + getDistanceBetweenPoints(startX, startY, nodeX, nodeY);
+
+function getCostToGoal(nodeToExplore, goalTile) {
+    if (nodeToExplore === undefined) {
+        return;
+    }
+    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
+    const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
+
+    const goalX = goalTile.x + goalTile.width / 2;
+    const goalY = goalTile.y + goalTile.height / 2;
+    
+    return (Math.abs(nodeX - goalX) + Math.abs(nodeY - goalY));
 }
 
 function getStartAndEndNodes(pathToPlayer) {
