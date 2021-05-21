@@ -1,4 +1,4 @@
-import { tileGridSize, tileGrid, tileSize, visibleTileGrid } from "./tilegrid.js";
+import { tileGridSize, tileGrid, tileSize, visibleTileGrid, floodGrid } from "./tilegrid.js";
 import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
@@ -45,7 +45,9 @@ export function updatePlayer(dt) {
     playerMove(dt);
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
+
     getEntityPosOnTileGrid(playerRect, tileGrid);
+
 
 
 };

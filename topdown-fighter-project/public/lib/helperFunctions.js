@@ -39,6 +39,7 @@ export function getEntityPosOnTileGrid(entity, tileGrid) {
             entity.y + entity.height / 2 > tile.y &&
             entity.y + entity.height / 2 < tile.y + tile.height)) {
             entity.currentInhabitedTile = i;
+
         }
     }
 }

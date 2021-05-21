@@ -3,7 +3,7 @@ import { pruneObstacles } from "./platform-pruner.js";
 import { draw } from "./draw.js";
 import { setPlayerStartPosition } from "./player.js";
 import { update } from "./update.js";
-import { MinHeap } from "./minHeap.js";
+
 
 
 let prevTime;
@@ -26,6 +26,7 @@ function gameLoop(now) {
     //
 
     const dt = getDelta(now);
+    
     update(dt, now);
 
     //
@@ -36,6 +37,7 @@ function gameLoop(now) {
 }
 
 function getDelta(now) {
+
     if (!prevTime) { prevTime = now; }
     let dt = (now - prevTime) / 1000;
     prevTime = now;

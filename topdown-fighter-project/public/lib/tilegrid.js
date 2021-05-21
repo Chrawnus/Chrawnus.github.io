@@ -33,12 +33,11 @@ export function createTileGrid() {
             "y": y,
             "color": "green",
             "index": i,
+            gScore: Infinity,
             nodes: [undefined, undefined, undefined, undefined],
             traversable: 1,
             isUnreachable: true,
             isCenter: false,
-            gCost: 0,
-            previous: undefined
         });
     }
 }

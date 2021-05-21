@@ -16,8 +16,8 @@ export const drawDistance = {
 };
 
 export function update(dt, now) {
-    updatePlayer(dt, now);
-    updateEnemy(dt)
+    updatePlayer(dt);
+    updateEnemy(dt, now)
     updateCamera();
     updateView();
     manageVisiblePlatforms();

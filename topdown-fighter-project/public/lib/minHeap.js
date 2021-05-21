@@ -50,16 +50,18 @@ export class MinHeap {
     }
 
     bubbleUp(nodeIndex) {
+        
         const parentIndex = this.getParentIndex(nodeIndex);
 
         if (parentIndex === null) {
+            
             return;
         }
 
         const currentNode = this.heap[nodeIndex];
         const parentNode = this.heap[parentIndex];
-
         if (currentNode.score < parentNode.score) {
+
             this.swap(nodeIndex, parentIndex);
             this.bubbleUp(parentIndex);
         }
@@ -99,5 +101,16 @@ export class MinHeap {
 
     swap(index1, index2) {
         return [[this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]]];
+    }
+
+    exists(node) {
+        for (let i = 0; i < this.heap.length; i++) {
+            const element = this.heap[i].value;
+            if (element.index === node.index) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
