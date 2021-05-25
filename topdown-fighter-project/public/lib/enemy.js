@@ -14,7 +14,7 @@ export const startPos = {
 
 
 
-let pathToPlayer;
+let pathToPlayer = [];
 
 export const enemyRect = {
     x: startPos.x,
@@ -34,6 +34,7 @@ export const enemyRect = {
 };
 
 export function updateEnemy(dt, now) {
+
     if (elapsed === undefined) {
         elapsed = dt;
     } else {
@@ -42,43 +43,29 @@ export function updateEnemy(dt, now) {
     }
 
 
-
     enemyRect.vx = 0;
     enemyRect.vy = 0;
     if (enemyRect.placed === 0) {
         placeEnemy();
     }
+    getEntityPosOnTileGrid(enemyRect, tileGrid);
 
-    if (pathToPlayer === undefined || elapsed > 0.1 ) {
+    if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.3) {
         pathToPlayer = pathFinding(enemyRect, playerRect, heuristic);
         elapsed = 0;
-
     }
 
-    if (pathToPlayer !== undefined && pathToPlayer.length > 0) {
-        for (let i = 0; i < pathToPlayer.length; i++) {
-            const tile = pathToPlayer[i];
-            tile.color = "blue"
-        }
+    if (elapsed > 0.4) {
+        elapsed = 0;
     }
-
-
-
-
 
     enemyMove(dt);
 
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
-
-
-
+    
 
 };
-
-
-
-
 
 function placeEnemy() {
     enemyRect.x = startPos.x;
@@ -88,39 +75,31 @@ function placeEnemy() {
 
 export function enemyMove(dt) {
 
-    if (pathToPlayer !== undefined && pathToPlayer.length > 1) {
-
+    if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {
         let last = pathToPlayer.length - 2;
         const enemyX = enemyRect.x + enemyRect.width / 2;
         const enemyY = enemyRect.y + enemyRect.height / 2;
         let targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
         let targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
-
         if (getDistanceBetweenPoints(enemyX, enemyY, targetX, targetY) < 10) {
+            if (pathToPlayer.length > 2) {
+                pathToPlayer.splice(last, 1);
+            }
 
-            pathToPlayer.splice(last, 1);
-            
         } else {
-
             last = pathToPlayer.length - 2;
             targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
             targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
             const dx = targetX - enemyX;
             const dy = targetY - enemyY;
-
             const angle = Math.atan2(dy, dx)
-
             enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
             enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
         }
-
     }
-
 }
 
 export function EnemyAttack(dt) {
-
-
 
 }
 
@@ -135,7 +114,8 @@ function onCollideY(rect, otherRect) {
 }
 
 function pathFinding(start, goal, heuristic) {
-    getEntityPosOnTileGrid(start, tileGrid);
+
+    
 
     const startTile = tileGrid[start.currentInhabitedTile];
     const goalTile = tileGrid[goal.currentInhabitedTile];
@@ -151,96 +131,73 @@ function pathFinding(start, goal, heuristic) {
     fScore.set(startTile, gScore.get(startTile) + heuristic(startTile, goalTile));
     openList.push(startTile, fScore);
     const cost = 1;
-    while (openList.heap.length !== 0) {
 
+    while (openList.heap.length > 0) {
+        
         //  current = remove lowest rank item from OPEN
         //add current to CLOSED
 
         let current = openList.heap[0].value;
+        closedList.push(openList.pop());
 
-        if (current === goalTile) {
-
+        if (closedList[closedList.length - 1].value === goalTile) {
+            
             const totalPath = reconstructPath(cameFrom, current);
-
             return totalPath;
         }
 
-        closedList.push(openList.pop());
-
+        
         //for neighbors of current:
         for (let i = 0; i < current.nodes.length; i++) {
-
-            if (current.nodes[i] === undefined) {
-
+            const tile = current.nodes[i];
+            if (tile === undefined || closedList.filter(e => e.index === tile.index).length > 0) {
                 continue;
-            } else {
-
-                const tile = tileGrid[current.nodes[i]];
-                if (closedList.filter(e => e.value.index === tile.index).length > 0) {
-
-                    continue;
-                }
+            }
 
 
-                const initialGScore = gScore.get(current) + cost;
+            const initialGScore = gScore.get(current) + cost;
 
-                if (gScore.get(tile) === undefined) {
-                    gScore.set(tile, tile.gScore);
+            if (gScore.get(tile) === undefined) {
+
+                gScore.set(tile, tile.gScore);
+                cameFrom.set(tile, current);
+                if (initialGScore < gScore.get(tile)) {
                     cameFrom.set(tile, current);
-                    if (initialGScore < gScore.get(tile)) {
-                        cameFrom.set(tile, current);
-                        gScore.set(tile, initialGScore);
-                        const h = heuristic(tile, goalTile);
+                    gScore.set(tile, initialGScore);
+                    const h = heuristic(tile, goalTile);
 
-                        fScore.set(tile, gScore.get(tile) + h);
+                    fScore.set(tile, gScore.get(tile) + h);
 
-                        if (!openList.exists(tile)) {
-                            openList.push(tile, fScore.get(tile));
-                        }
+                    if (!openList.exists(tile)) {
+                        openList.push(tile, fScore.get(tile));
                     }
                 }
             }
         }
     }
 
-    /* 
-            if neighbor in OPEN and cost less than g(neighbor):
-        remove neighbor from OPEN, because new path is better
-        if neighbor in CLOSED and cost less than g(neighbor): ⁽²⁾
-        remove neighbor from CLOSED
-        if neighbor not in OPEN and neighbor not in CLOSED:
-        set g(neighbor) to cost
-        add neighbor to OPEN
-        set priority queue rank to g(neighbor) + h(neighbor)
-        set neighbor's parent to current */
-
-
-
+    return;
 }
 
-
 function heuristic(nodeToExplore, goalTile) {
-    const nodeX = nodeToExplore.x + nodeToExplore.width/2;
-    const nodeY = nodeToExplore.y + nodeToExplore.height/2;
+    const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
+    const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
 
-    const goalX = goalTile.x + goalTile.width/2;
-    const goalY = goalTile.y + goalTile.height/2;
+    const goalX = goalTile.x + goalTile.width / 2;
+    const goalY = goalTile.y + goalTile.height / 2;
 
     const dx = Math.abs(nodeX - goalX);
     const dy = Math.abs(goalY - nodeY);
     const D = 1;
-    return D * (dx + dy);
-    //return getDistanceBetweenPoints(nodeX, nodeY, goalX, goalY)
+    const D2 = 1.4;
+    //return D * (dx + dy);
+    return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy)
+
 }
 
 
 function reconstructPath(cameFrom, current) {
-    if (pathToPlayer !== undefined && pathToPlayer.length > 0) {
-        for (let i = 0; i < pathToPlayer.length; i++) {
-            const tile = pathToPlayer[i];
-            tile.color = "green"
-        }
-    }
+
     pathToPlayer = [];
     const totalPath = [current]
 

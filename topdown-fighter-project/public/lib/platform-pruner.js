@@ -1,39 +1,29 @@
-import { floodGrid, obstacles, tileGrid, tileSize } from "./tilegrid.js";
+import { floodGrid, obstacles, tileGrid, tileSize, placeObstacles } from "./tilegrid.js";
 
 //recursive function; traverses array of obstacles and prunes obstacles that are in unwanted positions
 export function pruneObstacles(pass) {
-    for (let i = 0; i < obstacles.length; i++) {
+    for (let i = obstacles.length - 1; i > 0; i--) {
         const tile = obstacles[i];
 
         // first pass, remove any lone tiles on the map
         if (pass === 0) {
             if (tileHasNoNeighbours(tile)) {
                 obstacles.splice(obstacles.indexOf(tile), 1);
-                if (i > 0) {
-                    i -= 1;
-                }
             }
         }
-
 
         // second pass, remove tiles that only has neighbouring tiles on the diagonals
         if (pass === 1) {
             if (tileHasOnlyDiagonalNeighbours(tile)) {
                 obstacles.splice(obstacles.indexOf(tile), 1);
-                if (i > 0) {
-                    i -= 1;
-                }
             }
         }
 
-        //third pass, remove unreachable tiles
+        //third pass, flood fill
         if (pass === 2) {
             fourWayFloodFill(floodGrid[190])
             if (tileIsUnreachable(tile)) {
                 obstacles.splice(obstacles.indexOf(tile), 1);
-                if (i > 0) {
-                    i -= 1;
-                }
             }
         }
     }
@@ -91,11 +81,12 @@ function fourWayFloodFill(tile) {
     const i = tileGrid.findIndex(e => e.x === tile.x && e.y === tile.y);
 
     if ((obstacles.filter(e => e.x === tileGrid[i].x && e.y === tileGrid[i].y).length > 0)) {
+        
         tileGrid[i].isUnreachable = false;
         obstacles[obstacles.findIndex((e => e.x === tile.x && e.y === tile.y))].isUnreachable = false;
         return;
     }
-
+    
     tileGrid[i].isUnreachable = false;
     const up = floodGrid.findIndex(e => e.x === tile.x && e.y === tile.y - tileSize)
     const right = floodGrid.findIndex(e => e.x === tile.x + tileSize && e.y === tile.y)

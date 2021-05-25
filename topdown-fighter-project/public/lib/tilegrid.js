@@ -7,6 +7,8 @@ const tileGridDimensions = {
     height: tileSize
 }
 
+let firstPass = true;
+
 export const tileGrid = [];
 export const visibleTileGrid = [];
 
@@ -34,7 +36,7 @@ export function createTileGrid() {
             "color": "green",
             "index": i,
             gScore: Infinity,
-            nodes: [undefined, undefined, undefined, undefined],
+            nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
             traversable: 1,
             isUnreachable: true,
             isCenter: false,
@@ -76,12 +78,14 @@ export function AddPlatformsToGrid() {
     }
 }
 
-function placeObstacles(tile) {
+export function placeObstacles(tile) {
     if ((floodGrid.findIndex(e => e.x === tile.x && e.y === tile.y) > -1) &&
         (tile.traversable < 0.33)) {
         createPlatform(tile.x, tile.y, 1, 1);
-    };
-    return 0;
+
+        return;
+    }
+    return;
 }
 
 function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, leftWall, middleOfRightWall, rightWall, middleOfLowerWall, lowerWall, tile) {
@@ -172,70 +176,70 @@ export function connectTileGrid() {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i - wallLength].traversable >= 0.33
             ) {
-                tile.nodes[0] = i - wallLength;
+                tile.nodes[0] = tileGrid[i - wallLength];
             }
         }
 
         //if northeast tile is empty, add as northeast neighbour
-/*         if (i - wallLength + 1 >= 0) {
+        if (i - wallLength + 1 >= 0) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i - wallLength + 1].traversable >= 0.33
             ) {
-                tile.nodes[1] = i - wallLength + 1;
+                tile.nodes[1] = tileGrid[i - wallLength + 1];
             }
-        } */
+        }
 
         // if east tile is empty, add as east neighbour
         if (tile.traversable >= 0.33 &&
             ((i + 1) % wallLength) &&
             tileGrid[i + 1].traversable >= 0.33
         ) {
-            tile.nodes[1] = i + 1;
+            tile.nodes[2] = tileGrid[i + 1];
         }
 
-        // if southeast tile is empty add as southeast neighbour
-/*         if (i + wallLength + 1 < tileGrid.length) {
+        //if southeast tile is empty add as southeast neighbour
+        if (i + wallLength + 1 < tileGrid.length) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i + wallLength + 1].traversable >= 0.33
             ) {
-                tile.nodes[3] = i + wallLength + 1;
+                tile.nodes[3] = tileGrid[i + wallLength + 1];
             }
-        } */
+        }
 
         // if south tile is empty add as south neighbour
         if (i + wallLength < tileGrid.length) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i + wallLength].traversable >= 0.33
             ) {
-                tile.nodes[2] = i + wallLength;
+                tile.nodes[4] = tileGrid[i + wallLength];
             }
         }
-        
+
         // if southwest tile is empty add as southwest neighbour
-/*         if (i + wallLength - 1 < tileGrid.length) {
+        if (i + wallLength - 1 < tileGrid.length) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i + wallLength - 1].traversable >= 0.33
             ) {
-                tile.nodes[5] = i + wallLength - 1;
+                tile.nodes[5] = tileGrid[i + wallLength - 1];
             }
-        } */
+        }
 
         // if west tile is empty, add as west neighbour
         if (tile.traversable >= 0.33 &&
             ((i - 1) % wallLength) &&
             tileGrid[i - 1].traversable >= 0.33
         ) {
-            tile.nodes[3] = i - 1;
+            tile.nodes[6] = tileGrid[i - 1];
         }
 
         // if northwest tile is empty, add as northwest neighbour
-/*         if (i - wallLength - 1 >= 0) {
+        if (i - wallLength - 1 >= 0) {
             if (tile.traversable >= 0.33 &&
                 tileGrid[i - wallLength - 1].traversable >= 0.33
             ) {
-                tile.nodes[0] = i - wallLength - 1;
+                tile.nodes[7] = tileGrid[i - wallLength - 1];
             }
-        } */
+        }
 
 
 
