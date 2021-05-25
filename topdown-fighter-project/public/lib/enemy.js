@@ -49,9 +49,17 @@ export function updateEnemy(dt, now) {
         placeEnemy();
     }
 
-    if (pathToPlayer === undefined) {
+    if (pathToPlayer === undefined || elapsed > 0.1 ) {
         pathToPlayer = pathFinding(enemyRect, playerRect, heuristic);
         elapsed = 0;
+
+    }
+
+    if (pathToPlayer !== undefined && pathToPlayer.length > 0) {
+        for (let i = 0; i < pathToPlayer.length; i++) {
+            const tile = pathToPlayer[i];
+            tile.color = "blue"
+        }
     }
 
 
@@ -91,7 +99,7 @@ export function enemyMove(dt) {
         if (getDistanceBetweenPoints(enemyX, enemyY, targetX, targetY) < 10) {
 
             pathToPlayer.splice(last, 1);
-            pathToPlayer = pathFinding(enemyRect, playerRect, heuristic);
+            
         } else {
 
             last = pathToPlayer.length - 2;
@@ -212,21 +220,27 @@ function pathFinding(start, goal, heuristic) {
 
 
 function heuristic(nodeToExplore, goalTile) {
-    const nodeX = nodeToExplore.x;
-    const nodeY = nodeToExplore.y;
+    const nodeX = nodeToExplore.x + nodeToExplore.width/2;
+    const nodeY = nodeToExplore.y + nodeToExplore.height/2;
 
-    const goalX = goalTile.x;
-    const goalY = goalTile.y;
+    const goalX = goalTile.x + goalTile.width/2;
+    const goalY = goalTile.y + goalTile.height/2;
 
     const dx = Math.abs(nodeX - goalX);
     const dy = Math.abs(goalY - nodeY);
-    const D = 2;
+    const D = 1;
     return D * (dx + dy);
     //return getDistanceBetweenPoints(nodeX, nodeY, goalX, goalY)
 }
 
 
 function reconstructPath(cameFrom, current) {
+    if (pathToPlayer !== undefined && pathToPlayer.length > 0) {
+        for (let i = 0; i < pathToPlayer.length; i++) {
+            const tile = pathToPlayer[i];
+            tile.color = "green"
+        }
+    }
     pathToPlayer = [];
     const totalPath = [current]
 
