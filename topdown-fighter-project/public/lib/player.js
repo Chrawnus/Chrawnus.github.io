@@ -20,6 +20,8 @@ export const playerRect = {
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
+    maxHealth: 100,
+    health: 100,
     currentInhabitedTile: undefined,
     color: 'lime',
     speed: 200,
@@ -147,6 +149,7 @@ export function inputBufferUpdate(dt) {
 
 function onCollideX(rect, otherRect) {
     playerRect.vx = 0;
+
     return true;
 }
 

@@ -10,8 +10,8 @@ export const attackBox = {
     isActive: false,
     originalLifetime: 1,
     lifetime: 1,
-    originalDelay: 100,
-    delay: 100
+    originalDelay: 10,
+    delay: 10
 };
 
 /**

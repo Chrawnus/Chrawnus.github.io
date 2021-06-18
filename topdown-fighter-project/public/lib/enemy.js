@@ -23,6 +23,7 @@ export const enemyRect = {
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
+    maxHealth: 100,
     health: 100,
     currentInhabitedTile: undefined,
     color: 'red',
@@ -50,7 +51,7 @@ export function updateEnemy(dt, now) {
 
     if (enemyRect.placed === 0 || enemyRect.health <= 0) {
         placeEnemy();
-        enemyRect.health = 100;
+        enemyRect.health = enemyRect.maxHealth;
     }
     getEntityPosOnTileGrid(enemyRect, tileGrid);
 

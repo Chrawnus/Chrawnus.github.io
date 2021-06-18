@@ -25,6 +25,8 @@ export function draw() {
     drawPlatforms(ctx);
     drawPlayer(ctx);
     drawEnemy(ctx);
+    drawEnemyHealthBar(ctx);
+    drawPlayerHealthBar(ctx);
     if (attackBox.isActive === true) {
         drawAttackBox(ctx);
     }
@@ -105,6 +107,27 @@ function drawEnemy(ctx) {
     );
 }
 
+function drawEnemyHealthBar(ctx) {
+    ctx.fillStyle = "red";
+    let x = enemyRect.x;
+    let y = enemyRect.y - enemyRect.height/2;
+    let w = enemyRect.health/enemyRect.maxHealth * 25;
+    let h = 5;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = "black"
+    ctx.strokeRect(x,y,w,h);
+}
+
+function drawPlayerHealthBar(ctx) {
+    ctx.fillStyle = "red";
+    let x = playerRect.x;
+    let y = playerRect.y - playerRect.height/2;
+    let w = playerRect.health/playerRect.maxHealth * 25;
+    let h = 5;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = "black"
+    ctx.strokeRect(x,y,w,h);
+}
 export function drawView() {
     ctx.beginPath();
     ctx.strokeStyle = 'blue';
