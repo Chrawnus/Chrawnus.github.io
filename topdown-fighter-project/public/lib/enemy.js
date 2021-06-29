@@ -73,7 +73,8 @@ export function updateEnemy(dt, now) {
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
     
-
+    moveCollideY(enemyRect.vy, enemyRect, playerRect, onCollideY);
+    moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
     
 };
 

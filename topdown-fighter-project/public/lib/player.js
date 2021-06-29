@@ -4,6 +4,7 @@ import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
+import { enemyRect } from "./enemy.js";
 
 const intersectingTiles = [];
 
@@ -47,6 +48,9 @@ export function updatePlayer(dt) {
     playerMove(dt);
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
+    
+    moveCollideX(playerRect.vx, playerRect, enemyRect, onCollideX);
+    moveCollideY(playerRect.vy, playerRect, enemyRect, onCollideY);
 
     getEntityPosOnTileGrid(playerRect, tileGrid);
 
