@@ -8,8 +8,8 @@ export const attackBox = {
     direction: undefined,
     color: 'red',
     isActive: false,
-    originalLifetime: 1,
-    lifetime: 1,
+    originalLifetime: 10,
+    lifetime: 10,
     originalDelay: 10,
     delay: 10
 };

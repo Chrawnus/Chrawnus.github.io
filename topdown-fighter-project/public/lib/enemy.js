@@ -27,7 +27,7 @@ export const enemyRect = {
     health: 100,
     currentInhabitedTile: undefined,
     color: 'red',
-    speed: 200,
+    speed: 100,
     storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,
@@ -87,7 +87,7 @@ function placeEnemy() {
 export function enemyMove(dt) {
 
     if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {
-        let last = pathToPlayer.length - 2;
+        let last = pathToPlayer.length - 1;
         const enemyX = enemyRect.x + enemyRect.width / 2;
         const enemyY = enemyRect.y + enemyRect.height / 2;
         let targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
@@ -98,14 +98,21 @@ export function enemyMove(dt) {
             }
 
         } else {
-            last = pathToPlayer.length - 2;
+
+            last = pathToPlayer.length - 1;
             targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
             targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
             const dx = targetX - enemyX;
             const dy = targetY - enemyY;
             const angle = Math.atan2(dy, dx)
-            enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
-            enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
+            if (!attackBox.isActive) {
+                enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
+                enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
+            } else {
+                enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
+                enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
+            }
+
         }
     }
 }
