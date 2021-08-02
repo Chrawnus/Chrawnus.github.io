@@ -25,7 +25,7 @@ export const playerRect = {
     health: 100,
     currentInhabitedTile: undefined,
     color: 'lime',
-    speed: 200,
+    speed: 150,
     storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,

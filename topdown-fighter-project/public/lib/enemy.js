@@ -109,8 +109,18 @@ export function enemyMove(dt) {
                 enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
                 enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
             } else {
-                enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
-                enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
+                if (enemyRect.vx === 0 || enemyRect.vy === 0) {
+                    console.log(angle)
+                    enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
+                    enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
+                
+                } else {
+                    
+                    enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
+                    enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
+                }
+
+                
             }
 
         }
@@ -135,6 +145,6 @@ function onAttacked() {
     if (enemyRect.health > 0) {
         enemyRect.health -= 2.5;
     }
-    console.log(enemyRect.health);
+
 }
 
