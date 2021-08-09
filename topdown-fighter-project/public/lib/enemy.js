@@ -65,17 +65,17 @@ export function updateEnemy(dt, now) {
     }
 
     enemyMove(dt);
-    
+
     if (intersectRect(enemyRect, attackBox)) {
         onAttacked();
     }
-    
+
     moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
     moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
-    
+
     moveCollideY(enemyRect.vy, enemyRect, playerRect, onCollideY);
     moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
-    
+
 };
 
 function placeEnemy() {
@@ -105,24 +105,9 @@ export function enemyMove(dt) {
             const dx = targetX - enemyX;
             const dy = targetY - enemyY;
             const angle = Math.atan2(dy, dx)
-            if (!attackBox.isActive) {
-                enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
-                enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
-            } else {
-                if (enemyRect.vx === 0 || enemyRect.vy === 0) {
-                    console.log(angle)
-                    enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
-                    enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
-                
-                } else {
-                    
-                    enemyRect.vx = enemyRect.speed*5 * Math.cos(angle) * dt * -1;
-                    enemyRect.vy = enemyRect.speed*5 * Math.sin(angle) * dt * -1;
-                }
 
-                
-            }
-
+            enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
+            enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
         }
     }
 }
@@ -142,9 +127,32 @@ function onCollideY(rect, otherRect) {
 }
 
 function onAttacked() {
+    
     if (enemyRect.health > 0) {
         enemyRect.health -= 2.5;
+        knockBack(attackBox.direction)
     }
 
 }
 
+
+function knockBack(attackDirection) {
+    console.log(attackDirection)
+    switch (attackDirection) {
+        case "up":
+            enemyRect.vy -= 15;
+            break;
+        case "down":
+            enemyRect.vy += 15;
+            break;
+        case "right":
+            enemyRect.vx += 15;
+            break;
+        case "left":
+            enemyRect.vx -= 15;
+            break;
+        default:
+            return;
+    }
+    return;
+}
