@@ -32,7 +32,9 @@ export function draw() {
     }
     drawView();
 }
-
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ */
 export function drawTileGrid(ctx) {
     const wallLength = Math.sqrt(tileGridSize);
 
@@ -43,10 +45,6 @@ export function drawTileGrid(ctx) {
     }
 }
 
-
-/**
- * @param {CanvasRenderingContext2D} ctx
- */
 export function drawPlatforms(ctx) {
     for (let i = 0; i < obstacles.length; i++) {
         const platform = obstacles[i];
@@ -88,9 +86,7 @@ function drawEntity(entity, ctx) {
         entity.width,
         entity.height
     );
-
     ctx.strokeStyle = "black";
-    
     ctx.strokeRect(
         entity.x,
         entity.y,
