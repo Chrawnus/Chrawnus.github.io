@@ -44,7 +44,7 @@ export function createTileGrid() {
     }
 }
 
-function createPlatform(x, y, width, height, color = 'white', isUnreachable = true) {
+function createPlatform(x, y, width, height, color = 'gray', isUnreachable = true) {
     if (!(obstacles.filter(e => e.x === x && e.y === y).length > 0)) {
         obstacles.push({
             x,
@@ -99,7 +99,7 @@ function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, left
         !(middleOfLeftWall) && leftWall ||
         !(middleOfRightWall) && rightWall ||
         !(middleOfLowerWall) && lowerWall) {
-        createPlatform(tile.x, tile.y, 1, 1, "white");
+        createPlatform(tile.x, tile.y, 1, 1, "gray");
         tile.traversable = 0;
     };
     if ((middleOfUpperWall) && upperWall ||

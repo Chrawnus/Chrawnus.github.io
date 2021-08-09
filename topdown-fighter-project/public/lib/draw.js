@@ -39,16 +39,7 @@ export function drawTileGrid(ctx) {
     const grid = tileGrid;
     for (let i = 0; i < grid.length; i++) {
         const tile = grid[i];
-        ctx.strokeStyle = tile.color;
-        
-
-        ctx.strokeRect(
-            tile.x,
-            tile.y,
-            tile.width,
-            tile.height
-        );
-        ctx.fillStyle = "red";
+        drawEntity(tile, ctx);
     }
 }
 
@@ -59,13 +50,7 @@ export function drawTileGrid(ctx) {
 export function drawPlatforms(ctx) {
     for (let i = 0; i < obstacles.length; i++) {
         const platform = obstacles[i];
-        ctx.fillStyle = platform.color;
-        ctx.fillRect(
-            platform.x,
-            platform.y,
-            platform.width,
-            platform.height
-        );
+        drawEntity(platform, ctx);
     }
 }
 
@@ -88,22 +73,29 @@ export function drawFloodGrid(ctx) {
  * @param {CanvasRenderingContext2D} ctx
  */
  export function drawPlayer(ctx) {
-    ctx.fillStyle = playerRect.color;
-    ctx.fillRect(
-        playerRect.x,
-        playerRect.y,
-        playerRect.width,
-        playerRect.height
-    );
+    drawEntity(playerRect, ctx);
 }
 
 function drawEnemy(ctx) {
-    ctx.fillStyle = enemyRect.color;
+    drawEntity(enemyRect, ctx);
+}
+
+function drawEntity(entity, ctx) {
+    ctx.fillStyle = entity.color;
     ctx.fillRect(
-        enemyRect.x,
-        enemyRect.y,
-        enemyRect.width,
-        enemyRect.height
+        entity.x,
+        entity.y,
+        entity.width,
+        entity.height
+    );
+
+    ctx.strokeStyle = "black";
+    
+    ctx.strokeRect(
+        entity.x,
+        entity.y,
+        entity.width,
+        entity.height
     );
 }
 
