@@ -21,28 +21,45 @@ export function createTileGrid() {
     let x = 0;
     let y = 0;
     for (let i = 0; i < tileGridSize; i++) {
-
-        if (!(i % wallLength)) {
-            y += tileGridDimensions.width;
-            x = 0;
+        if (i === 0) {
+            tileGrid.push({
+                "width": tileGridDimensions.width,
+                "height": tileGridDimensions.height,
+                "x": x,
+                "y": y,
+                "color": "green",
+                "index": i,
+                gScore: Infinity,
+                nodes: [undefined, undefined, undefined, undefined],
+                traversable: 1,
+                isUnreachable: true,
+                isCenter: false,
+            });
         } else {
-            x += tileGridDimensions.height;
+            if (!(i % wallLength) && !(i < wallLength )) {
+                y += tileGridDimensions.width;
+                x = 0;
+            } else {
+                x += tileGridDimensions.height;
+            }
+            tileGrid.push({
+                "width": tileGridDimensions.width,
+                "height": tileGridDimensions.height,
+                "x": x,
+                "y": y,
+                "color": "green",
+                "index": i,
+                gScore: Infinity,
+                nodes: [undefined, undefined, undefined, undefined],
+                traversable: 1,
+                isUnreachable: true,
+                isCenter: false,
+            });
         }
-        tileGrid.push({
-            "width": tileGridDimensions.width,
-            "height": tileGridDimensions.height,
-            "x": x,
-            "y": y,
-            "color": "green",
-            "index": i,
-            gScore: Infinity,
-            nodes: [undefined, undefined, undefined, undefined],
-            traversable: 1,
-            isUnreachable: true,
-            isCenter: false,
-        });
+
     }
 }
+
 
 function createPlatform(x, y, width, height, color = 'gray', isUnreachable = true) {
     if (!(obstacles.filter(e => e.x === x && e.y === y).length > 0)) {
@@ -208,7 +225,7 @@ export function connectTileGrid() {
         } */
 
         // if west tile is empty, add as west neighbour
-        if (((i - 1) % wallLength)) {
+        if (((i) % wallLength)) {
             tile.nodes[3] = tileGrid[i - 1];
         }
 
