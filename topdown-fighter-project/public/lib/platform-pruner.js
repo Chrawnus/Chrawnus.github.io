@@ -1,4 +1,4 @@
-import { floodGrid, obstacles, tileGrid, tileSize, placeObstacles } from "./tilegrid.js";
+import { floodGrid, obstacles, tileGrid, tileSize } from "./tilegrid.js";
 
 //recursive function; traverses array of obstacles and prunes obstacles that are in unwanted positions
 export function pruneObstacles(pass) {

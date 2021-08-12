@@ -1,12 +1,9 @@
 import { rectanglesIntersect } from "./helperFunctions.js";
 import { canvas } from "./canvas.js";
 import { playerRect, updatePlayer } from "./player.js";
-import { getKey, keyCodes } from "./input.js";
 import { updateCamera } from "./camera.js";
-import { obstacles, visibleObstacles, tileGridSize, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
-import { enemyRect, updateEnemy } from './enemy.js'
-
-
+import { obstacles, visibleObstacles, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
+import { updateEnemy } from './enemy.js'
 
 export const drawDistance = {
     x: playerRect.x + playerRect.width / 2 - (canvas.width * 1.5) / 2,

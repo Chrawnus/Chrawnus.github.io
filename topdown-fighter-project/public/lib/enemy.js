@@ -12,7 +12,7 @@ export const startPos = {
     y: 640
 }
 
-let pathToPlayer = [];
+export let pathToPlayer = [];
 
 export const enemyRect = {
     x: startPos.x,
@@ -25,6 +25,7 @@ export const enemyRect = {
     currentInhabitedTile: undefined,
     color: 'red',
     speed: 100,
+    knockback: 15,
     storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,
@@ -35,12 +36,7 @@ export const enemyRect = {
 
 export function updateEnemy(dt, now) {
 
-    if (elapsed === undefined) {
-        elapsed = dt;
-    } else {
-        elapsed += dt;
-
-    }
+    increaseElapsed(dt);
 
     enemyRect.vx = 0;
     enemyRect.vy = 0;
@@ -53,7 +49,7 @@ export function updateEnemy(dt, now) {
 
     if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.2) {
         pathToPlayer = pathFinding(enemyRect, playerRect, pathToPlayer);
-        elapsed = 0;
+        //elapsed = 0;
     }
 
     if (elapsed > 0.3) {
@@ -81,7 +77,6 @@ function placeEnemy() {
 }
 
 export function enemyMove(dt) {
-
     if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {
         let last = pathToPlayer.length - 1;
         const enemyX = enemyRect.x + enemyRect.width / 2;
@@ -94,7 +89,6 @@ export function enemyMove(dt) {
             }
 
         } else {
-
             last = pathToPlayer.length - 1;
             targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
             targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
@@ -122,8 +116,7 @@ function onCollideY(rect, otherRect) {
     return true;
 }
 
-function onAttacked() {
-    
+function onAttacked() {  
     if (enemyRect.health > 0) {
         enemyRect.health -= 2.5;
         knockBack(attackBox.direction)
@@ -132,22 +125,18 @@ function onAttacked() {
 }
 
 function knockBack(attackDirection) {
-    console.log(attackDirection)
-    switch (attackDirection) {
-        case "arrowUp":
-            enemyRect.vy -= 15;
-            break;
-        case "arrowDown":
-            enemyRect.vy += 15;
-            break;
-        case "arrowRight":
-            enemyRect.vx += 15;
-            break;
-        case "arrowLeft":
-            enemyRect.vx -= 15;
-            break;
-        default:
-            return;
-    }
+    enemyRect.vy -= attackDirection === 'arrowUp' ? enemyRect.knockback : 0;
+    enemyRect.vy += attackDirection === 'arrowDown' ? enemyRect.knockback : 0;
+    enemyRect.vx -= attackDirection === 'arrowLeft' ? enemyRect.knockback : 0;
+    enemyRect.vx += attackDirection === 'arrowRight' ? enemyRect.knockback : 0;
+
     return;
+}
+
+function increaseElapsed(dt) {
+    if (elapsed === undefined) {
+        elapsed = dt;
+    } else {
+        elapsed += dt;
+    }
 }

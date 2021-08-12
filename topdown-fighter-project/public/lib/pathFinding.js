@@ -27,7 +27,6 @@ export function pathFinding(start, goal, path) {
         closedList.push(openList.pop());
 
         if (closedList[closedList.length - 1].value === goalTile) {
-
             const totalPath = reconstructPath(cameFrom, current, path);
             return totalPath;
         }
@@ -56,6 +55,7 @@ export function pathFinding(start, goal, path) {
                     fScore.set(tile, gScore.get(tile) + h);
 
                     if (!openList.exists(tile)) {
+
                         openList.push(tile, fScore.get(tile));
                     }
                 }
@@ -89,20 +89,16 @@ function heuristic(nodeToExplore, goalTile) {
     const D2 = 1.4;
     return D * (dx + dy);
     //return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy)
-
 }
 
 
 function reconstructPath(cameFrom, current, path) {
-
     path = [];
     const totalPath = [current]
 
     while (cameFrom.get(current) !== undefined) {
-
         current = cameFrom.get(current);
         totalPath.push(current);
     }
-
     return totalPath;
 }

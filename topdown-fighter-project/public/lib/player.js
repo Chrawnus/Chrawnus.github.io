@@ -1,12 +1,10 @@
-import { tileGridSize, tileGrid, tileSize, visibleTileGrid, floodGrid } from "./tilegrid.js";
+import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
 import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
 import { enemyRect } from "./enemy.js";
-
-const intersectingTiles = [];
 
 export const startPos = {
     x: 0,
@@ -131,12 +129,14 @@ export function inputBufferUpdate(dt) {
 
 function onCollideX(rect, otherRect) {
     playerRect.vx = 0;
-
+    playerRect.health -= playerRect.health > 0 ? 0.5 : 0;
     return true;
 }
 
 function onCollideY(rect, otherRect) {
     playerRect.vy = 0;
+    playerRect.health -= playerRect.health > 0 ? 0.5 : 0;
+    
     return true;
 }
 

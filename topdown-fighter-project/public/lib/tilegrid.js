@@ -28,7 +28,7 @@ export function createTileGrid() {
                 "color": "green",
                 "index": i,
                 gScore: Infinity,
-                nodes: [undefined, undefined, undefined, undefined],
+                nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
                 traversable: 1,
                 isUnreachable: true,
                 isCenter: false,
@@ -48,7 +48,7 @@ export function createTileGrid() {
                 "color": "green",
                 "index": i,
                 gScore: Infinity,
-                nodes: [undefined, undefined, undefined, undefined],
+                nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
                 traversable: 1,
                 isUnreachable: true,
                 isCenter: false,
@@ -193,42 +193,42 @@ export function connectTileGrid() {
 
         // if north tile is empty, add as north neighbour
         if (i - wallLength >= 0) {
-                tile.nodes[0] = tileGrid[i - wallLength];
+            tile.nodes[0] = tileGrid[i - wallLength];
         }
 
         //if northeast tile is empty, add as northeast neighbour
-/*         if (i - wallLength + 1 >= 0) {
-                tile.nodes[1] = tileGrid[i - wallLength + 1];
-        } */
+        if (i - wallLength + 1 >= 0) {
+            tile.nodes[1] = tileGrid[i - wallLength + 1];
+        }
 
         // if east tile is empty, add as east neighbour
         if (((i + 1) % wallLength)) {
-            tile.nodes[1] = tileGrid[i + 1];
+            tile.nodes[2] = tileGrid[i + 1];
         }
 
         //if southeast tile is empty add as southeast neighbour
-/*         if (i + wallLength + 1 < tileGrid.length) {
-                tile.nodes[3] = tileGrid[i + wallLength + 1];
-        } */
+        if (i + wallLength + 1 < tileGrid.length) {
+            tile.nodes[3] = tileGrid[i + wallLength + 1];
+        }
 
         // if south tile is empty add as south neighbour
         if (i + wallLength < tileGrid.length) {
-                tile.nodes[2] = tileGrid[i + wallLength];
+            tile.nodes[4] = tileGrid[i + wallLength];
         }
 
         // if southwest tile is empty add as southwest neighbour
-/*         if (i + wallLength - 1 < tileGrid.length) {
-                tile.nodes[5] = tileGrid[i + wallLength - 1];
-        } */
+        if (i + wallLength - 1 < tileGrid.length) {
+            tile.nodes[5] = tileGrid[i + wallLength - 1];
+        }
 
         // if west tile is empty, add as west neighbour
         if (((i) % wallLength)) {
-            tile.nodes[3] = tileGrid[i - 1];
+            tile.nodes[6] = tileGrid[i - 1];
         }
 
         // if northwest tile is empty, add as northwest neighbour
-/*         if (i - wallLength - 1 >= 0) {
-                tile.nodes[7] = tileGrid[i - wallLength - 1];
-        } */
+        if (i - wallLength - 1 >= 0) {
+            tile.nodes[7] = tileGrid[i - wallLength - 1];
+        }
     }
 }
