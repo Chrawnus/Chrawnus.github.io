@@ -4,7 +4,7 @@ import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
-import { enemyRect } from "./enemy.js";
+import { enemyRect, placeEnemy } from "./enemy.js";
 
 export const startPos = {
     x: 0,
@@ -21,14 +21,19 @@ export const playerRect = {
     height: tileSize * 0.8,
     maxHealth: 100,
     health: 100,
+    initialAttack: 2.5,
+    attack: 2.5,
     currentInhabitedTile: undefined,
     color: 'lime',
     speed: 150,
     storedAttacks: 4,
-    startingAttackDelay: 300,
-    attackDelay: 300,
+    startingAttackDelay: 25,
+    attackDelay: 25,
     vx: 0,
     vy: 0,
+    kills: 0,
+    previousKills: 0,
+    healthBoost: 10
 };
 
 export function updatePlayer(dt) {
@@ -38,12 +43,14 @@ export function updatePlayer(dt) {
         placePlayer();
     }
 
-    playerAttack(dt);
-    updateAttackBox(dt);
-    inputBufferUpdate(dt);
+    if (playerRect.health > 0) {
+        playerAttack(dt);
+        updateAttackBox(dt);
+        inputBufferUpdate(dt);
+        playerMove(dt);
+    }
 
-
-    playerMove(dt);
+    
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
 
@@ -64,7 +71,7 @@ export function getPlayerPos(canvas) {
     };
 }
 
-function placePlayer() {
+export function placePlayer() {
     playerRect.x = startPos.x;
     playerRect.y = startPos.y;
     playerRect.placed = 1;
@@ -129,14 +136,11 @@ export function inputBufferUpdate(dt) {
 
 function onCollideX(rect, otherRect) {
     playerRect.vx = 0;
-    playerRect.health -= playerRect.health > 0 ? 0.5 : 0;
     return true;
 }
 
 function onCollideY(rect, otherRect) {
     playerRect.vy = 0;
-    playerRect.health -= playerRect.health > 0 ? 0.5 : 0;
-    
     return true;
 }
 

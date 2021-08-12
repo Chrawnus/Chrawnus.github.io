@@ -22,8 +22,10 @@ export const enemyRect = {
     height: tileSize * 0.8,
     maxHealth: 100,
     health: 100,
+    attack: 50,
     currentInhabitedTile: undefined,
     color: 'red',
+    initialSpeed: 100,
     speed: 100,
     knockback: 15,
     storedAttacks: 4,
@@ -43,7 +45,7 @@ export function updateEnemy(dt, now) {
 
     if (enemyRect.placed === 0 || enemyRect.health <= 0) {
         placeEnemy();
-        enemyRect.health = enemyRect.maxHealth;
+        enemyRect.health = enemyRect.maxHealth;   
     }
     getEntityPosOnTileGrid(enemyRect, tileGrid);
 
@@ -70,7 +72,7 @@ export function updateEnemy(dt, now) {
 
 };
 
-function placeEnemy() {
+export function placeEnemy() {
     enemyRect.x = startPos.x;
     enemyRect.y = startPos.y;
     enemyRect.placed = 1;
@@ -87,7 +89,10 @@ export function enemyMove(dt) {
             if (pathToPlayer.length > 2) {
                 pathToPlayer.splice(last, 1);
             }
-
+            else {
+                EnemyAttack(playerRect, dt);
+            }
+            
         } else {
             last = pathToPlayer.length - 1;
             targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
@@ -99,10 +104,13 @@ export function enemyMove(dt) {
             enemyRect.vx = enemyRect.speed * Math.cos(angle) * dt;
             enemyRect.vy = enemyRect.speed * Math.sin(angle) * dt;
         }
-    }
+    } 
 }
 
-export function EnemyAttack(dt) {
+function EnemyAttack(playerRect, dt) {
+    if (playerRect.health > 0) {
+        playerRect.health -= enemyRect.attack * dt;
+    }
 
 }
 
@@ -116,9 +124,9 @@ function onCollideY(rect, otherRect) {
     return true;
 }
 
-function onAttacked() {  
+function onAttacked() {
     if (enemyRect.health > 0) {
-        enemyRect.health -= 2.5;
+        enemyRect.health -= playerRect.attack;
         knockBack(attackBox.direction)
     }
 

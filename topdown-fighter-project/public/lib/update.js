@@ -4,6 +4,7 @@ import { playerRect, updatePlayer } from "./player.js";
 import { updateCamera } from "./camera.js";
 import { obstacles, visibleObstacles, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
 import { updateEnemy } from './enemy.js'
+import { checkHealth } from "./globalGameStateHandler.js";
 
 export const drawDistance = {
     x: playerRect.x + playerRect.width / 2 - (canvas.width * 1.5) / 2,
@@ -15,6 +16,7 @@ export const drawDistance = {
 export function update(dt, now) {
     updatePlayer(dt);
     updateEnemy(dt, now)
+    checkHealth();
     updateCamera();
     updateView();
     manageVisiblePlatforms();
