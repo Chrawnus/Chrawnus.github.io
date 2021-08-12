@@ -48,7 +48,7 @@ export function updatePlayer(dt) {
     playerMove(dt);
     moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
     moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
-    
+
     moveCollideX(playerRect.vx, playerRect, enemyRect, onCollideX);
     moveCollideY(playerRect.vy, playerRect, enemyRect, onCollideY);
 
@@ -79,60 +79,38 @@ export function setPlayerStartPosition() {
     startPos.y = y;
 }
 
-export function playerMove(dt) {
+function playerMove(dt) {
     playerRect.vy -= getKey(keyCodes.w) || getKey(keyCodes.W) ? playerRect.speed * dt : 0;
     playerRect.vx -= getKey(keyCodes.a) || getKey(keyCodes.A) ? playerRect.speed * dt : 0;
     playerRect.vy += getKey(keyCodes.s) || getKey(keyCodes.S) ? playerRect.speed * dt : 0;
     playerRect.vx += getKey(keyCodes.d) || getKey(keyCodes.D) ? playerRect.speed * dt : 0;
 }
 
-export function playerAttack(dt) {
+function playerAttack(dt) {
+
+    // multidirectional attack
     if (inputBuffer.length < playerRect.storedAttacks && getKey(keyCodes.shift)) {
-        multiDirectionalSlash();
+        checkAttackDirection();   
     }
+
+    // regular attack
     if (inputBuffer.length < 1 && !getKey(keyCodes.shift)) {
-        attackSlash();
+        checkAttackDirection();
     }
 
-    function multiDirectionalSlash() {
-        if (getKey(keyCodes.arrowUp) && !(inputBuffer.includes('up'))) {
-            inputBuffer.push('up');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-
-        if (getKey(keyCodes.arrowRight) && !(inputBuffer.includes('right'))) {
-            inputBuffer.push('right');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-        if (getKey(keyCodes.arrowDown) && !(inputBuffer.includes('down'))) {
-            inputBuffer.push('down');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-
-        if (getKey(keyCodes.arrowLeft) && !(inputBuffer.includes('left'))) {
-            inputBuffer.push('left');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
+    function checkAttackDirection() {
+        getKey(keyCodes.arrowUp) ? storeInput('arrowUp') : 0;
+        getKey(keyCodes.arrowRight) ? storeInput('arrowRight') : 0;
+        getKey(keyCodes.arrowDown) ? storeInput('arrowDown') : 0;
+        getKey(keyCodes.arrowLeft) ? storeInput('arrowLeft') : 0;
     }
 
-    function attackSlash() {
-        if (getKey(keyCodes.arrowUp)) {
-            inputBuffer.push('up');
+    function storeInput(slashDirection) {
+        if (!inputBuffer.includes(slashDirection)) {
+            inputBuffer.push(slashDirection);
             playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-
-        if (getKey(keyCodes.arrowRight)) {
-            inputBuffer.push('right');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-        if (getKey(keyCodes.arrowDown)) {
-            inputBuffer.push('down');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
-        }
-
-        if (getKey(keyCodes.arrowLeft)) {
-            inputBuffer.push('left');
-            playerRect.attackDelay = playerRect.startingAttackDelay;
+        } else {
+            return;
         }
     }
 }

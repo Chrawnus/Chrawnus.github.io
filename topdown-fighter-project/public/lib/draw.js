@@ -122,6 +122,3 @@ export function drawView() {
     ctx.strokeRect(drawDistance.x, drawDistance.y, drawDistance.width, drawDistance.height);
     ctx.closePath();
 }
-
-
-

@@ -29,17 +29,17 @@ export const attackBox = {
 
 export function createAttackBox(direction) {
     attackBox.direction = direction;
-    if (direction === 'up' || direction === 'down') {
+    if (direction === 'arrowUp' || direction === 'arrowDown') {
         attackBox.x = playerRect.x - 1.6 * playerRect.width;
-        if (direction === 'up') {
+        if (direction === 'arrowUp') {
             attackBox.y = playerRect.y - playerRect.height * 2.8;
         } else {
             attackBox.y = playerRect.y + playerRect.height;
         } 
     }
 
-    if (direction === 'left' || direction === 'right') {
-        if (direction === 'right') {
+    if (direction === 'arrowLeft' || direction === 'arrowRight') {
+        if (direction === 'arrowRight') {
             attackBox.x = playerRect.x + playerRect.width;
         } else {
             attackBox.x = playerRect.x - 2.8 * playerRect.width;
@@ -48,22 +48,22 @@ export function createAttackBox(direction) {
         attackBox.y = playerRect.y - 1.6 * playerRect.height;
     }
 
-    if (direction === 'up') {
+    if (direction === 'arrowUp') {
         attackBox.width = playerRect.width * 4.2;
         attackBox.height = playerRect.height * 2.8;
     }
 
-    if (direction === 'right') {
+    if (direction === 'arrowRight') {
         attackBox.width = playerRect.width * 2.8;
         attackBox.height = playerRect.height * 4.2;
     }
 
-    if (direction === 'left') {
+    if (direction === 'arrowLeft') {
         attackBox.width = playerRect.width * 2.8;
         attackBox.height = playerRect.height * 4.2;
     }
 
-    if (direction === 'down') {
+    if (direction === 'arrowDown') {
         attackBox.width = playerRect.width * 4.2;
         attackBox.height = playerRect.height * 2.8;
     }
@@ -76,17 +76,17 @@ export function updateAttackBox(dt) {
        attackBox.delay -= 1000 * dt; 
     } else {
         if (attackBox.isActive && attackBox.lifetime > 0) {
-            if (attackBox.direction === 'up' || attackBox.direction === 'down') {
+            if (attackBox.direction === 'arrowUp' || attackBox.direction === 'arrowDown') {
                 attackBox.x = playerRect.x - 1.6 * playerRect.width;
-                if (attackBox.direction === 'up') {
+                if (attackBox.direction === 'arrowUp') {
                     attackBox.y = playerRect.y - playerRect.height * 2.8;
                 } else {
                     attackBox.y = playerRect.y + playerRect.height;
                 } 
             }
         
-            if (attackBox.direction === 'left' || attackBox.direction === 'right') {
-                if (attackBox.direction === 'right') {
+            if (attackBox.direction === 'arrowLeft' || attackBox.direction === 'arrowRight') {
+                if (attackBox.direction === 'arrowRight') {
                     attackBox.x = playerRect.x + playerRect.width;
                 } else {
                     attackBox.x = playerRect.x - 2.8 * playerRect.width;

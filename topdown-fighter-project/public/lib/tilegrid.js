@@ -7,8 +7,6 @@ const tileGridDimensions = {
     height: tileSize
 }
 
-let firstPass = true;
-
 export const tileGrid = [];
 export const visibleTileGrid = [];
 
@@ -59,7 +57,6 @@ export function createTileGrid() {
 
     }
 }
-
 
 function createPlatform(x, y, width, height, color = 'gray', isUnreachable = true) {
     if (!(obstacles.filter(e => e.x === x && e.y === y).length > 0)) {

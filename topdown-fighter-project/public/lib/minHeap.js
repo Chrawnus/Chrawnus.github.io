@@ -23,14 +23,14 @@ export class MinHeap {
     }
 
     pop() {
-    	const node = this.heap[0];
+        const node = this.heap[0];
         const lastNode = this.heap.pop();
-        
+
         if (this.heap.length) {
-        	this.heap[0] = lastNode;
+            this.heap[0] = lastNode;
             this.moveDown(0);
         }
-        
+
         return node;
     }
 
@@ -50,11 +50,11 @@ export class MinHeap {
     }
 
     bubbleUp(nodeIndex) {
-        
+
         const parentIndex = this.getParentIndex(nodeIndex);
 
         if (parentIndex === null) {
-            
+
             return;
         }
 

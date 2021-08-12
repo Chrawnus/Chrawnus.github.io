@@ -26,10 +26,7 @@ window.addEventListener('keyup', e => {
         keys['d'] = false;
     }
 
-    
-
     keys[e.key] = false;
-
 });
 
 export function getKey(key) {

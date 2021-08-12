@@ -6,14 +6,11 @@ import { obstacles } from "./tilegrid.js";
 import { pathFinding } from "./pathFinding.js";
 import { attackBox } from "./playerAttackBox.js";
 
-
 let elapsed;
 export const startPos = {
     x: 640,
     y: 640
 }
-
-
 
 let pathToPlayer = [];
 
@@ -44,7 +41,6 @@ export function updateEnemy(dt, now) {
         elapsed += dt;
 
     }
-
 
     enemyRect.vx = 0;
     enemyRect.vy = 0;
@@ -135,20 +131,19 @@ function onAttacked() {
 
 }
 
-
 function knockBack(attackDirection) {
     console.log(attackDirection)
     switch (attackDirection) {
-        case "up":
+        case "arrowUp":
             enemyRect.vy -= 15;
             break;
-        case "down":
+        case "arrowDown":
             enemyRect.vy += 15;
             break;
-        case "right":
+        case "arrowRight":
             enemyRect.vx += 15;
             break;
-        case "left":
+        case "arrowLeft":
             enemyRect.vx -= 15;
             break;
         default:
