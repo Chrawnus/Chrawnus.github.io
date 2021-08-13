@@ -1,7 +1,23 @@
-import { playerRect, placePlayer } from "./player.js";
+import { AddPlatformsToGrid, createTileGrid, connectTileGrid } from "./tilegrid.js";
+import { pruneObstacles } from "./platform-pruner.js";
+import { playerRect, placePlayer, setPlayerStartPosition } from "./player.js";
 import { enemyRect, placeEnemy } from "./enemy.js";
 
-export function checkHealth() {
+//Create
+export function initialize() {
+    createTileGrid();
+    AddPlatformsToGrid();
+    pruneObstacles(0);
+    connectTileGrid();
+    setPlayerStartPosition();
+}
+
+export function gameStateHandler() {
+    gameOverCheck();
+    checkHealth();
+}
+
+function gameOverCheck() {
     if (playerRect.health < 0) {
         placePlayer();
         placeEnemy();
@@ -11,7 +27,8 @@ export function checkHealth() {
         enemyRect.speed = enemyRect.initialSpeed;
         playerRect.attack = playerRect.initialAttack;
     }
-
+}
+function checkHealth() {
     if (enemyRect.health <= 0) {
         if (playerRect.maxHealth - playerRect.health >= playerRect.healthBoost) {
             playerRect.health += playerRect.healthBoost;
@@ -35,4 +52,5 @@ export function checkHealth() {
         enemyRect.health = enemyRect.maxHealth;
     }
 }
+
 

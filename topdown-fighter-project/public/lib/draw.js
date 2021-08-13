@@ -31,6 +31,7 @@ export function draw() {
         drawAttackBox(ctx);
     }
     drawView();
+
 }
 /**
  * @param {CanvasRenderingContext2D} ctx

@@ -126,7 +126,7 @@ function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, left
 
 function getGateTiles(wallLength, i) {
     const middleOfHorizontalWall = wallLength / 2;
-    const middleOfUpperWall = i > middleOfHorizontalWall - wallLength / 6 && i < middleOfHorizontalWall + wallLength / 6;
+    const middleOfUpperWall = i > middleOfHorizontalWall - wallLength / 8 && i < middleOfHorizontalWall + wallLength / 8;
     const middleOfLowerWall = i > tileGridSize - middleOfHorizontalWall - 4 && i < tileGridSize - middleOfHorizontalWall + 4;
     const middleOfVerticalWall = tileGridSize / 2;
     const middleOfLeftWall = i > middleOfVerticalWall - 4 * wallLength && i < middleOfVerticalWall + 4 * wallLength;

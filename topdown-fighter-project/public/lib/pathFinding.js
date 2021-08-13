@@ -6,7 +6,7 @@ export function pathFinding(start, goal, path) {
 
     const startTile = tileGrid[start.currentInhabitedTile];
     const goalTile = tileGrid[goal.currentInhabitedTile];
-
+    
     const openList = new MinHeap();
     const closedList = [];
     const cameFrom = new Map();
@@ -76,6 +76,7 @@ function tieBreaker(start, current, goal) {
 }
 
 function heuristic(nodeToExplore, goalTile) {
+    
     const nodeX = nodeToExplore.x + nodeToExplore.width / 2;
     const nodeY = nodeToExplore.y + nodeToExplore.height / 2;
 

@@ -4,7 +4,7 @@ import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
-import { enemyRect, placeEnemy } from "./enemy.js";
+import { enemyRect } from "./enemy.js";
 
 export const startPos = {
     x: 0,
@@ -78,8 +78,8 @@ export function placePlayer() {
 }
 
 export function setPlayerStartPosition() {
-    const x = tileGrid[Math.sqrt(tileGridSize) / 2].x
-    const y = tileGrid[tileGridSize / 2].y
+    const x = tileGrid[Math.floor(Math.sqrt(tileGridSize) / 2)].x
+    const y = tileGrid[Math.floor(tileGridSize / 2)].y
     startPos.x = x;
     startPos.y = y;
 }

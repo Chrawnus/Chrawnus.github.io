@@ -1,5 +1,5 @@
 import { draw } from "./draw.js";
-import { initialize } from "./initialize.js";
+import { initialize } from "./globalGameStateHandler.js";
 import { update } from "./update.js";
 
 let prevTime;
