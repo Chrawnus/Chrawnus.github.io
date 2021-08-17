@@ -1,5 +1,5 @@
 import { rectanglesIntersect } from "./helperFunctions.js";
-import { canvas } from "./canvas.js";
+import { canvas } from "./elements.js";
 import { playerRect, updatePlayer } from "./player.js";
 import { updateCamera } from "./camera.js";
 import { obstacles, visibleObstacles, tileGrid, visibleTileGrid, tileSize } from "./tilegrid.js";
@@ -14,9 +14,9 @@ export const drawDistance = {
 };
 
 export function update(dt, now) {
+    gameStateHandler();
     updatePlayer(dt);
     updateEnemy(dt, now);
-    gameStateHandler();
 
     updateCamera();
     updateView();

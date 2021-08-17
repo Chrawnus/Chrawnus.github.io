@@ -7,16 +7,13 @@ import { pathFinding } from "./pathFinding.js";
 import { attackBox } from "./playerAttackBox.js";
 
 let elapsed;
-export const startPos = {
-    x: 640,
-    y: 640
-}
+
 
 export let pathToPlayer = [];
 
 export const enemyRect = {
-    x: startPos.x,
-    y: startPos.y,
+    x: 640,
+    y: 640,
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
@@ -43,10 +40,7 @@ export function updateEnemy(dt, now) {
     enemyRect.vx = 0;
     enemyRect.vy = 0;
 
-    if (enemyRect.placed === 0 || enemyRect.health <= 0) {
-        placeEnemy();
-        enemyRect.health = enemyRect.maxHealth;   
-    }
+
     getEntityPosOnTileGrid(enemyRect, tileGrid);
 
     if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.2) {
@@ -71,12 +65,6 @@ export function updateEnemy(dt, now) {
     moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
 
 };
-
-export function placeEnemy() {
-    enemyRect.x = startPos.x;
-    enemyRect.y = startPos.y;
-    enemyRect.placed = 1;
-}
 
 export function enemyMove(dt) {
     if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {

@@ -1,5 +1,5 @@
 import { clamp } from "./helperFunctions.js";
-import { canvas, ctx } from "./canvas.js";
+import { canvas, ctx } from "./elements.js";
 import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
 import { drawDistance } from "./update.js";

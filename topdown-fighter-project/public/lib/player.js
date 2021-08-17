@@ -1,4 +1,4 @@
-import { tileGridSize, tileGrid, tileSize } from "./tilegrid.js";
+import { tileGrid, tileSize } from "./tilegrid.js";
 import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
@@ -6,16 +6,11 @@ import { moveCollideX, moveCollideY } from "./physics.js";
 import { obstacles } from "./tilegrid.js";
 import { enemyRect } from "./enemy.js";
 
-export const startPos = {
-    x: 0,
-    y: 0
-}
-
 export const inputBuffer = [];
 
 export const playerRect = {
-    x: startPos.x,
-    y: startPos.y,
+    x: 0,
+    y: 0,
     placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
@@ -32,16 +27,14 @@ export const playerRect = {
     vx: 0,
     vy: 0,
     kills: 0,
-    previousKills: 0,
+    deaths: 0,
     healthBoost: 10
 };
 
 export function updatePlayer(dt) {
     playerRect.vx = 0;
     playerRect.vy = 0;
-    if (playerRect.placed === 0) {
-        placePlayer();
-    }
+
 
     if (playerRect.health > 0) {
         playerAttack(dt);
@@ -69,19 +62,6 @@ export function getPlayerPos(canvas) {
         x: (playerRect.x - rect.left) / (rect.right - rect.left) * canvas.width,
         y: (playerRect.y - rect.top) / (rect.bottom - rect.top) * canvas.height
     };
-}
-
-export function placePlayer() {
-    playerRect.x = startPos.x;
-    playerRect.y = startPos.y;
-    playerRect.placed = 1;
-}
-
-export function setPlayerStartPosition() {
-    const x = tileGrid[Math.floor(Math.sqrt(tileGridSize) / 2)].x
-    const y = tileGrid[Math.floor(tileGridSize / 2)].y
-    startPos.x = x;
-    startPos.y = y;
 }
 
 function playerMove(dt) {

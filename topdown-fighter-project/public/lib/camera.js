@@ -1,5 +1,5 @@
 import { playerRect, getPlayerPos } from "./player.js";
-import { canvas } from "./canvas.js";
+import { canvas } from "./elements.js";
 import { tileGridSize } from "./tilegrid.js";
 
 export const camera = {
