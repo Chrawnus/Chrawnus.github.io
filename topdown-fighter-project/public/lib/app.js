@@ -13,13 +13,14 @@ function gameLoop(now) {
     //
     // update
     //
-    
+
     const dt = getDelta(now);
     if (running) {
         update(dt, now);
+        draw();
     }
 
-    draw();
+
 }
 
 function getDelta(now) {

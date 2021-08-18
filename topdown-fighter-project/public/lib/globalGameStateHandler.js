@@ -3,7 +3,7 @@ import { pruneObstacles } from "./platform-pruner.js";
 import { playerRect } from "./player.js";
 import { enemyRect } from "./enemy.js";
 import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton } from "./elements.js";
-
+import { attackBox } from "./playerAttackBox.js";
 
 export let running = true;
 
@@ -127,7 +127,7 @@ function checkStatButton(e) {
                 case 'attack-speed':
                     console.log('attack speed');
                     playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/100;
-                    playerRect.attackDelay -= playerRect.attackDelay * playerStatBoosts.attackSpeed/100;
+                    playerRect.attackDelay = playerRect.startingAttackDelay;
 
                     console.log(playerRect.attackDelay)
                     break;
@@ -238,6 +238,7 @@ function increaseDeathCounter() {
 
 function pauseGame() {
     if (running) {
+        attackBox.lifetime = 0;
         running = false;
     }
 }
