@@ -8,13 +8,11 @@ import { attackBox } from "./playerAttackBox.js";
 
 let elapsed;
 
-
 export let pathToPlayer = [];
 
 export const enemyRect = {
     x: 640,
     y: 640,
-    placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
     maxHealth: 100,
@@ -33,7 +31,7 @@ export const enemyRect = {
     vy: 0,
 };
 
-export function updateEnemy(dt, now) {
+export function updateEnemy(dt) {
 
     increaseElapsed(dt);
 
@@ -48,9 +46,7 @@ export function updateEnemy(dt, now) {
         //elapsed = 0;
     }
 
-    if (elapsed > 0.3) {
-        elapsed = 0;
-    }
+    resetElapsed();
 
     enemyMove(dt);
 
@@ -65,6 +61,12 @@ export function updateEnemy(dt, now) {
     moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
 
 };
+
+function resetElapsed() {
+    if (elapsed > 0.3) {
+        elapsed = 0;
+    }
+}
 
 export function enemyMove(dt) {
     if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {
@@ -99,7 +101,6 @@ function EnemyAttack(playerRect, dt) {
     if (playerRect.health > 0) {
         playerRect.health -= enemyRect.attack * dt;
     }
-
 }
 
 function onCollideX(rect, otherRect) {

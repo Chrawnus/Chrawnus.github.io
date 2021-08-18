@@ -2,9 +2,6 @@ export const canvas = document.querySelector('canvas');
 export const killStats = document.querySelector('#kills');
 export const deathStat = document.querySelector('#deaths');
 
-console.log(killStats.textContent)
-
-
 canvas.width = window.innerWidth/1.2;
 canvas.height = window.innerHeight/1.2;
 
@@ -17,7 +14,6 @@ export const canvasMiddle = {
 };
 
 window.addEventListener('resize', () => {
-    console.log("hi")
     canvas.width = window.innerWidth/1.2;
     canvas.height = window.innerHeight/1.2;
 })

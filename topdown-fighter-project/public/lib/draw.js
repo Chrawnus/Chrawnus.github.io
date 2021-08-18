@@ -2,11 +2,8 @@ import { clamp } from "./helperFunctions.js";
 import { canvas, ctx } from "./elements.js";
 import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
-import { drawDistance } from "./update.js";
 import { attackBox, drawAttackBox } from "./playerAttackBox.js";
-
 import { enemyRect } from "./enemy.js";
-
 
 
 export function draw() {
@@ -30,7 +27,7 @@ export function draw() {
     if (attackBox.isActive === true) {
         drawAttackBox(ctx);
     }
-    drawView();
+
 
 }
 /**
@@ -116,10 +113,4 @@ function drawPlayerHealthBar(ctx) {
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "black"
     ctx.strokeRect(x,y,w,h);
-}
-export function drawView() {
-    ctx.beginPath();
-    ctx.strokeStyle = 'blue';
-    ctx.strokeRect(drawDistance.x, drawDistance.y, drawDistance.width, drawDistance.height);
-    ctx.closePath();
 }

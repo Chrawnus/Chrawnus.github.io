@@ -1,10 +1,9 @@
 import { draw } from "./draw.js";
-import { initialize } from "./globalGameStateHandler.js";
 import { update } from "./update.js";
+import { running } from "./globalGameStateHandler.js";
 
 let prevTime;
 
-initialize();
 
 requestAnimationFrame(gameLoop);
 
@@ -14,10 +13,12 @@ function gameLoop(now) {
     //
     // update
     //
-
+    
     const dt = getDelta(now);
+    if (running) {
+        update(dt, now);
+    }
 
-    update(dt, now);
     draw();
 }
 

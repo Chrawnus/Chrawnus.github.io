@@ -11,7 +11,6 @@ export const inputBuffer = [];
 export const playerRect = {
     x: 0,
     y: 0,
-    placed: 0,
     width: tileSize * 0.8,
     height: tileSize * 0.8,
     maxHealth: 100,
