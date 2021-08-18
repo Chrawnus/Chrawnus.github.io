@@ -16,18 +16,15 @@ export const playerRect = {
     maxHealth: 100,
     health: 100,
     initialAttack: 2.5,
-    attack: 2.5,
+    attack: 5,
     currentInhabitedTile: undefined,
     color: 'lime',
     speed: 150,
     storedAttacks: 4,
-    startingAttackDelay: 25,
-    attackDelay: 25,
+    startingAttackDelay: 500,
+    attackDelay: 500,
     vx: 0,
     vy: 0,
-    kills: 0,
-    deaths: 0,
-    healthBoost: 10
 };
 
 export function updatePlayer(dt) {

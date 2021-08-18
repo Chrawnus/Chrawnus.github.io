@@ -23,7 +23,6 @@ export const enemyRect = {
     initialSpeed: 100,
     speed: 100,
     knockback: 15,
-    storedAttacks: 4,
     startingAttackDelay: 300,
     attackDelay: 300,
     target: undefined,
