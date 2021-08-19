@@ -22,6 +22,7 @@ export const enemyRect = {
     color: 'red',
     initialSpeed: 100,
     speed: 100,
+    maxSpeed: 250,
     knockback: 15,
     startingAttackDelay: 300,
     attackDelay: 300,
@@ -31,22 +32,14 @@ export const enemyRect = {
 };
 
 export function updateEnemy(dt) {
-
+    getEntityPosOnTileGrid(enemyRect, tileGrid);
     increaseElapsed(dt);
+    refreshPathfinding();
+    resetElapsed();
 
     enemyRect.vx = 0;
     enemyRect.vy = 0;
-
-
-    getEntityPosOnTileGrid(enemyRect, tileGrid);
-
-    if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.2) {
-        pathToPlayer = pathFinding(enemyRect, playerRect, pathToPlayer);
-        //elapsed = 0;
-    }
-
-    resetElapsed();
-
+    
     enemyMove(dt);
 
     if (intersectRect(enemyRect, attackBox)) {
@@ -59,13 +52,22 @@ export function updateEnemy(dt) {
     moveCollideY(enemyRect.vy, enemyRect, playerRect, onCollideY);
     moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
 
+
+    function refreshPathfinding() {
+        if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.2) {
+            pathToPlayer = pathFinding(enemyRect, playerRect, pathToPlayer);
+            //elapsed = 0;
+        }
+    }
+
+    function resetElapsed() {
+        if (elapsed > 0.3) {
+            elapsed = 0;
+        }
+    }
 };
 
-function resetElapsed() {
-    if (elapsed > 0.3) {
-        elapsed = 0;
-    }
-}
+
 
 export function enemyMove(dt) {
     if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {

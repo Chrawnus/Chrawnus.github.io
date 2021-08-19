@@ -79,7 +79,6 @@ function gameOverCheck() {
         resetPlayerPos();
         resetEnemyPos();
         pauseGame();
-
     }
 };
 
@@ -126,7 +125,13 @@ function checkStatButton(e) {
                     break;
                 case 'attack-speed':
                     console.log('attack speed');
-                    playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/100;
+                    
+                    playerStatistics.expendedStatPoints < 4 ? 
+                    
+                    playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/100 :
+                    
+                    playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/(Math.log(playerStatistics.expendedStatPoints))/100;
+
                     playerRect.attackDelay = playerRect.startingAttackDelay;
 
                     console.log(playerRect.attackDelay)
@@ -157,7 +162,8 @@ function checkStatButton(e) {
 
 function boostEnemyStats() {
     enemyRect.maxHealth += enemyStatBoosts.health;
-    enemyRect.speed += enemyStatBoosts.speed;
+    enemyRect.speed < enemyRect.maxSpeed ? enemyRect.speed += enemyStatBoosts.speed :
+    enemyRect.speed > enemyRect.maxSpeed ? enemyRect.speed = enemyRect.maxSpeed : 0;
     enemyRect.attack += enemyStatBoosts.attack;
     console.log(enemyRect.maxHealth, enemyRect.speed, enemyRect.attack)
 };
