@@ -2,7 +2,7 @@ import { AddPlatformsToGrid, createTileGrid, connectTileGrid, tileGrid, tileGrid
 import { pruneObstacles } from "./platform-pruner.js";
 import { playerRect } from "./player.js";
 import { enemyRect } from "./enemy.js";
-import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton } from "./elements.js";
+import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton, resumeButton, saveButton, loadButton } from "./elements.js";
 import { attackBox } from "./playerAttackBox.js";
 
 export let running = true;
@@ -39,15 +39,16 @@ const enemyStatBoosts = {
     attackSpeed: 1,
 }
 
-initializeStatButtons();
+initializeMenuButtons();
 initialize();
 
-function initializeStatButtons() {
+function initializeMenuButtons() {
     incHealthButton.addEventListener('click', e => checkStatButton(e));
     incHealingButton.addEventListener('click', e => checkStatButton(e));
     incSpeedButton.addEventListener('click', e => checkStatButton(e));
     incAttackButton.addEventListener('click', e => checkStatButton(e));
     incAttackSpeedButton.addEventListener('click', e => checkStatButton(e));
+    resumeButton.addEventListener('click', startGame);
 
     incHealthButton.textContent = `health: +${playerStatBoosts.health}`;
     incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`;
@@ -140,16 +141,6 @@ function checkStatButton(e) {
                     break;
             }
             decreaseStatPoints();
-            startGame();
-        } else {
-            startGame();
-        }
-
-
-        function startGame() {
-            if (playerStatistics.statPoints <= 0) {
-                running = true;
-            }
         }
     }
 
@@ -246,5 +237,13 @@ function pauseGame() {
     if (running) {
         attackBox.lifetime = 0;
         running = false;
+        resumeButton.disabled = false;
+    }
+}
+
+function startGame() { 
+    if (playerStatistics.statPoints <= 0 && !running) {
+        running = true;
+        resumeButton.disabled = true;
     }
 }

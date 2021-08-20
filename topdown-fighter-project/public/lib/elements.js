@@ -10,9 +10,12 @@ export const killStats = document.querySelector('#kills');
 export const deathStat = document.querySelector('#deaths');
 export const statPoints = document.querySelector('#stat-points');
 
-canvas.width = window.innerWidth/1.2;
-canvas.height = window.innerHeight/1.2;
+export const resumeButton = document.querySelector('#resume');
+export const saveButton = document.querySelector('#save');
+export const loadButton = document.querySelector('#load');
 
+
+resizeCanvas();
 
 export const ctx = canvas.getContext('2d');
 
@@ -23,5 +26,10 @@ export const canvasMiddle = {
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth/1.2;
-    canvas.height = window.innerHeight/1.2;
+    canvas.height = window.innerHeight/1.45;
 })
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth / 1.2;
+    canvas.height = window.innerHeight / 1.45;
+}
