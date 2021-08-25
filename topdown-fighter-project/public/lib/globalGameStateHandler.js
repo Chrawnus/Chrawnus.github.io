@@ -21,7 +21,13 @@ const playerStatistics = {
     kills: 0,
     deaths: 0,
     statPoints: 0,
-    expendedStatPoints: 0
+    expendedStatPoints: {
+        health: 0,
+        healing: 0,
+        speed: 0,
+        attack: 0,
+        attackSpeed: 0
+    }
 }
 
 const playerStatBoosts = {
@@ -29,7 +35,7 @@ const playerStatBoosts = {
     healing: 10,
     speed: 10,
     attack: 10,
-    attackSpeed: 15,
+    attackSpeed: 45,
 }
 
 const enemyStatBoosts = {
@@ -49,6 +55,8 @@ function initializeMenuButtons() {
     incAttackButton.addEventListener('click', e => checkStatButton(e));
     incAttackSpeedButton.addEventListener('click', e => checkStatButton(e));
     resumeButton.addEventListener('click', startGame);
+    saveButton.addEventListener('click', saveGame);
+    //loadButton.addEventListener('click', loadGame);
 
     incHealthButton.textContent = `health: +${playerStatBoosts.health}`;
     incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`;
@@ -107,54 +115,65 @@ function checkStatButton(e) {
                     playerRect.maxHealth += playerStatBoosts.health;
                     playerRect.health = playerRect.maxHealth;
 
+                    playerStatistics.statPoints -= 1;
+                    playerStatistics.expendedStatPoints.health += 1;
+
                     break;
                 case 'healing-power':
                     console.log('healing power');
                     playerStatBoosts.healing += 10;
                     incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`
 
+                    playerStatistics.statPoints -= 1;
+                    playerStatistics.expendedStatPoints.healing += 1;
+
                     break;
                 case 'speed':
                     console.log('speed');
                     playerRect.speed += playerStatBoosts.speed;
+
+                    playerStatistics.statPoints -= 1;
+                    playerStatistics.expendedStatPoints.speed += 1;
 
                     break;
                 case 'attack':
                     console.log('attack');
                     playerRect.attack += playerStatBoosts.attack;
 
+                    playerStatistics.statPoints -= 1;
+                    playerStatistics.expendedStatPoints.attack += 1;
+
                     break;
                 case 'attack-speed':
                     console.log('attack speed');
-                    
-                    playerStatistics.expendedStatPoints < 4 ? 
-                    
-                    playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/100 :
-                    
-                    playerRect.startingAttackDelay -= playerRect.startingAttackDelay * playerStatBoosts.attackSpeed/(Math.log(playerStatistics.expendedStatPoints))/100;
 
-                    playerRect.attackDelay = playerRect.startingAttackDelay;
+                    if (playerRect.startingAttackDelay > 50) {
+                        playerRect.startingAttackDelay -= playerStatBoosts.attackSpeed;
+                        playerRect.attackDelay = playerRect.startingAttackDelay;
+                    }
 
+                    playerStatistics.statPoints -= 1;
+                    playerStatistics.expendedStatPoints.attackSpeed += 1;
                     console.log(playerRect.attackDelay)
                     break;
                 default:
                     break;
             }
-            decreaseStatPoints();
+            statPoints.textContent = `stat points: ${playerStatistics.statPoints}`;
         }
     }
 
-    function decreaseStatPoints() {
-        playerStatistics.statPoints -= 1;
-        playerStatistics.expendedStatPoints += 1;
-        statPoints.textContent = `stat points: ${playerStatistics.statPoints}`;
-    }
+    /*     function decreaseStatPoints() {
+            playerStatistics.statPoints -= 1;
+            playerStatistics.expendedStatPoints += 1;
+            
+        } */
 }
 
 function boostEnemyStats() {
     enemyRect.maxHealth += enemyStatBoosts.health;
     enemyRect.speed < enemyRect.maxSpeed ? enemyRect.speed += enemyStatBoosts.speed :
-    enemyRect.speed > enemyRect.maxSpeed ? enemyRect.speed = enemyRect.maxSpeed : 0;
+        enemyRect.speed > enemyRect.maxSpeed ? enemyRect.speed = enemyRect.maxSpeed : 0;
     enemyRect.attack += enemyStatBoosts.attack;
     console.log(enemyRect.maxHealth, enemyRect.speed, enemyRect.attack)
 };
@@ -241,9 +260,33 @@ function pauseGame() {
     }
 }
 
-function startGame() { 
+function startGame() {
     if (playerStatistics.statPoints <= 0 && !running) {
         running = true;
         resumeButton.disabled = true;
     }
+}
+
+function saveGame() {
+    const playerStats = playerStatistics;
+    const player = playerRect;
+    const enemy = enemyRect;
+    const saveObject = {playerStats, player, enemy}
+
+    console.log(saveObject)
+
+    fetch('/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(saveObject),
+    })
+        .then(response => response.json())
+        .then(saveObject => {
+            console.log('Success:', saveObject);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
