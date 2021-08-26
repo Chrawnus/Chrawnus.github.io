@@ -55,8 +55,18 @@ function initializeMenuButtons() {
     incAttackButton.addEventListener('click', e => checkStatButton(e));
     incAttackSpeedButton.addEventListener('click', e => checkStatButton(e));
     resumeButton.addEventListener('click', startGame);
-    saveButton.addEventListener('click', saveGame);
-    //loadButton.addEventListener('click', loadGame);
+    saveButton.addEventListener('click', (e) => {
+        if (running) {
+            return;
+        }
+        saveGame(),
+            e.preventDefault();
+
+    });
+    loadButton.addEventListener('click', (e) => {
+        loadGame(),
+            e.preventDefault();
+    });
 
     incHealthButton.textContent = `health: +${playerStatBoosts.health}`;
     incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`;
@@ -162,12 +172,6 @@ function checkStatButton(e) {
             statPoints.textContent = `stat points: ${playerStatistics.statPoints}`;
         }
     }
-
-    /*     function decreaseStatPoints() {
-            playerStatistics.statPoints -= 1;
-            playerStatistics.expendedStatPoints += 1;
-            
-        } */
 }
 
 function boostEnemyStats() {
@@ -175,7 +179,6 @@ function boostEnemyStats() {
     enemyRect.speed < enemyRect.maxSpeed ? enemyRect.speed += enemyStatBoosts.speed :
         enemyRect.speed > enemyRect.maxSpeed ? enemyRect.speed = enemyRect.maxSpeed : 0;
     enemyRect.attack += enemyStatBoosts.attack;
-    console.log(enemyRect.maxHealth, enemyRect.speed, enemyRect.attack)
 };
 
 function updatePlayerKills() {
@@ -269,9 +272,10 @@ function startGame() {
 
 function saveGame() {
     const playerStats = playerStatistics;
+    const playerSB = playerStatBoosts;
     const player = playerRect;
     const enemy = enemyRect;
-    const saveObject = {playerStats, player, enemy}
+    const saveObject = { playerStats, playerSB, player, enemy }
 
     console.log(saveObject)
 
@@ -289,4 +293,63 @@ function saveGame() {
         .catch((error) => {
             console.error('Error:', error);
         });
+}
+
+function loadGame() {
+    console.log("hi")
+    fetch('/load', {
+        method: 'GET'
+    })
+        .then(function (res) {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(function (data) {
+            const save = JSON.parse(data[0].save);
+            loadEntity(playerRect, save.player)
+            loadStatistics(playerStatistics, save.playerStats)
+            loadSB(playerStatBoosts, save.playerSB);
+            incHealthButton.textContent = `health: +${playerStatBoosts.health}`;
+            incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`;
+            incSpeedButton.textContent = `speed: +${playerStatBoosts.speed}`;
+            incAttackButton.textContent = `attack: +${playerStatBoosts.attack}`;
+            incAttackSpeedButton.textContent = `attack speed: -${playerStatBoosts.attackSpeed}%`;
+            killStats.textContent = `kills: ${playerStatistics.kills}`;
+            statPoints.textContent = `stat points: ${playerStatistics.statPoints}`;
+            deathStat.textContent = `deaths: ${playerStatistics.deaths}`;
+        });
+
+}
+
+
+function loadEntity(entity, entitySave) {
+    entity.x = entitySave.x;
+    entity.y = entitySave.y;
+    entity.maxHealth = entitySave.maxHealth;
+    entity.health = entitySave.health;
+    entity.initialAttack = entitySave.initialAttack;
+    entity.attack = entitySave.attack;
+    entity.currentInhabitedTile = entitySave.currentInhabitedTile;
+    entity.speed = entitySave.speed;
+    entity.startingAttackDelay = entitySave.startingAttackDelay;
+    entity.attackDelay = entitySave.attackDelay;
+    entity.vx = entitySave.vx;
+    entity.vy = entitySave.vy;
+}
+
+function loadStatistics(statistics, saveStatistics) {
+    statistics.kills = saveStatistics.kills;
+    statistics.deaths = saveStatistics.deaths;
+    statistics.statPoints = saveStatistics.statPoints;
+    statistics.expendedStatPoints = saveStatistics.expendedStatPoints;
+}
+
+function loadSB(statboosts, saveStatBoosts) {
+    statboosts.health = saveStatBoosts.health;
+    statboosts.healing = saveStatBoosts.healing;
+    statboosts.speed = saveStatBoosts.speed;
+    statboosts.attack = saveStatBoosts.attack;
+    statboosts.attackSpeed = saveStatBoosts.attackSpeed;
 }
