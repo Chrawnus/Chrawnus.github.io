@@ -17,8 +17,9 @@ function gameLoop(now) {
     const dt = getDelta(now);
     if (running) {
         update(dt, now);
-        draw();
+
     }
+    draw();
 
 
 }

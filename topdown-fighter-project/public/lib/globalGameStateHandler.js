@@ -5,7 +5,7 @@ import { enemyRect } from "./enemy.js";
 import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton, resumeButton, saveButton, loadButton } from "./elements.js";
 import { attackBox } from "./playerAttackBox.js";
 
-export let running = true;
+export let running = false;
 
 const playerStartPos = {
     x: 0,
@@ -54,7 +54,14 @@ function initializeMenuButtons() {
     incSpeedButton.addEventListener('click', e => checkStatButton(e));
     incAttackButton.addEventListener('click', e => checkStatButton(e));
     incAttackSpeedButton.addEventListener('click', e => checkStatButton(e));
-    resumeButton.addEventListener('click', startGame);
+    resumeButton.addEventListener('click', () => {
+        if (running && playerStatistics.statPoints >= 5) {
+            pauseGame();
+        } else {
+            startGame();
+        }
+        
+    });
     saveButton.addEventListener('click', (e) => {
         if (running) {
             return;
@@ -64,6 +71,9 @@ function initializeMenuButtons() {
 
     });
     loadButton.addEventListener('click', (e) => {
+        if (running) {
+            return;
+        }
         loadGame(),
             e.preventDefault();
     });
@@ -259,14 +269,15 @@ function pauseGame() {
     if (running) {
         attackBox.lifetime = 0;
         running = false;
-        resumeButton.disabled = false;
+        resumeButton.textContent = 'resume game'
     }
 }
 
 function startGame() {
     if (playerStatistics.statPoints <= 0 && !running) {
         running = true;
-        resumeButton.disabled = true;
+        resumeButton.textContent = 'pause game'
+
     }
 }
 
@@ -277,7 +288,7 @@ function saveGame() {
     const enemy = enemyRect;
     const saveObject = { playerStats, playerSB, player, enemy }
 
-    console.log(saveObject)
+    console.log(saveObject.enemy)
 
     fetch('/save', {
         method: 'POST',
@@ -296,7 +307,6 @@ function saveGame() {
 }
 
 function loadGame() {
-    console.log("hi")
     fetch('/load', {
         method: 'GET'
     })
@@ -308,9 +318,11 @@ function loadGame() {
         })
         .then(function (data) {
             const save = JSON.parse(data[0].save);
-            loadEntity(playerRect, save.player)
-            loadStatistics(playerStatistics, save.playerStats)
+            loadEntity(playerRect, save.player);
+            loadEntity(enemyRect, save.enemy);
+            loadStatistics(playerStatistics, save.playerStats);
             loadSB(playerStatBoosts, save.playerSB);
+            console.log(enemyRect);
             incHealthButton.textContent = `health: +${playerStatBoosts.health}`;
             incHealingButton.textContent = `healing power: ${playerStatBoosts.healing}`;
             incSpeedButton.textContent = `speed: +${playerStatBoosts.speed}`;
