@@ -1,6 +1,6 @@
 import { clamp } from "./helperFunctions.js";
 import { canvas, ctx } from "./elements.js";
-import { tileGrid, obstacles, floodGrid, tileGridSize } from "./tilegrid.js";
+import { tileGrid, obstacles, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
 import { attackBox, drawAttackBox } from "./playerAttackBox.js";
 import { enemyRect } from "./enemy.js";

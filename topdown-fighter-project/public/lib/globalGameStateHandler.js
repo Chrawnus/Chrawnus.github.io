@@ -1,5 +1,4 @@
 import { AddPlatformsToGrid, createTileGrid, connectTileGrid, tileGrid, tileGridSize } from "./tilegrid.js";
-import { pruneObstacles } from "./platform-pruner.js";
 import { playerRect } from "./player.js";
 import { enemyRect } from "./enemy.js";
 import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton, resumeButton, saveButton, loadButton } from "./elements.js";
@@ -89,7 +88,6 @@ function initializeMenuButtons() {
 export function initialize() {
     createTileGrid();
     AddPlatformsToGrid();
-    pruneObstacles(0);
     setPlayerStartPosition();
     setEnemyStartPosition();
     connectTileGrid();

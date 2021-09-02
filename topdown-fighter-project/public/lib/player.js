@@ -96,7 +96,7 @@ function playerAttack(dt) {
     }
 }
 
-export function inputBufferUpdate(dt) {
+function inputBufferUpdate(dt) {
     if (inputBuffer.length > 0 && attackBox.isActive === false) {
         if (playerRect.attackDelay > 0) {
             playerRect.attackDelay -= dt * 1000;

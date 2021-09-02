@@ -10,7 +10,6 @@ export function update(dt, now) {
     updatePlayer(dt);
     updateEnemy(dt, now);
     updateCamera();
-
 }
 
 

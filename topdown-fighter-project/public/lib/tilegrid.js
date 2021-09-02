@@ -13,8 +13,6 @@ export const visibleTileGrid = [];
 export const obstacles = [];
 export const visibleObstacles = [];
 
-export const floodGrid = [];
-
 export function createTileGrid() {
     let x = 0;
     let y = 0;
@@ -78,34 +76,12 @@ export function AddPlatformsToGrid() {
         const { wallLength, upperWall, leftWall, rightWall, lowerWall } = getWallTiles(i);
         //define wall openings/gates
         const { middleOfUpperWall, middleOfLeftWall, middleOfRightWall, middleOfLowerWall } = getGateTiles(wallLength, i);
-        if (!upperWall && !leftWall && !rightWall && !lowerWall) {
-            addToFloodGrid(tile);
-        }
-        if (!isCenterTile(tile)) {
-/*             determineObstacles(tileGrid, i, Math.random());
-            if (tile.traversable < 0.33) {
-                tile.traversable = 0;
-            } else {
-                tile.traversable = 1;
-            }
-            placeObstacles(tile); */
-        } else {
+        if (isCenterTile(tile)) {
             tile.traversable = 1;
             tile.isCenter = true;
         }
         placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, leftWall, middleOfRightWall, rightWall, middleOfLowerWall, lowerWall, tile);
     }
-}
-
-export function placeObstacles(tile) {
-    if ((floodGrid.findIndex(e => e.x === tile.x && e.y === tile.y) > -1) &&
-        (tile.traversable < 0.33)) {
-        tile.traversable = 0;
-        createPlatform(tile.x, tile.y, 1, 1);
-
-        return;
-    }
-    return;
 }
 
 function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, leftWall, middleOfRightWall, rightWall, middleOfLowerWall, lowerWall, tile) {
@@ -163,28 +139,6 @@ function isCenterTile(tile) {
     const middleOfVerticalWall = Math.floor(tileGridSize / 2);
 
     return tile.x === tileGrid[middleOfHorizontalWall].x && tile.y === tileGrid[middleOfVerticalWall].y;
-}
-
-function addToFloodGrid(tile) {
-    floodGrid.push({
-        x: tile.x,
-        y: tile.y,
-        tile: tile
-    })
-}
-
-function determineObstacles(grid, i, seed) {
-    const myrng = new Math.seedrandom(seed + i);
-    const wallLength = Math.floor(Math.sqrt(tileGridSize));
-    const middleOfHorizontalWall = Math.floor(wallLength / 2);
-    const middleOfVerticalWall = Math.floor(tileGridSize / 2);
-
-    if ((grid[i].x > grid[middleOfHorizontalWall - 4].x && grid[i].x < grid[middleOfHorizontalWall + 4].x) ||
-        (grid[i].y > grid[middleOfVerticalWall - 4 * wallLength].y && grid[i].y < grid[middleOfVerticalWall + 4 * wallLength].y)) {
-        return grid[i].traversable = myrng() + 0.22;
-    } else {
-        return grid[i].traversable = myrng();
-    }
 }
 
 export function connectTileGrid() {
