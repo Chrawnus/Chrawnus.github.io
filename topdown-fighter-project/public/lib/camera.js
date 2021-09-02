@@ -7,7 +7,7 @@ export const camera = {
     y: 0
 };
 
-export function updateCamera() {
+export function updateCameraPosition() {
     const playerPosCanvas = getPlayerPos(canvas);
 
     if (playerPosCanvas.x > tileGridSize && playerPosCanvas.x < tileGridSize) {

@@ -1,4 +1,4 @@
-// tileGridSize min size 256, has to be a square number divisible by 2
+// using any other tileGridSize than 1024 breaks the code for now
 export const tileGridSize = 1024;
 export const tileSize = 32;
 const wallLength = Math.sqrt(tileGridSize);
@@ -8,10 +8,7 @@ const tileGridDimensions = {
 }
 
 export const tileGrid = [];
-export const visibleTileGrid = [];
-
 export const obstacles = [];
-export const visibleObstacles = [];
 
 export function createTileGrid() {
     let x = 0;
@@ -28,8 +25,7 @@ export function createTileGrid() {
                 gScore: Infinity,
                 nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
                 traversable: 1,
-                isUnreachable: true,
-                isCenter: false,
+                isUnreachable: true
             });
         } else {
             if (!(i % wallLength) && !(i < wallLength )) {
@@ -48,8 +44,7 @@ export function createTileGrid() {
                 gScore: Infinity,
                 nodes: [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
                 traversable: 1,
-                isUnreachable: true,
-                isCenter: false,
+                isUnreachable: true
             });
         }
 
@@ -74,40 +69,16 @@ export function AddPlatformsToGrid() {
         const tile = tileGrid[i];
         //define outer walls
         const { wallLength, upperWall, leftWall, rightWall, lowerWall } = getWallTiles(i);
-        //define wall openings/gates
-        const { middleOfUpperWall, middleOfLeftWall, middleOfRightWall, middleOfLowerWall } = getGateTiles(wallLength, i);
-        if (isCenterTile(tile)) {
-            tile.traversable = 1;
-            tile.isCenter = true;
-        }
-        placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, leftWall, middleOfRightWall, rightWall, middleOfLowerWall, lowerWall, tile);
+
+        placeWalls(upperWall, leftWall, rightWall, lowerWall, tile);
     }
 }
 
-function placeWallsAndGates(middleOfUpperWall, upperWall, middleOfLeftWall, leftWall, middleOfRightWall, rightWall, middleOfLowerWall, lowerWall, tile) {
-    if (!(middleOfUpperWall) && upperWall ||
-        !(middleOfLeftWall) && leftWall ||
-        !(middleOfRightWall) && rightWall ||
-        !(middleOfLowerWall) && lowerWall) {
+function placeWalls(upperWall, leftWall, rightWall, lowerWall, tile) {
+    if (upperWall || leftWall || rightWall || lowerWall) {
         createPlatform(tile.x, tile.y, 1, 1, "gray");
         tile.traversable = 0;
     };
-    if ((middleOfUpperWall) && upperWall ||
-        (middleOfLeftWall) && leftWall ||
-        (middleOfRightWall) && rightWall ||
-        (middleOfLowerWall) && lowerWall) {
-        tile.traversable = 1;
-    }
-}
-
-function getGateTiles(wallLength, i) {
-    const middleOfHorizontalWall = wallLength / 2;
-    const middleOfUpperWall = i > middleOfHorizontalWall - wallLength / 8 && i < middleOfHorizontalWall + wallLength / 8;
-    const middleOfLowerWall = i > tileGridSize - middleOfHorizontalWall - 4 && i < tileGridSize - middleOfHorizontalWall + 4;
-    const middleOfVerticalWall = tileGridSize / 2;
-    const middleOfLeftWall = i > middleOfVerticalWall - 4 * wallLength && i < middleOfVerticalWall + 4 * wallLength;
-    const middleOfRightWall = i > tileGridSize - middleOfVerticalWall - 3 * wallLength && i < tileGridSize - middleOfVerticalWall + 4 * wallLength;
-    return { middleOfUpperWall, middleOfLeftWall, middleOfRightWall, middleOfLowerWall };
 }
 
 function getWallTiles(i) {
@@ -117,28 +88,6 @@ function getWallTiles(i) {
     const lowerWall = i > tileGridSize - wallLength;
     const upperWall = i <= wallLength;
     return { wallLength, upperWall, leftWall, rightWall, lowerWall };
-}
-
-export function getCenterTile() {
-    for (let i = 0; i < tileGrid.length; i++) {
-        const tile = tileGrid[i];
-
-        if (isCenterTile(tile)) {
-
-            return {
-                x: tile.x,
-                y: tile.y
-            }
-        }
-    }
-}
-
-function isCenterTile(tile) {
-    const wallLength = Math.floor(Math.sqrt(tileGridSize));
-    const middleOfHorizontalWall = Math.floor(wallLength / 2);
-    const middleOfVerticalWall = Math.floor(tileGridSize / 2);
-
-    return tile.x === tileGrid[middleOfHorizontalWall].x && tile.y === tileGrid[middleOfVerticalWall].y;
 }
 
 export function connectTileGrid() {

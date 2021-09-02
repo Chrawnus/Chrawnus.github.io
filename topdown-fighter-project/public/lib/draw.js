@@ -9,7 +9,7 @@ import { enemyRect } from "./enemy.js";
 export function draw() {
     ctx.setTransform(1, 0, 0, 1, 0, 0); //reset the transform matrix as it is cumulative
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
- 
+
 
     //Clamp the camera position to the world bounds while centering the camera around the player                                             
     var camX = clamp(canvas.width / 2 - playerRect.x, -tileGridSize * 0.77, 0);
@@ -24,9 +24,9 @@ export function draw() {
     drawEnemy(ctx);
     drawEnemyHealthBar(ctx);
     drawPlayerHealthBar(ctx);
-    if (attackBox.isActive === true) {
-        drawAttackBox(ctx);
-    }
+
+    drawAttackBox(ctx);
+
 
 
 }
@@ -68,7 +68,7 @@ export function drawFloodGrid(ctx) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
- export function drawPlayer(ctx) {
+export function drawPlayer(ctx) {
     drawEntity(playerRect, ctx);
 }
 
@@ -96,21 +96,21 @@ function drawEntity(entity, ctx) {
 function drawEnemyHealthBar(ctx) {
     ctx.fillStyle = "red";
     let x = enemyRect.x;
-    let y = enemyRect.y - enemyRect.height/2;
-    let w = enemyRect.health/enemyRect.maxHealth * 25;
+    let y = enemyRect.y - enemyRect.height / 2;
+    let w = enemyRect.health / enemyRect.maxHealth * 25;
     let h = 5;
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "black"
-    ctx.strokeRect(x,y,w,h);
+    ctx.strokeRect(x, y, w, h);
 }
 
 function drawPlayerHealthBar(ctx) {
     ctx.fillStyle = "red";
     let x = playerRect.x;
-    let y = playerRect.y - playerRect.height/2;
-    let w = playerRect.health/playerRect.maxHealth * 25;
+    let y = playerRect.y - playerRect.height / 2;
+    let w = playerRect.health / playerRect.maxHealth * 25;
     let h = 5;
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "black"
-    ctx.strokeRect(x,y,w,h);
+    ctx.strokeRect(x, y, w, h);
 }

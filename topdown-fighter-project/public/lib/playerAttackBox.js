@@ -17,7 +17,10 @@ export const attackBox = {
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
- export function drawAttackBox(ctx) {
+export function drawAttackBox(ctx) {
+    if (!attackBox.isActive) {
+        return;
+    }
     ctx.strokeStyle = attackBox.color;
     ctx.strokeRect(
         attackBox.x,

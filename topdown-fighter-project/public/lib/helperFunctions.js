@@ -60,3 +60,14 @@ export function intersectRect(rect1, rect2) {
         rect1.y + rect1.height > rect2.y)
 }
 
+export function getDelta(now) {
+    if (!deltaVars.prevTime) { deltaVars.prevTime = now; }
+    let dt = (now - deltaVars.prevTime) / 1000;
+    deltaVars.prevTime = now;
+    return dt;
+}
+
+export const deltaVars = {
+    prevTime: undefined,
+    dt: undefined
+}

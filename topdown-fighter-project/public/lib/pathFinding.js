@@ -86,10 +86,10 @@ function heuristic(nodeToExplore, goalTile) {
     const dx = Math.abs(nodeX - goalX);
     const dy = Math.abs(nodeY - goalY);
 
-    const D = tileSize;
+    const D = 1;
     const D2 = 1.4;
-    return D * (dx + dy);
-    //return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy)
+    //return D * (dx + dy);
+    return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy)
 }
 
 

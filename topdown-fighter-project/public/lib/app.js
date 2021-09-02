@@ -1,34 +1,19 @@
 import { draw } from "./draw.js";
 import { update } from "./update.js";
-import { running } from "./globalGameStateHandler.js";
-
-let prevTime;
-
+import { getDelta, deltaVars } from "./helperFunctions.js";
 
 requestAnimationFrame(gameLoop);
 
 function gameLoop(now) {
     requestAnimationFrame(gameLoop);
+    
+    deltaVars.dt = getDelta(now);
+    update(deltaVars.dt, now);
 
-    //
-    // update
-    //
-
-    const dt = getDelta(now);
-    if (running) {
-        update(dt, now);
-    }
     draw();
-
-
 }
 
-function getDelta(now) {
-    if (!prevTime) { prevTime = now; }
-    let dt = (now - prevTime) / 1000;
-    prevTime = now;
-    return dt;
-}
+
 
 
 
