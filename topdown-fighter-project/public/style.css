@@ -39,7 +39,7 @@ canvas {
     text-decoration: none;
     font-size: large;
     font-style: italic;
-    padding: 0.75em;
+    padding: 0.25em 0.75em;
     width: 81.2vw;
 }
 
@@ -65,9 +65,9 @@ button {
     font-size: large;
     display: inline-block;
     padding: 5px 10px;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    margin-top: 0.5em;
+    margin-left: 0.25em;
+    margin-right: 0.25em;
+    margin-top: 0.25em;
 }
 
 

@@ -9,7 +9,7 @@ export const attackBox = {
     color: 'red',
     isActive: false,
     originalLifetime: 10,
-    lifetime: 10,
+    lifetime: 20,
     originalDelay: 10,
     delay: 10
 };

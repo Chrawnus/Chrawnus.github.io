@@ -3,7 +3,7 @@ import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 import { getKey, keyCodes } from "./input.js";
 import { attackBox, createAttackBox, updateAttackBox } from "./playerAttackBox.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
-import { obstacles } from "./tilegrid.js";
+import { walls } from "./tilegrid.js";
 import { enemyRect } from "./enemy.js";
 
 export const inputBuffer = [];
@@ -40,8 +40,8 @@ export function updatePlayer(dt) {
     }
 
     
-    moveCollideX(playerRect.vx, playerRect, obstacles, onCollideX);
-    moveCollideY(playerRect.vy, playerRect, obstacles, onCollideY);
+    moveCollideX(playerRect.vx, playerRect, walls, onCollideX);
+    moveCollideY(playerRect.vy, playerRect, walls, onCollideY);
 
     moveCollideX(playerRect.vx, playerRect, enemyRect, onCollideX);
     moveCollideY(playerRect.vy, playerRect, enemyRect, onCollideY);

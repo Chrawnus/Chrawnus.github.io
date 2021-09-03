@@ -1,8 +1,8 @@
 import { clamp } from "./helperFunctions.js";
 import { canvas, ctx } from "./elements.js";
-import { tileGrid, obstacles, tileGridSize } from "./tilegrid.js";
+import { tileGrid, walls, tileGridSize } from "./tilegrid.js";
 import { playerRect } from "./player.js";
-import { attackBox, drawAttackBox } from "./playerAttackBox.js";
+import { drawAttackBox } from "./playerAttackBox.js";
 import { enemyRect } from "./enemy.js";
 
 
@@ -11,19 +11,20 @@ export function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
 
 
-    //Clamp the camera position to the world bounds while centering the camera around the player                                             
-    var camX = clamp(canvas.width / 2 - playerRect.x, -tileGridSize * 0.77, 0);
-    var camY = clamp(canvas.height / 2 - playerRect.y, -tileGridSize * 0.77, 24);
+    // Center the camera around the player                                             
+    var camX = canvas.width / 2 - playerRect.x;
+    var camY = canvas.height / 2 - playerRect.y;
 
     ctx.translate(camX, camY);
 
     //Draw everything
-    drawTileGrid(ctx);
-    drawPlatforms(ctx);
-    drawPlayer(ctx);
-    drawEnemy(ctx);
-    drawEnemyHealthBar(ctx);
-    drawPlayerHealthBar(ctx);
+    drawTiles(tileGrid, ctx);
+    drawTiles(walls, ctx);
+    drawEntity(playerRect, ctx);
+    drawEntity(enemyRect, ctx);
+    drawEntityHealthBar(ctx, enemyRect);
+    drawEntityHealthBar(ctx, playerRect);
+
 
     drawAttackBox(ctx);
 
@@ -33,48 +34,23 @@ export function draw() {
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
-export function drawTileGrid(ctx) {
-    const wallLength = Math.sqrt(tileGridSize);
-
-    const grid = tileGrid;
-    for (let i = 0; i < grid.length; i++) {
-        const tile = grid[i];
+function drawTiles(tiles, ctx) {
+    for (let i = 0; i < tiles.length; i++) {
+        const tile = tiles[i];
         drawEntity(tile, ctx);
     }
 }
 
 export function drawPlatforms(ctx) {
-    for (let i = 0; i < obstacles.length; i++) {
-        const platform = obstacles[i];
+    for (let i = 0; i < walls.length; i++) {
+        const platform = walls[i];
         drawEntity(platform, ctx);
-    }
-}
-
-export function drawFloodGrid(ctx) {
-    for (let i = 0; i < tileGrid.length; i++) {
-        const tile = tileGrid[i];
-        if (floodGrid.findIndex(e => e.x === tile.x && e.y === tile.y) === -1) {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.fillRect(
-                tile.x,
-                tile.y,
-                tile.width,
-                tile.height
-            );
-        }
     }
 }
 
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
-export function drawPlayer(ctx) {
-    drawEntity(playerRect, ctx);
-}
-
-function drawEnemy(ctx) {
-    drawEntity(enemyRect, ctx);
-}
 
 function drawEntity(entity, ctx) {
     ctx.fillStyle = entity.color;
@@ -93,24 +69,14 @@ function drawEntity(entity, ctx) {
     );
 }
 
-function drawEnemyHealthBar(ctx) {
+function drawEntityHealthBar(ctx, entity) {
     ctx.fillStyle = "red";
-    let x = enemyRect.x;
-    let y = enemyRect.y - enemyRect.height / 2;
-    let w = enemyRect.health / enemyRect.maxHealth * 25;
+    let x = entity.x;
+    let y = entity.y - entity.height / 2;
+    let w = entity.health / entity.maxHealth * 25;
     let h = 5;
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "black"
     ctx.strokeRect(x, y, w, h);
 }
 
-function drawPlayerHealthBar(ctx) {
-    ctx.fillStyle = "red";
-    let x = playerRect.x;
-    let y = playerRect.y - playerRect.height / 2;
-    let w = playerRect.health / playerRect.maxHealth * 25;
-    let h = 5;
-    ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = "black"
-    ctx.strokeRect(x, y, w, h);
-}

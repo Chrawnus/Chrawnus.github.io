@@ -19,17 +19,12 @@ resizeCanvas();
 
 export const ctx = canvas.getContext('2d');
 
-export const canvasMiddle = {
-    x: canvas.width / 2,
-    y: canvas.height / 2
-};
-
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth/1.2;
-    canvas.height = window.innerHeight/1.45;
+    canvas.height = window.innerHeight/1.3;
 })
 
 function resizeCanvas() {
     canvas.width = window.innerWidth / 1.2;
-    canvas.height = window.innerHeight / 1.45;
+    canvas.height = window.innerHeight / 1.3;
 }

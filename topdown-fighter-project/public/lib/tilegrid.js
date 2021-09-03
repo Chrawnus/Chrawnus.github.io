@@ -1,5 +1,5 @@
-// using any other tileGridSize than 1024 breaks the code for now
-export const tileGridSize = 1024;
+// tilegrid size can only be the square of an integer
+export const tileGridSize = 33**2;
 export const tileSize = 32;
 const wallLength = Math.sqrt(tileGridSize);
 const tileGridDimensions = {
@@ -8,13 +8,15 @@ const tileGridDimensions = {
 }
 
 export const tileGrid = [];
-export const obstacles = [];
+export const walls = [];
 
 export function createTileGrid() {
     let x = 0;
     let y = 0;
     for (let i = 0; i < tileGridSize; i++) {
+
         if (i === 0) {
+            // create initial tile
             tileGrid.push({
                 "width": tileGridDimensions.width,
                 "height": tileGridDimensions.height,
@@ -28,7 +30,10 @@ export function createTileGrid() {
                 isUnreachable: true
             });
         } else {
-            if (!(i % wallLength) && !(i < wallLength )) {
+            // create the rest of the tilegrid.
+            // create a row with wallLength number of tiles
+            // then move to the next row down
+            if (!(i % wallLength) && !(i < wallLength)) {
                 y += tileGridDimensions.width;
                 x = 0;
             } else {
@@ -52,8 +57,8 @@ export function createTileGrid() {
 }
 
 function createPlatform(x, y, width, height, color = 'gray', isUnreachable = true) {
-    if (!(obstacles.filter(e => e.x === x && e.y === y).length > 0)) {
-        obstacles.push({
+    if (!(walls.filter(e => e.x === x && e.y === y).length > 0)) {
+        walls.push({
             x,
             y,
             width: width * tileGridDimensions.width,
@@ -68,7 +73,7 @@ export function AddPlatformsToGrid() {
     for (let i = 0; i < tileGrid.length; i++) {
         const tile = tileGrid[i];
         //define outer walls
-        const { wallLength, upperWall, leftWall, rightWall, lowerWall } = getWallTiles(i);
+        const { upperWall, leftWall, rightWall, lowerWall } = getWallTiles(i);
 
         placeWalls(upperWall, leftWall, rightWall, lowerWall, tile);
     }
@@ -82,12 +87,11 @@ function placeWalls(upperWall, leftWall, rightWall, lowerWall, tile) {
 }
 
 function getWallTiles(i) {
-    const wallLength = Math.sqrt(tileGridSize);
     const leftWall = i % wallLength === 0;
     const rightWall = (i - (wallLength - 1)) % wallLength === 0;
     const lowerWall = i > tileGridSize - wallLength;
     const upperWall = i <= wallLength;
-    return { wallLength, upperWall, leftWall, rightWall, lowerWall };
+    return { upperWall, leftWall, rightWall, lowerWall };
 }
 
 export function connectTileGrid() {

@@ -2,7 +2,7 @@ import { tileGrid, tileSize } from "./tilegrid.js";
 import { getEntityPosOnTileGrid, getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
 import { playerRect } from "./player.js";
 import { moveCollideX, moveCollideY } from "./physics.js";
-import { obstacles } from "./tilegrid.js";
+import { walls } from "./tilegrid.js";
 import { pathFinding } from "./pathFinding.js";
 import { attackBox } from "./playerAttackBox.js";
 
@@ -46,8 +46,8 @@ export function updateEnemy(dt) {
         onAttacked();
     }
 
-    moveCollideX(enemyRect.vx, enemyRect, obstacles, onCollideX);
-    moveCollideY(enemyRect.vy, enemyRect, obstacles, onCollideY);
+    moveCollideX(enemyRect.vx, enemyRect, walls, onCollideX);
+    moveCollideY(enemyRect.vy, enemyRect, walls, onCollideY);
 
     moveCollideY(enemyRect.vy, enemyRect, playerRect, onCollideY);
     moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);

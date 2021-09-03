@@ -1,4 +1,4 @@
-import { tileGrid, tileSize } from "./tilegrid.js";
+import { tileGrid } from "./tilegrid.js";
 import { MinHeap } from "./minHeap.js";
 
 

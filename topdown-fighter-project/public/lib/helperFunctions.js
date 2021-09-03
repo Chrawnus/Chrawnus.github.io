@@ -1,24 +1,7 @@
-export function intersectingRect(r1, r2) {
-    var x = Math.max(r1.x, r2.x);
-    var y = Math.max(r1.y, r2.y);
-    var xx = Math.min(r1.x + r1.width, r2.x + r2.width);
-    var yy = Math.min(r1.y + r1.height, r2.y + r2.height);
-    return ({ x: x, y: y, width: xx - x, height: yy - y });
-}
-
 export function clamp(value, min, max) {
     if (value < min) return min;
     else if (value > max) return max;
     return value;
-}
-
-export function rectanglesIntersect(rect, view) {
-    const aLeftOfB = rect.x + rect.width < view.x;
-    const aRightOfB = rect.x > view.x + view.width;
-    const aAboveB = rect.y > view.y + view.height;
-    const aBelowB = rect.y + rect.height < view.y;
-
-    return !(aLeftOfB || aRightOfB || aAboveB || aBelowB);
 }
 
 export function rectsOverlaps(rect1, rect2) {
@@ -31,7 +14,6 @@ export function rectsOverlaps(rect1, rect2) {
 }
 
 export function getEntityPosOnTileGrid(entity, tileGrid) {
-
     for (let i = 0; i < tileGrid.length; i++) {
         const tile = tileGrid[i];
         
@@ -40,7 +22,6 @@ export function getEntityPosOnTileGrid(entity, tileGrid) {
             entity.y + entity.height / 2 > tile.y &&
             entity.y + entity.height / 2 < tile.y + tile.height)) {
             entity.currentInhabitedTile = i;
-
         }
     }
 }
@@ -48,7 +29,6 @@ export function getEntityPosOnTileGrid(entity, tileGrid) {
 export function getDistanceBetweenPoints(x1, y1, x2, y2) {
     const a = x1 - x2;
     const b = y1 - y2;
-
     const dist = Math.sqrt(a * a + b * b);
     return dist;
 }
