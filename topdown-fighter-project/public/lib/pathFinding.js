@@ -6,7 +6,6 @@ export class Pathfinding {
     }
 
     update(start, goal) {
-        console.log(start, goal)
         const openList = new MinHeap();
         const closedList = [];
         const cameFrom = new Map();

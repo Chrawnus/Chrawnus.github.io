@@ -1,42 +1,52 @@
-import { TileGrid } from "./tilegrid.js";
-import { player } from "./player.js";
-import { enemyRect } from "./enemy.js";
+import { Entities } from "./Entities.js";
+import { getEntityPosOnTileGrid } from "./helperFunctions.js";
 
-const tileHandler = new TileGrid();
-tileHandler.createTileGrid();
+const entities = new Entities();
+
+entities.room.createTileGrid();
 
 export class Initialize {
     constructor() {
 
-        this.tileGrid = tileHandler.tileGrid;
-        this.walls = tileHandler.walls;
+        this.tileGrid = entities.room.tileGrid;
+        this.walls = entities.room.walls;
+        this.player = entities.player;
+        this.enemy = entities.enemy;
 
         this.playerStartPos = {
             x: 0,
             y: 0
         };
-        
+
         this.enemyStartPos = {
             x: 640,
             y: 640
         };
     }
-    
+
+    initialize() {
+        this.setPlayerStartPosition();
+        this.setEnemyStartPosition();
+
+        this.placePlayer();
+        this.placeEnemy();
+    }
+
     placePlayer() {
-        player.x = this.playerStartPos.x;
-        player.y = this.playerStartPos.y;
+        this.player.x = this.playerStartPos.x;
+        this.player.y = this.playerStartPos.y;
     };
-    
+
     placeEnemy() {
-        enemyRect.x = this.enemyStartPos.x;
-        enemyRect.y = this.enemyStartPos.y;
+        this.enemy.x = this.enemyStartPos.x;
+        this.enemy.y = this.enemyStartPos.y;
     };
 
     setPlayerStartPosition() {
         const { x, y } = this.determinePosition(4, 2);
         this.setPosition(x, y, this.playerStartPos);
     };
-    
+
     setEnemyStartPosition() {
         const { x, y } = this.determinePosition(1.35, 2);
         this.setPosition(x, y, this.enemyStartPos);
@@ -44,13 +54,13 @@ export class Initialize {
 
     resetPlayerPos() {
         this.placePlayer();
-        player.health = player.maxHealth;
-        player.attack = player.initialAttack;
+        this.player.health = this.player.maxHealth;
+        this.player.attack = this.player.initialAttack;
     };
-    
+
     resetEnemyPos() {
         this.placeEnemy();
-        enemyRect.health = enemyRect.maxHealth;
+        this.enemy.health = this.enemy.maxHealth;
     };
 
     setPosition(x, y, entityStartPos) {
@@ -60,8 +70,30 @@ export class Initialize {
 
     determinePosition(hor, ver) {
 
-        const x = this.tileGrid[Math.floor(Math.sqrt(tileHandler.tileGridSize) / hor)].x;
-        const y = this.tileGrid[Math.floor(tileHandler.tileGridSize / ver)].y;
+        const x = this.tileGrid[Math.floor(Math.sqrt(entities.room.tileGridSize) / hor)].x;
+        const y = this.tileGrid[Math.floor(entities.room.tileGridSize / ver)].y;
         return { x, y };
     }
+    onGameOver() {
+        this.player.updateDeaths();
+        this.resetPlayerPos();
+        this.resetEnemyPos();
+    }
+
+    gameOverCheck() {
+        return this.player.health < 0;
+    }
+    
+    checkEnemyState() {
+        return this.enemy.health <= 0
+    };
+
+    getEnemyPosition() {
+        getEntityPosOnTileGrid(this.enemy, this.tileGrid);
+    }
+
+    getPlayerPosition() {
+        getEntityPosOnTileGrid(this.player, this.tileGrid);
+    }
+
 }

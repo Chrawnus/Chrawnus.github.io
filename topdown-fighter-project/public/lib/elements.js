@@ -14,10 +14,7 @@ export const resumeButton = document.querySelector('#resume');
 export const saveButton = document.querySelector('#save');
 export const loadButton = document.querySelector('#load');
 
-
 resizeCanvas();
-
-
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth/1.2;

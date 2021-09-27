@@ -1,33 +1,28 @@
 import { canvas } from "./elements.js";
-import { player } from "./player.js";
-import { enemyRect } from "./enemy.js";
-
 
 export class Drawer {
     constructor() {
-
     }
 
-    draw(tileGrid, walls) {
+    draw(tileGrid, walls, initializer) {
         const ctx = canvas.getContext('2d');
         ctx.setTransform(1, 0, 0, 1, 0, 0); //reset the transform matrix as it is cumulative
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
 
-
         // Center the camera around the player                                             
-        var camX = canvas.width / 2 - player.x;
-        var camY = canvas.height / 2 - player.y;
+        var camX = canvas.width / 2 - initializer.player.x;
+        var camY = canvas.height / 2 - initializer.player.y;
 
         ctx.translate(camX, camY);
 
         //Draw everything
         this.drawTiles(tileGrid, ctx);
         this.drawTiles(walls, ctx);
-        this.drawEntity(player, ctx);
-        this.drawEntity(enemyRect, ctx);
-        this.drawEntityHealthBar(ctx, enemyRect);
-        this.drawEntityHealthBar(ctx, player);
-        player.attackBox.draw(ctx);
+        this.drawEntity(initializer.player, ctx);
+        this.drawEntity(initializer.enemy, ctx);
+        this.drawEntityHealthBar(ctx, initializer.enemy);
+        this.drawEntityHealthBar(ctx, initializer.player);
+        initializer.player.attackBox.draw(ctx);
     }
 
     /**
@@ -50,7 +45,6 @@ export class Drawer {
     /**
      * @param {CanvasRenderingContext2D} ctx
      */
-
     drawEntity(entity, ctx) {
         ctx.fillStyle = entity.color;
         ctx.fillRect(
@@ -75,12 +69,7 @@ export class Drawer {
         let w = entity.health / entity.maxHealth * 25;
         let h = 5;
         ctx.fillRect(x, y, w, h);
-        ctx.strokeStyle = "black"
+        ctx.strokeStyle = "black";
         ctx.strokeRect(x, y, w, h);
     }
-
-
-
 }
-
-
