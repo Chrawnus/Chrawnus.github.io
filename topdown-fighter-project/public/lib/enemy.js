@@ -1,20 +1,11 @@
-import { tileGrid, tileSize } from "./tilegrid.js";
-import { getEntityPosOnTileGrid, getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
-import { playerRect } from "./player.js";
-import { moveCollideX, moveCollideY } from "./physics.js";
-import { walls } from "./tilegrid.js";
-import { pathFinding } from "./pathFinding.js";
-import { attackBox } from "./playerAttackBox.js";
-
-let elapsed;
-
-export let pathToPlayer = [];
+import { getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
+import { player } from "./player.js";
 
 export const enemyRect = {
     x: 640,
     y: 640,
-    width: tileSize * 0.8,
-    height: tileSize * 0.8,
+    width: 32 * 0.8,
+    height: 32 * 0.8,
     maxHealth: 100,
     health: 100,
     attack: 50,
@@ -29,65 +20,50 @@ export const enemyRect = {
     target: undefined,
     vx: 0,
     vy: 0,
+    pathToPlayer: [],
 };
 
+
+
 export function updateEnemy(dt) {
-    getEntityPosOnTileGrid(enemyRect, tileGrid);
-    increaseElapsed(dt);
-    refreshPathfinding();
-    resetElapsed();
+
 
     enemyRect.vx = 0;
     enemyRect.vy = 0;
     
     enemyMove(dt);
 
-    if (intersectRect(enemyRect, attackBox)) {
+    if (intersectRect(enemyRect, player.attackBox)) {
         onAttacked();
     }
 
-    moveCollideX(enemyRect.vx, enemyRect, walls, onCollideX);
-    moveCollideY(enemyRect.vy, enemyRect, walls, onCollideY);
-
-    moveCollideY(enemyRect.vy, enemyRect, playerRect, onCollideY);
-    moveCollideX(enemyRect.vx, enemyRect, playerRect, onCollideX);
 
 
-    function refreshPathfinding() {
-        if (pathToPlayer === undefined || pathToPlayer.length === 0 || elapsed > 0.2) {
-            pathToPlayer = pathFinding(enemyRect, playerRect, pathToPlayer);
-            //elapsed = 0;
-        }
-    }
 
-    function resetElapsed() {
-        if (elapsed > 0.3) {
-            elapsed = 0;
-        }
-    }
+
 };
 
 
 
 export function enemyMove(dt) {
-    if (!(pathToPlayer === undefined) && pathToPlayer.length > 1) {
-        let last = pathToPlayer.length - 1;
+    if (!(enemyRect.pathToPlayer === undefined) && enemyRect.pathToPlayer.length > 1) {  
+        let last = enemyRect.pathToPlayer.length - 1;
         const enemyX = enemyRect.x + enemyRect.width / 2;
         const enemyY = enemyRect.y + enemyRect.height / 2;
-        let targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
-        let targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
+        let targetX = enemyRect.pathToPlayer[last].x + enemyRect.pathToPlayer[last].width / 2;
+        let targetY = enemyRect.pathToPlayer[last].y + enemyRect.pathToPlayer[last].height / 2;
         if (getDistanceBetweenPoints(enemyX, enemyY, targetX, targetY) < 10) {
-            if (pathToPlayer.length > 2) {
-                pathToPlayer.splice(last, 1);
+            if (enemyRect.pathToPlayer.length > 2) {
+                enemyRect.pathToPlayer.splice(last, 1);
             }
             else {
-                EnemyAttack(playerRect, dt);
+                EnemyAttack(player, dt);
             }
             
         } else {
-            last = pathToPlayer.length - 1;
-            targetX = pathToPlayer[last].x + pathToPlayer[last].width / 2;
-            targetY = pathToPlayer[last].y + pathToPlayer[last].height / 2;
+            last = enemyRect.pathToPlayer.length - 1;
+            targetX = enemyRect.pathToPlayer[last].x + enemyRect.pathToPlayer[last].width / 2;
+            targetY = enemyRect.pathToPlayer[last].y + enemyRect.pathToPlayer[last].height / 2;
             const dx = targetX - enemyX;
             const dy = targetY - enemyY;
             const angle = Math.atan2(dy, dx)
@@ -104,20 +80,10 @@ function EnemyAttack(playerRect, dt) {
     }
 }
 
-function onCollideX(rect, otherRect) {
-    enemyRect.vx = 0;
-    return true;
-}
-
-function onCollideY(rect, otherRect) {
-    enemyRect.vy = 0;
-    return true;
-}
-
 function onAttacked() {
     if (enemyRect.health > 0) {
-        enemyRect.health -= playerRect.attack;
-        knockBack(attackBox.direction)
+        enemyRect.health -= player.attack;
+        knockBack(player.attackBox.direction)
     }
 
 }
@@ -131,10 +97,3 @@ function knockBack(attackDirection) {
     return;
 }
 
-function increaseElapsed(dt) {
-    if (elapsed === undefined) {
-        elapsed = dt;
-    } else {
-        elapsed += dt;
-    }
-}

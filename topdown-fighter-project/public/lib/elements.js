@@ -17,7 +17,7 @@ export const loadButton = document.querySelector('#load');
 
 resizeCanvas();
 
-export const ctx = canvas.getContext('2d');
+
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth/1.2;

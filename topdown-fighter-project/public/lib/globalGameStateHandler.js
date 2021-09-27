@@ -1,20 +1,20 @@
-import { AddPlatformsToGrid, createTileGrid, connectTileGrid, tileGrid, tileGridSize } from "./tilegrid.js";
-import { playerRect } from "./player.js";
-import { enemyRect } from "./enemy.js";
+import { TileGrid } from "./tilegrid.js";
+import { player, updatePlayer } from "./player.js";
+import { enemyRect, updateEnemy } from "./enemy.js";
 import { killStats, deathStat, statPoints, incHealthButton, incHealingButton, incSpeedButton, incAttackButton, incAttackSpeedButton, resumeButton, saveButton, loadButton } from "./elements.js";
-import { attackBox } from "./playerAttackBox.js";
+import { Drawer } from "./draw.js"
+import { Initialize } from "./Initialize.js";
+import { moveCollideX, moveCollideY } from "./physics.js";
+import { getEntityPosOnTileGrid } from "./helperFunctions.js";
+import { Pathfinding } from "./pathFinding.js";
 
-export let running = false;
+let running = false;
+let elapsed;
+const drawer = new Drawer();
+const pathfinder = new Pathfinding(enemyRect.pathToPlayer);
 
-const playerStartPos = {
-    x: 0,
-    y: 0
-};
-
-const enemyStartPos = {
-    x: 640,
-    y: 640
-};
+export const tileGrid = new TileGrid();
+export const initializer = new Initialize();
 
 const playerStatistics = {
     kills: 0,
@@ -59,7 +59,7 @@ function initializeMenuButtons() {
         } else {
             startGame();
         }
-        
+
     });
     saveButton.addEventListener('click', (e) => {
         if (running) {
@@ -85,26 +85,30 @@ function initializeMenuButtons() {
 }
 
 //Create
+
 export function initialize() {
-    createTileGrid();
-    AddPlatformsToGrid();
-    setPlayerStartPosition();
-    setEnemyStartPosition();
-    connectTileGrid();
-    placePlayer();
-    placeEnemy();
+    initializer.setPlayerStartPosition();
+    initializer.setEnemyStartPosition();
+
+    initializer.placePlayer();
+    initializer.placeEnemy();
 };
 
-export function gameStateHandler() {
+export function gameStateHandler(dt, now) {
+    if (!running) {
+        return
+    }
     checkEnemyState();
     gameOverCheck();
+    update(dt, now);
+    drawer.draw(initializer.tileGrid, initializer.walls);
 };
 
 function gameOverCheck() {
-    if (playerRect.health < 0) {
+    if (player.health < 0) {
         updateDeaths();
-        resetPlayerPos();
-        resetEnemyPos();
+        initializer.resetPlayerPos();
+        initializer.resetEnemyPos();
         pauseGame();
     }
 };
@@ -114,7 +118,7 @@ function checkEnemyState() {
         healPlayer();
         updatePlayerKills();
         boostEnemyStats();
-        resetEnemyPos();
+        initializer.resetEnemyPos();
     }
 };
 
@@ -130,8 +134,8 @@ function checkStatButton(e) {
             switch (e.target.id) {
                 case 'health':
                     console.log('health');
-                    playerRect.maxHealth += playerStatBoosts.health;
-                    playerRect.health = playerRect.maxHealth;
+                    player.maxHealth += playerStatBoosts.health;
+                    player.health = player.maxHealth;
 
                     playerStatistics.statPoints -= 1;
                     playerStatistics.expendedStatPoints.health += 1;
@@ -148,7 +152,7 @@ function checkStatButton(e) {
                     break;
                 case 'speed':
                     console.log('speed');
-                    playerRect.speed += playerStatBoosts.speed;
+                    player.speed += playerStatBoosts.speed;
 
                     playerStatistics.statPoints -= 1;
                     playerStatistics.expendedStatPoints.speed += 1;
@@ -156,7 +160,7 @@ function checkStatButton(e) {
                     break;
                 case 'attack':
                     console.log('attack');
-                    playerRect.attack += playerStatBoosts.attack;
+                    player.attack += playerStatBoosts.attack;
 
                     playerStatistics.statPoints -= 1;
                     playerStatistics.expendedStatPoints.attack += 1;
@@ -165,14 +169,14 @@ function checkStatButton(e) {
                 case 'attack-speed':
                     console.log('attack speed');
 
-                    if (playerRect.startingAttackDelay > 50) {
-                        playerRect.startingAttackDelay -= playerStatBoosts.attackSpeed;
-                        playerRect.attackDelay = playerRect.startingAttackDelay;
+                    if (player.startingAttackDelay > 50) {
+                        player.startingAttackDelay -= playerStatBoosts.attackSpeed;
+                        player.attackDelay = player.startingAttackDelay;
                     }
 
                     playerStatistics.statPoints -= 1;
                     playerStatistics.expendedStatPoints.attackSpeed += 1;
-                    console.log(playerRect.attackDelay)
+                    console.log(player.attackDelay)
                     break;
                 default:
                     break;
@@ -194,55 +198,19 @@ function updatePlayerKills() {
     increaseStatPoints();
 };
 
-function setPlayerStartPosition() {
-    const { x, y } = determinePosition(4, 2);
-    setPosition(x, y, playerStartPos);
-};
 
-function setEnemyStartPosition() {
-    const { x, y } = determinePosition(1.35, 2);
-    setPosition(x, y, enemyStartPos);
-};
 
-function setPosition(x, y, entityStartPos) {
-    entityStartPos.x = x;
-    entityStartPos.y = y;
-}
 
-function determinePosition(hor, ver) {
-    const x = tileGrid[Math.floor(Math.sqrt(tileGridSize) / hor)].x;
-    const y = tileGrid[Math.floor(tileGridSize / ver)].y;
-    return { x, y };
-}
-
-function placePlayer() {
-    playerRect.x = playerStartPos.x;
-    playerRect.y = playerStartPos.y;
-};
-
-function placeEnemy() {
-    enemyRect.x = enemyStartPos.x;
-    enemyRect.y = enemyStartPos.y;
-};
 
 function healPlayer() {
-    if (playerRect.maxHealth - playerRect.health >= playerStatBoosts.healing) {
-        playerRect.health += playerStatBoosts.healing;
+    if (player.maxHealth - player.health >= playerStatBoosts.healing) {
+        player.health += playerStatBoosts.healing;
     } else {
-        playerRect.health += playerRect.maxHealth - playerRect.health;
+        player.health += player.maxHealth - player.health;
     }
 };
 
-function resetPlayerPos() {
-    placePlayer();
-    playerRect.health = playerRect.maxHealth;
-    playerRect.attack = playerRect.initialAttack;
-};
 
-function resetEnemyPos() {
-    placeEnemy();
-    enemyRect.health = enemyRect.maxHealth;
-};
 
 function updateKills() {
     playerStatistics.kills += 1;
@@ -265,7 +233,7 @@ function increaseDeathCounter() {
 
 function pauseGame() {
     if (running) {
-        attackBox.lifetime = 0;
+        player.attackBox.lifetime = 0;
         running = false;
         resumeButton.textContent = 'resume game'
     }
@@ -282,7 +250,7 @@ function startGame() {
 function saveGame() {
     const playerStats = playerStatistics;
     const playerSB = playerStatBoosts;
-    const player = playerRect;
+    const player = player;
     const enemy = enemyRect;
     const saveObject = { playerStats, playerSB, player, enemy }
 
@@ -316,7 +284,7 @@ function loadGame() {
         })
         .then(function (data) {
             const save = JSON.parse(data[0].save);
-            loadEntity(playerRect, save.player);
+            loadEntity(player, save.player);
             loadEntity(enemyRect, save.enemy);
             loadStatistics(playerStatistics, save.playerStats);
             loadSB(playerStatBoosts, save.playerSB);
@@ -362,4 +330,60 @@ function loadSB(statboosts, saveStatBoosts) {
     statboosts.speed = saveStatBoosts.speed;
     statboosts.attack = saveStatBoosts.attack;
     statboosts.attackSpeed = saveStatBoosts.attackSpeed;
+}
+
+function update(dt, now) {
+    getEntityPosOnTileGrid(player, initializer.tileGrid);
+    getEntityPosOnTileGrid(enemyRect, initializer.tileGrid);
+
+    
+    updatePlayer(dt);
+    moveCollideX(player.vx, player, initializer.walls, onCollideX);
+    moveCollideY(player.vy, player, initializer.walls, onCollideY(player));
+
+    moveCollideX(player.vx, player, enemyRect, onCollideX);
+    moveCollideY(player.vy, player, enemyRect, onCollideY);
+
+    
+    increaseElapsed(dt);
+    refreshPathfinding();
+    resetElapsed();
+
+    updateEnemy(dt, now);
+    moveCollideX(enemyRect.vx, enemyRect, initializer.walls, onCollideX);
+    moveCollideY(enemyRect.vy, enemyRect, initializer.walls, onCollideY);
+
+    moveCollideY(enemyRect.vy, enemyRect, player, onCollideY);
+    moveCollideX(enemyRect.vx, enemyRect, player, onCollideX);
+}
+
+function onCollideX(rect, otherRect) {
+    rect.vx = 0;
+    return true;
+}
+
+function onCollideY(rect, otherRect) {
+    rect.vy = 0;
+    return true;
+}
+
+function refreshPathfinding() {
+    if (enemyRect.pathToPlayer === undefined || enemyRect.pathToPlayer.length === 0 || elapsed > 0.2) {
+        enemyRect.pathToPlayer = pathfinder.update(initializer.tileGrid[enemyRect.currentInhabitedTile], initializer.tileGrid[player.currentInhabitedTile]);
+        //elapsed = 0;
+    }
+}
+
+function resetElapsed() {
+    if (elapsed > 0.3) {
+        elapsed = 0;
+    }
+}
+
+function increaseElapsed(dt) {
+    if (elapsed === undefined) {
+        elapsed = dt;
+    } else {
+        elapsed += dt;
+    }
 }

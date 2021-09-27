@@ -1,112 +1,100 @@
-import { playerRect } from "./player.js";
+export class AttackBox {
+    constructor() {
+        this.x = undefined;
+        this.y = undefined;
+        this.width = undefined;
+        this.height = undefined;
+        this.direction = undefined;
+        this.color = 'red';
+        this.isActive = false;
+        this.originalLifetime = 10;
+        this.lifetime = 20;
+        this.originalDelay = 10;
+        this.delay = 10;
+    }
 
-export const attackBox = {
-    x: undefined,
-    y: undefined,
-    width: undefined,
-    height: undefined,
-    direction: undefined,
-    color: 'red',
-    isActive: false,
-    originalLifetime: 10,
-    lifetime: 20,
-    originalDelay: 10,
-    delay: 10
+    draw(ctx) {
+        if (!this.isActive) {
+            return;
+        }
+        ctx.strokeStyle = this.color;
+        ctx.strokeRect(
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
+    }
+
+    create(direction, entity) {
+        this.direction = direction;
+        if (direction === 'arrowUp' || direction === 'arrowDown') {
+            this.x = entity.x - 1.6 * entity.width;
+            if (direction === 'arrowUp') {
+                this.y = entity.y - entity.height * 2.8;
+                this.width = entity.width * 4.2;
+                this.height = entity.height * 2.8;
+            } else {
+                this.y = entity.y + entity.height;
+                this.width = entity.width * 4.2;
+                this.height = entity.height * 2.8;
+            }
+        }
+
+        if (direction === 'arrowLeft' || direction === 'arrowRight') {
+            if (direction === 'arrowRight') {
+                this.x = entity.x + entity.width;
+                this.width = entity.width * 2.8;
+                this.height = entity.height * 4.2;
+            } else {
+                this.x = entity.x - 2.8 * entity.width;
+                this.width = entity.width * 2.8;
+                this.height = entity.height * 4.2;
+            }
+
+            this.y = entity.y - 1.6 * entity.height;
+        }
+
+        this.isActive = true;
+    }
+
+    update(dt, entity) {
+        if (this.delay > 0) {
+            this.delay -= 1000 * dt;
+        } else {
+            if (this.isActive && this.lifetime > 0) {
+                if (this.direction === 'arrowUp' || this.direction === 'arrowDown') {
+                    this.x = entity.x - 1.6 * entity.width;
+                    if (this.direction === 'arrowUp') {
+                        this.y = entity.y - entity.height * 2.8;
+                    } else {
+                        this.y = entity.y + entity.height;
+                    }
+                }
+
+                if (this.direction === 'arrowLeft' || this.direction === 'arrowRight') {
+                    this.y = entity.y - 1.6 * entity.height;
+                    if (this.direction === 'arrowRight') {
+                        this.x = entity.x + entity.width;
+                    } else {
+                        this.x = entity.x - 2.8 * entity.width;
+                    }
+
+                }
+                this.lifetime -= 1000 * dt;
+            } else if (this.isActive && this.lifetime <= 0) {
+                this.isActive = false;
+                this.lifetime = this.originalLifetime;
+                this.delay = this.originalDelay;
+                this.x = undefined;
+                this.y = undefined;
+                this.width = undefined;
+                this.height = undefined;
+            }
+            this.delay = this.originalDelay;
+        }
+    }
 };
 
-/**
- * @param {CanvasRenderingContext2D} ctx
- */
-export function drawAttackBox(ctx) {
-    if (!attackBox.isActive) {
-        return;
-    }
-    ctx.strokeStyle = attackBox.color;
-    ctx.strokeRect(
-        attackBox.x,
-        attackBox.y,
-        attackBox.width,
-        attackBox.height
-    );
-}
 
-export function createAttackBox(direction) {
-    attackBox.direction = direction;
-    if (direction === 'arrowUp' || direction === 'arrowDown') {
-        attackBox.x = playerRect.x - 1.6 * playerRect.width;
-        if (direction === 'arrowUp') {
-            attackBox.y = playerRect.y - playerRect.height * 2.8;
-        } else {
-            attackBox.y = playerRect.y + playerRect.height;
-        } 
-    }
 
-    if (direction === 'arrowLeft' || direction === 'arrowRight') {
-        if (direction === 'arrowRight') {
-            attackBox.x = playerRect.x + playerRect.width;
-        } else {
-            attackBox.x = playerRect.x - 2.8 * playerRect.width;
-        }
-        
-        attackBox.y = playerRect.y - 1.6 * playerRect.height;
-    }
-
-    if (direction === 'arrowUp') {
-        attackBox.width = playerRect.width * 4.2;
-        attackBox.height = playerRect.height * 2.8;
-    }
-
-    if (direction === 'arrowRight') {
-        attackBox.width = playerRect.width * 2.8;
-        attackBox.height = playerRect.height * 4.2;
-    }
-
-    if (direction === 'arrowLeft') {
-        attackBox.width = playerRect.width * 2.8;
-        attackBox.height = playerRect.height * 4.2;
-    }
-
-    if (direction === 'arrowDown') {
-        attackBox.width = playerRect.width * 4.2;
-        attackBox.height = playerRect.height * 2.8;
-    }
-    
-    attackBox.isActive = true;
-}
-
-export function updateAttackBox(dt) {
-    if (attackBox.delay > 0) {
-       attackBox.delay -= 1000 * dt; 
-    } else {
-        if (attackBox.isActive && attackBox.lifetime > 0) {
-            if (attackBox.direction === 'arrowUp' || attackBox.direction === 'arrowDown') {
-                attackBox.x = playerRect.x - 1.6 * playerRect.width;
-                if (attackBox.direction === 'arrowUp') {
-                    attackBox.y = playerRect.y - playerRect.height * 2.8;
-                } else {
-                    attackBox.y = playerRect.y + playerRect.height;
-                } 
-            }
-        
-            if (attackBox.direction === 'arrowLeft' || attackBox.direction === 'arrowRight') {
-                if (attackBox.direction === 'arrowRight') {
-                    attackBox.x = playerRect.x + playerRect.width;
-                } else {
-                    attackBox.x = playerRect.x - 2.8 * playerRect.width;
-                }
-                
-                attackBox.y = playerRect.y - 1.6 * playerRect.height;
-            }
-            attackBox.lifetime -= 1000*dt;
-        } else if (attackBox.isActive && attackBox.lifetime <= 0) {
-                attackBox.isActive = false;
-                attackBox.lifetime = attackBox.originalLifetime;
-                attackBox.delay = attackBox.originalDelay;
-                attackBox.x = undefined;
-                attackBox.y = undefined;
-                attackBox.width = undefined;
-                attackBox.height = undefined;
-        }
-        attackBox.delay = attackBox.originalDelay;
-    }
-}
