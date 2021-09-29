@@ -1,5 +1,5 @@
 // tilegrid size can only be the square of an integer
-export class TileGrid {
+export class World {
     constructor() {
         this.tileGridSize = 33 ** 2;
         this.tileSize = 32;

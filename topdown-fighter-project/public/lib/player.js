@@ -1,25 +1,20 @@
+import { Entity } from "./Entity.js";
+import { GameStateHandler } from "./GameStateHandler.js";
 import { getKey, keyCodes } from "./input.js";
-import { moveCollideX, moveCollideY } from "./physics.js";
 import { AttackBox } from "./playerAttackBox.js";
-
-export class Player {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.width = 32 * 0.8;
-        this.height = 32 * 0.8;
+export class Player extends Entity {
+    constructor(id, x, y, width, height, color) {
+        super(x, y, width, height, color);
+        this.id = id;
         this.maxHealth = 100;
         this.health = 100;
         this.initialAttack = 2.5;
         this.attack = 5;
         this.currentInhabitedTile = undefined;
-        this.color = 'lime';
-        this.speed = 150;
+        this.speed = 100;
         this.storedAttacks = 4;
         this.startingAttackDelay = 500;
         this.attackDelay = 500;
-        this.vx = 0;
-        this.vy = 0;
         this.inputBuffer = [];
         this.attackBox = new AttackBox();
         this.statistics = {
@@ -43,22 +38,24 @@ export class Player {
         };
     }
 
-    update(dt, initializer) {
+    update(dt, GameStateHandler) {
 
-        this.vx = 0;
-        this.vy = 0;
+        this.resetVelocity();
 
 
         if (this.health > 0) {
             this.move(dt);
-
             this.attackFunction();
             this.attackBox.update(dt, this);
             this.inputBufferUpdate(dt);
         }
+        for (const entity in GameStateHandler.entities) {
+            if (Object.hasOwnProperty.call(GameStateHandler.entities, entity)) {
+                this.collision(GameStateHandler, GameStateHandler.entities[entity]);
+            }
+        }
 
-        moveCollideX(this.vx, this, initializer.walls, this.onCollideX);
-        moveCollideY(this.vy, this, initializer.walls, this.onCollideY);
+        
     }
 
     move(dt) {
@@ -134,16 +131,6 @@ export class Player {
         this.heal();
         this.increaseStatPoints();
         this.updateKills();
-    }
-
-    onCollideX(rect, otherRect) {
-        rect.vx = 0;
-        return true;
-    }
-    
-    onCollideY(rect, otherRect) {
-        rect.vy = 0;
-        return true;
     }
 }
 

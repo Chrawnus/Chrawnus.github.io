@@ -1,64 +1,82 @@
-import { Initialize } from "./Initialize.js";
+import { GameStateHandler } from "./GameStateHandler.js";
 import { Pathfinding } from "./pathFinding.js";
 import { Drawer } from "./Drawer.js";
 import { UserInterface } from "./UserInterface.js";
+import { getDelta, deltaVars } from "./helperFunctions.js";
 
 
 
 export class Engine {
     constructor() {
+        this.engine = this;
         this.drawer = new Drawer();
-        this.userInterface = new UserInterface();
-        this.initializer = new Initialize();
+        this.UI = new UserInterface();
+        this.gameStateHandler = new GameStateHandler();
         this.pathfinder = new Pathfinding();
         this.elapsed;
     }
 
     initialize() {
-        const initializer = this.initializer;
-        const userInterface = this.userInterface;
-        initializer.initialize();
-        userInterface.initializeMenuButtons(initializer.player, initializer.enemy);
+        const gameStateHandler = this.gameStateHandler;
+        const UI = this.UI;
+        gameStateHandler.initialize();
+        UI.initializeMenuButtons(gameStateHandler.entities['player'], gameStateHandler.entities['enemy']);
     }
-    update(dt, now) {
-        const userInterface = this.userInterface;
-        const initializer = this.initializer;
 
-        if (!userInterface.running) {
+    start() {
+        requestAnimationFrame(gameLoop.bind(this));
+
+        function gameLoop(now) {
+            requestAnimationFrame(gameLoop.bind(this));
+    
+            deltaVars.dt = getDelta(now);
+            this.update(deltaVars.dt, now);
+            this.draw();
+        }
+    }
+
+    update(dt, now) {
+        const UI = this.UI;
+        const gameStateHandler = this.gameStateHandler;
+
+        if (!UI.running) {
             return
         }
-        if (initializer.checkEnemyState()) {
-            initializer.player.onEnemyKill();
-            initializer.enemy.boostStats();
-            initializer.resetEnemyPos();
-            userInterface.refreshUI(initializer.player);
+        if (gameStateHandler.checkEnemyState()) {
+            gameStateHandler.entities['player'].onEnemyKill();
+            gameStateHandler.entities['enemy'].boostStats();
+            gameStateHandler.resetEnemyPos();
+            UI.refreshUI(gameStateHandler.entities['player']);
         }
-        if (initializer.gameOverCheck()) {
-            initializer.onGameOver();
-            userInterface.onGameOver(initializer.player);
+        if (gameStateHandler.gameOverCheck()) {
+            gameStateHandler.onGameOver();
+            UI.onGameOver(gameStateHandler.entities['player']);
         }
-        initializer.getPlayerPosition();
-        initializer.getEnemyPosition();
+        gameStateHandler.getPlayerPosition();
+        gameStateHandler.getEnemyPosition();
 
-        initializer.player.update(dt, initializer);
+        gameStateHandler.entities['player'].update(dt, gameStateHandler);
 
         this.increaseElapsed(dt);
         this.refreshPathfinding();
         this.resetElapsed();
 
-        initializer.enemy.update(dt, now, initializer);
-
+        gameStateHandler.entities['enemy'].update(dt, now, gameStateHandler);
     }
 
     draw() {
-        this.drawer.draw(this.initializer.tileGrid, this.initializer.walls, this.initializer);
+        this.drawer.draw(this.gameStateHandler.worldHandler, this.gameStateHandler.entities);
     }
 
     refreshPathfinding() {
-        const initializer = this.initializer;
-        if (initializer.enemy.pathToPlayer === undefined || initializer.enemy.pathToPlayer.length === 0 || this.elapsed > 0.2) {
-            initializer.enemy.pathToPlayer = this.pathfinder.update(initializer.tileGrid[initializer.enemy.currentInhabitedTile], initializer.tileGrid[initializer.player.currentInhabitedTile]);
-            //elapsed = 0;
+        const gameStateHandler = this.gameStateHandler;
+        const player = gameStateHandler.entities['player'];
+        const enemy = gameStateHandler.entities['enemy'];
+        const pathToPlayer = enemy.pathToPlayer;
+        const floor = gameStateHandler.worldHandler.worldComponents[0];
+        if (pathToPlayer === undefined || pathToPlayer.length === 0 || this.elapsed > 0.2) {
+            enemy.pathToPlayer = this.pathfinder.update(floor[enemy.currentInhabitedTile], floor[player.currentInhabitedTile]);
+            //this.elapsed = 0;
         }
     }
 

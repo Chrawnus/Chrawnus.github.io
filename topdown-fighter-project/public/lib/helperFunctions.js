@@ -5,6 +5,7 @@ export function clamp(value, min, max) {
 }
 
 export function rectsOverlaps(rect1, rect2) {
+
     return (
         rect1.x < rect2.x + rect2.width &&
         rect1.x + rect1.width > rect2.x &&
@@ -13,18 +14,6 @@ export function rectsOverlaps(rect1, rect2) {
     );
 }
 
-export function getEntityPosOnTileGrid(entity, tileGrid) {
-    for (let i = 0; i < tileGrid.length; i++) {
-        const tile = tileGrid[i];
-        
-        if ((entity.x + entity.width / 2 > tile.x &&
-            entity.x + entity.width / 2 < tile.x + tile.width &&
-            entity.y + entity.height / 2 > tile.y &&
-            entity.y + entity.height / 2 < tile.y + tile.height)) {
-            entity.currentInhabitedTile = i;
-        }
-    }
-}
 
 export function getDistanceBetweenPoints(x1, y1, x2, y2) {
     const a = x1 - x2;

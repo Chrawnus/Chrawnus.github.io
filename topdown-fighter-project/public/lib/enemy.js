@@ -1,26 +1,23 @@
+import { Entity } from "./Entity.js";
 import { getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
-import { moveCollideX, moveCollideY } from "./physics.js";
 
-export class Enemy {
-    constructor() {
-        this.x = 640;
-        this.y = 640;
-        this.width = 32 * 0.8;
-        this.height = 32 * 0.8;
+export class Enemy extends Entity {
+    constructor(id, x, y, width, height, color) {
+        super(x, y, width, height, color);
+        this.id = id;
+
+        this.color = 'red';
         this.maxHealth = 100;
         this.health = 100;
         this.attack = 50;
         this.currentInhabitedTile = undefined;
-        this.color = 'red';
-        this.initialSpeed = 100;
-        this.speed = 100;
+        this.initialSpeed = 75;
+        this.speed = 75;
         this.maxSpeed = 250;
         this.knockback = 15;
         this.startingAttackDelay = 300;
         this.attackDelay = 300;
         this.target = undefined;
-        this.vx = 0;
-        this.vy = 0;
         this.pathToPlayer = [];
         this.statBoosts = {
             health: 10,
@@ -30,31 +27,29 @@ export class Enemy {
         }
     }
 
-    update(dt, now, initializer) {
+    update(dt, now, gameStateHandler) {
 
         this.resetVelocity();
 
-        if (getDistanceBetweenPoints(this.x, this.y, initializer.player.x, initializer.player.y) < 55) {
-            this.enemyAttack(initializer.player, dt);
+        if (getDistanceBetweenPoints(this.x, this.y, gameStateHandler.entities['player'].x, gameStateHandler.entities['player'].y) < 55) {
+            this.enemyAttack(gameStateHandler.entities['player'], dt);
         }
 
         this.move(dt);
-        if (intersectRect(this, initializer.player.attackBox)) {
-            this.onAttacked(initializer.player);
+
+        for (const entity in gameStateHandler.entities) {
+            if (Object.hasOwnProperty.call(gameStateHandler.entities, entity)) {
+                this.collision(gameStateHandler, gameStateHandler.entities[entity]);
+            }
         }
 
-        moveCollideX(this.vx, this, initializer.walls, this.onCollideX);
-        moveCollideY(this.vy, this, initializer.walls, this.onCollideY);
+        
+        if (intersectRect(this, gameStateHandler.entities['player'].attackBox)) {
+            this.onAttacked(gameStateHandler.entities['player']);
+        }
 
-        moveCollideY(this.vy, this, initializer.player, this.onCollideY);
-        moveCollideX(this.vx, this, initializer.player, this.onCollideX);
+
     };
-
-
-    resetVelocity() {
-        this.vx = 0;
-        this.vy = 0;
-    }
 
     move(dt) {
         if (!(this.pathToPlayer === undefined) && this.pathToPlayer.length > 1) {
@@ -111,16 +106,6 @@ export class Enemy {
         this.vx += attackDirection === 'arrowRight' ? this.knockback : 0;
 
         return;
-    }
-
-    onCollideX(rect, otherRect) {
-        rect.vx = 0;
-        return true;
-    }
-
-    onCollideY(rect, otherRect) {
-        rect.vy = 0;
-        return true;
     }
 }
 

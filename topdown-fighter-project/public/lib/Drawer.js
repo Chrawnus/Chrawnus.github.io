@@ -4,30 +4,37 @@ export class Drawer {
     constructor() {
     }
 
-    draw(tileGrid, walls, initializer) {
+    draw(world, entities) {
+
         const ctx = canvas.getContext('2d');
         ctx.setTransform(1, 0, 0, 1, 0, 0); //reset the transform matrix as it is cumulative
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
 
         // Center the camera around the player                                             
-        var camX = canvas.width / 2 - initializer.player.x;
-        var camY = canvas.height / 2 - initializer.player.y;
+        var camX = canvas.width / 2 - entities['player'].x;
+        var camY = canvas.height / 2 - entities['player'].y;
 
         ctx.translate(camX, camY);
 
         //Draw everything
-        this.drawTiles(tileGrid, ctx);
-        this.drawTiles(walls, ctx);
-        this.drawEntity(initializer.player, ctx);
-        this.drawEntity(initializer.enemy, ctx);
-        this.drawEntityHealthBar(ctx, initializer.enemy);
-        this.drawEntityHealthBar(ctx, initializer.player);
-        initializer.player.attackBox.draw(ctx);
+        this.drawWorld(world.worldComponents, ctx)
+        this.drawEntities(entities, ctx);
+        this.drawEntityHealthBars(ctx, entities);
+
+        entities['player'].attackBox.draw(ctx);
     }
 
     /**
  * @param {CanvasRenderingContext2D} ctx
  */
+    drawWorld(worldComponents, ctx) {
+        for (const component in worldComponents) {
+            if (Object.hasOwnProperty.call(worldComponents, component)) {
+                this.drawTiles(worldComponents[component], ctx);
+            }
+        }
+    }
+    
     drawTiles(tiles, ctx) {
         for (let i = 0; i < tiles.length; i++) {
             const tile = tiles[i];
@@ -62,11 +69,29 @@ export class Drawer {
         );
     }
 
-    drawEntityHealthBar(ctx, entity) {
+    drawEntities(entities, ctx) {
+        for (const entity in entities) {
+            if (Object.hasOwnProperty.call(entities, entity)) {
+                this.drawEntity(entities[entity], ctx);
+            }
+        }
+    }
+
+    drawEntityHealthBars(ctx, entities) {
+        for (const entity in entities) {
+            if (Object.hasOwnProperty.call(entities, entity)) {
+                this.drawHealthBar(ctx, entities, entity);
+            }
+        }
+    }
+
+
+
+    drawHealthBar(ctx, entities, entity) {
         ctx.fillStyle = "red";
-        let x = entity.x;
-        let y = entity.y - entity.height / 2;
-        let w = entity.health / entity.maxHealth * 25;
+        let x = entities[entity].x;
+        let y = entities[entity].y - entities[entity].height / 2;
+        let w = entities[entity].health / entities[entity].maxHealth * 25;
         let h = 5;
         ctx.fillRect(x, y, w, h);
         ctx.strokeStyle = "black";
