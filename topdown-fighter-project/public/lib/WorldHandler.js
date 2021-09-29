@@ -4,10 +4,13 @@ export class WorldHandler {
     constructor() {
         this.world = new World();
         this.worldComponents = {};
-        this.world.createTileGrid();
-        this.addWorldComponents(this.world.tileGrid, this.world.walls);
 
         this.walls = this.world.walls; 
+    }
+
+    initialize() {
+        this.world.createTileGrid();
+        this.addWorldComponents(this.world.tileGrid, this.world.walls);
     }
 
     addComponent(component, id) {

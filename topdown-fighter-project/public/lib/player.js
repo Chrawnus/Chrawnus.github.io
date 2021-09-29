@@ -1,7 +1,7 @@
 import { Entity } from "./Entity.js";
-import { GameStateHandler } from "./GameStateHandler.js";
 import { getKey, keyCodes } from "./input.js";
 import { AttackBox } from "./playerAttackBox.js";
+
 export class Player extends Entity {
     constructor(id, x, y, width, height, color) {
         super(x, y, width, height, color);
@@ -38,7 +38,7 @@ export class Player extends Entity {
         };
     }
 
-    update(dt, GameStateHandler) {
+    update(dt, entityHandler, worldHandler) {
 
         this.resetVelocity();
 
@@ -49,9 +49,9 @@ export class Player extends Entity {
             this.attackBox.update(dt, this);
             this.inputBufferUpdate(dt);
         }
-        for (const entity in GameStateHandler.entities) {
-            if (Object.hasOwnProperty.call(GameStateHandler.entities, entity)) {
-                this.collision(GameStateHandler, GameStateHandler.entities[entity]);
+        for (const entity in entityHandler.entities) {
+            if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
+                this.collision(worldHandler, entityHandler.entities[entity]);
             }
         }
 

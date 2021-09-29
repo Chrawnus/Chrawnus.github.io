@@ -144,7 +144,6 @@ export class UserInterface {
     }
     
     saveGame(player, enemy) {
-        console.log(player, enemy)
         const playerSave = {
             x: player.x,
             y: player.y,

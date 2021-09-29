@@ -27,25 +27,23 @@ export class Enemy extends Entity {
         }
     }
 
-    update(dt, now, gameStateHandler) {
+    update(dt, entityHandler, worldHandler) {
 
-        this.resetVelocity();
-
-        if (getDistanceBetweenPoints(this.x, this.y, gameStateHandler.entities['player'].x, gameStateHandler.entities['player'].y) < 55) {
-            this.enemyAttack(gameStateHandler.entities['player'], dt);
+        if (getDistanceBetweenPoints(this.x, this.y, entityHandler.entities['player'].x, entityHandler.entities['player'].y) < 55) {
+            this.enemyAttack(entityHandler.entities['player'], dt);
         }
 
         this.move(dt);
 
-        for (const entity in gameStateHandler.entities) {
-            if (Object.hasOwnProperty.call(gameStateHandler.entities, entity)) {
-                this.collision(gameStateHandler, gameStateHandler.entities[entity]);
+        for (const entity in entityHandler.entities) {
+            if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
+                this.collision(worldHandler, entityHandler.entities[entity]);
             }
         }
 
         
-        if (intersectRect(this, gameStateHandler.entities['player'].attackBox)) {
-            this.onAttacked(gameStateHandler.entities['player']);
+        if (intersectRect(this, entityHandler.entities['player'].attackBox)) {
+            this.onAttacked(entityHandler.entities['player']);
         }
 
 

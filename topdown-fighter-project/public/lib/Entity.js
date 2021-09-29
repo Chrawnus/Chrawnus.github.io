@@ -20,9 +20,9 @@ export class Entity {
         this.vy = 0;
     }
 
-    collision(gameStateHandler, entity) {
-        moveCollideX(this.vx, this, gameStateHandler.worldHandler.worldComponents[1], this.onCollideX);
-        moveCollideY(this.vy, this, gameStateHandler.worldHandler.worldComponents[1], this.onCollideY);
+    collision(worldHandler, entity) {
+        moveCollideX(this.vx, this, worldHandler.worldComponents[1], this.onCollideX);
+        moveCollideY(this.vy, this, worldHandler.worldComponents[1], this.onCollideY);
 
         moveCollideY(this.vy, this, entity, this.onCollideY);
         moveCollideX(this.vx, this, entity, this.onCollideX);
