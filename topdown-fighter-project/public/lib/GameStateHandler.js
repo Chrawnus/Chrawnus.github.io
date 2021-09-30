@@ -3,14 +3,14 @@ export class GameStateHandler {
 
     }
 
-    onGameOver() {
-        this.entities['player'].updateDeaths();
-        this.resetPlayerPos();
-        this.resetEnemyPos();
+    onGameOver(entityHandler) {
+        entityHandler.entities['player'].updateDeaths();
+        entityHandler.resetPlayerPos();
+        entityHandler.resetEnemyPos();
     }
 
     gameOverCheck(entityHandler) {
-        return entityHandler.entities['player'].health < 0;
+        return entityHandler.entities['player'].health <= 0;
     }
     
     checkEnemyState(entityHandler) {

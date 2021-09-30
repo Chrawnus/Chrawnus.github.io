@@ -1,5 +1,6 @@
+import { AttackBox } from "./AttackBox.js";
 import { Entity } from "./Entity.js";
-import { getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
+import { determineAttackDirection, getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
 
 export class Enemy extends Entity {
     constructor(id, x, y, width, height, color) {
@@ -9,20 +10,21 @@ export class Enemy extends Entity {
         this.color = 'red';
         this.maxHealth = 100;
         this.health = 100;
-        this.attack = 50;
+        this.attack = 5;
         this.currentInhabitedTile = undefined;
         this.initialSpeed = 75;
-        this.speed = 75;
-        this.maxSpeed = 250;
+        this.speed = 50;
+        this.maxSpeed = 100;
         this.knockback = 15;
         this.startingAttackDelay = 300;
         this.attackDelay = 300;
         this.target = undefined;
         this.pathToPlayer = [];
+        this.attackBox = new AttackBox();
         this.statBoosts = {
             health: 10,
-            speed: 10,
-            attack: 5,
+            speed: 5,
+            attack: 0.5,
             attackSpeed: 1,
         }
     }
@@ -32,7 +34,9 @@ export class Enemy extends Entity {
         if (getDistanceBetweenPoints(this.x, this.y, entityHandler.entities['player'].x, entityHandler.entities['player'].y) < 55) {
             this.enemyAttack(entityHandler.entities['player'], dt);
         }
-
+        if (this.attackBox.isActive) {
+            this.attackBox.update(dt, this);
+        }
         this.move(dt);
 
         for (const entity in entityHandler.entities) {
@@ -43,7 +47,7 @@ export class Enemy extends Entity {
 
         
         if (intersectRect(this, entityHandler.entities['player'].attackBox)) {
-            this.onAttacked(entityHandler.entities['player']);
+            this.onAttacked(entityHandler.entities['player'], dt*20);
         }
 
 
@@ -85,23 +89,26 @@ export class Enemy extends Entity {
 
     enemyAttack(player, dt) {
         if (player.health > 0) {
-            player.health -= this.attack * dt;
+            
+            const direction = determineAttackDirection(this, player);
+            this.attackBox.create(direction, this);
         }
     }
 
-    onAttacked(player) {
+    onAttacked(entity, dt) {
         if (this.health > 0) {
-            this.health -= player.attack;
-            this.knockBackFunction(player.attackBox.direction)
+            this.health -= entity.attack;
+            this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
         }
 
     }
 
-    knockBackFunction(attackDirection) {
-        this.vy -= attackDirection === 'arrowUp' ? this.knockback : 0;
-        this.vy += attackDirection === 'arrowDown' ? this.knockback : 0;
-        this.vx -= attackDirection === 'arrowLeft' ? this.knockback : 0;
-        this.vx += attackDirection === 'arrowRight' ? this.knockback : 0;
+    knockBackFunction(attackDirection, knockback, dt) {
+
+        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
+        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
+        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
+        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
 
         return;
     }

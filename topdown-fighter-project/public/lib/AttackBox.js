@@ -8,9 +8,9 @@ export class AttackBox {
         this.color = 'red';
         this.isActive = false;
         this.originalLifetime = 10;
-        this.lifetime = 20;
-        this.originalDelay = 10;
-        this.delay = 10;
+        this.lifetime = 10;
+        this.originalDelay = 50;
+        this.delay = 50;
     }
 
     draw(ctx) {
@@ -28,31 +28,31 @@ export class AttackBox {
 
     create(direction, entity) {
         this.direction = direction;
-        if (direction === 'arrowUp' || direction === 'arrowDown') {
-            this.x = entity.x - 1.6 * entity.width;
-            if (direction === 'arrowUp') {
+        if (direction === 'Up' || direction === 'Down') {
+            this.x = entity.x;
+            if (direction === 'Up') {
                 this.y = entity.y - entity.height * 2.8;
-                this.width = entity.width * 4.2;
+                this.width = entity.width;
                 this.height = entity.height * 2.8;
             } else {
                 this.y = entity.y + entity.height;
-                this.width = entity.width * 4.2;
+                this.width = entity.width;
                 this.height = entity.height * 2.8;
             }
         }
 
-        if (direction === 'arrowLeft' || direction === 'arrowRight') {
-            if (direction === 'arrowRight') {
+        if (direction === 'Left' || direction === 'Right') {
+            this.y = entity.y;
+            if (direction === 'Right') {
                 this.x = entity.x + entity.width;
                 this.width = entity.width * 2.8;
-                this.height = entity.height * 4.2;
+                this.height = entity.height;
             } else {
                 this.x = entity.x - 2.8 * entity.width;
                 this.width = entity.width * 2.8;
-                this.height = entity.height * 4.2;
+                this.height = entity.height;
             }
 
-            this.y = entity.y - 1.6 * entity.height;
         }
 
         this.isActive = true;
@@ -63,21 +63,25 @@ export class AttackBox {
             this.delay -= 1000 * dt;
         } else {
             if (this.isActive && this.lifetime > 0) {
-                if (this.direction === 'arrowUp' || this.direction === 'arrowDown') {
-                    this.x = entity.x - 1.6 * entity.width;
-                    if (this.direction === 'arrowUp') {
+                if (this.direction === 'Up' || this.direction === 'Down') {
+                    this.x = entity.x;
+                    if (this.direction === 'Up') {
                         this.y = entity.y - entity.height * 2.8;
+
                     } else {
                         this.y = entity.y + entity.height;
+
                     }
                 }
 
-                if (this.direction === 'arrowLeft' || this.direction === 'arrowRight') {
-                    this.y = entity.y - 1.6 * entity.height;
-                    if (this.direction === 'arrowRight') {
+                if (this.direction === 'Left' || this.direction === 'Right') {
+                    this.y = entity.y;
+                    if (this.direction === 'Right') {
                         this.x = entity.x + entity.width;
+
                     } else {
                         this.x = entity.x - 2.8 * entity.width;
+
                     }
 
                 }
@@ -92,6 +96,7 @@ export class AttackBox {
                 this.height = undefined;
             }
             this.delay = this.originalDelay;
+            // }
         }
     }
 };

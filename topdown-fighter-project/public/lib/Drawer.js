@@ -11,8 +11,8 @@ export class Drawer {
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
 
         // Center the camera around the player                                             
-        var camX = canvas.width / 2 - entities['player'].x;
-        var camY = canvas.height / 2 - entities['player'].y;
+        let camX = canvas.width / 2 - entities['player'].x;
+        let camY = canvas.height / 2 - entities['player'].y;
 
         ctx.translate(camX, camY);
 
@@ -22,6 +22,7 @@ export class Drawer {
         this.drawEntityHealthBars(ctx, entities);
 
         entities['player'].attackBox.draw(ctx);
+        entities['enemy'].attackBox.draw(ctx);
     }
 
     /**

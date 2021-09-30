@@ -1,6 +1,7 @@
 import { Entity } from "./Entity.js";
 import { getKey, keyCodes } from "./input.js";
-import { AttackBox } from "./playerAttackBox.js";
+import { AttackBox } from "./AttackBox.js";
+import { intersectRect } from "./helperFunctions.js";
 
 export class Player extends Entity {
     constructor(id, x, y, width, height, color) {
@@ -17,6 +18,7 @@ export class Player extends Entity {
         this.attackDelay = 500;
         this.inputBuffer = [];
         this.attackBox = new AttackBox();
+        this.knockback = 15;
         this.statistics = {
             kills: 0,
             deaths: 0,
@@ -39,15 +41,15 @@ export class Player extends Entity {
     }
 
     update(dt, entityHandler, worldHandler) {
-
         this.resetVelocity();
-
-
         if (this.health > 0) {
             this.move(dt);
             this.attackFunction();
             this.attackBox.update(dt, this);
             this.inputBufferUpdate(dt);
+            if (intersectRect(this, entityHandler.entities['enemy'].attackBox)) {
+                this.onAttacked(entityHandler.entities['enemy'], dt*20);
+            }
         }
         for (const entity in entityHandler.entities) {
             if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
@@ -106,7 +108,7 @@ export class Player extends Entity {
             if (this.attackDelay > 0) {
                 this.attackDelay -= dt * 1000;
             } else if (this.attackDelay <= 0 && !getKey(keyCodes.shift)) {
-                this.attackBox.create(this.inputBuffer[0], this);
+                this.attackBox.create(this.inputBuffer[0].slice(5), this);
                 this.inputBuffer.splice(0, 1);
             }
             if (this.inputBuffer.length === 0) {
@@ -131,6 +133,23 @@ export class Player extends Entity {
         this.heal();
         this.increaseStatPoints();
         this.updateKills();
+    }
+
+    onAttacked(entity, dt) {
+        if (this.health > 0) {
+            this.health -= entity.attack;
+            this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
+        }
+
+    }
+
+    knockBackFunction(attackDirection, knockback, dt) {
+        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
+        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
+        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
+        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
+
+        return;
     }
 }
 

@@ -58,7 +58,7 @@ export class Engine {
             UI.refreshUI(entityHandler.entities['player']);
         }
         if (gameStateHandler.gameOverCheck(entityHandler)) {
-            gameStateHandler.onGameOver();
+            gameStateHandler.onGameOver(entityHandler);
             UI.onGameOver(entityHandler.entities['player']);
         }
         entityHandler.getPlayerPosition(worldHandler);
