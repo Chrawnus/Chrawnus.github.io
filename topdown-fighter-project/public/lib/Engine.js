@@ -68,7 +68,7 @@ export class Engine {
 
         this.increaseElapsed(dt);
         this.refreshPathfinding();
-        this.resetElapsed();
+
 
         entityHandler.entities['enemy'].update(dt, entityHandler, worldHandler);
     }
@@ -81,16 +81,16 @@ export class Engine {
         const entityHandler = this.entityHandler;
         const player = entityHandler.entities['player'];
         const enemy = entityHandler.entities['enemy'];
-        const pathToPlayer = enemy.pathToPlayer;
         const floor = this.worldHandler.worldComponents[0];
-        if (pathToPlayer === undefined || pathToPlayer.length === 0 || this.elapsed > 0.2) {
+        const elapsedMax = 0.3;
+        if (this.elapsed > elapsedMax) {
             enemy.pathToPlayer = this.pathfinder.update(floor[enemy.currentInhabitedTile], floor[player.currentInhabitedTile]);
-            //this.elapsed = 0;
+            this.resetElapsed(elapsedMax);
         }
     }
 
-    resetElapsed() {
-        if (this.elapsed > 0.3) {
+    resetElapsed(elapsedMax) {
+        if (this.elapsed > elapsedMax) {
             this.elapsed = 0;
         }
     }

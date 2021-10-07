@@ -1,6 +1,6 @@
-import { canvasElem } from "/physics-sandbox/scripts/app.js";
-import { RigidBody } from "/physics-sandbox/scripts/RigidBody.js";
-import { keyArr } from "/physics-sandbox/scripts/app.js";
+import { canvasElem, keyArr } from "./app.js";
+import { RigidBody } from "./RigidBody.js";
+
 
 export class Ball extends RigidBody {
     constructor(x, y, density, rad) {

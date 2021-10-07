@@ -13,11 +13,14 @@ export class Entity {
             x: x,
             y: y,
         }
+        this.recentlyHit = false;
+        this.elapsed = 0;
+        this.drag = 200;
     }
 
-    resetVelocity() {
-        this.vx = 0;
-        this.vy = 0;
+    friction(dt) {
+        this.vx *= 1 - dt * this.drag;
+        this.vy *= 1 - dt * this.drag;
     }
 
     collision(worldHandler, entity) {
@@ -36,5 +39,33 @@ export class Entity {
     onCollideY(rect, otherRect) {
         rect.vy = 0;
         return true;
+    }
+
+    onAttacked(entity, dt) {
+        if (this.recentlyHit == true)
+            return;
+
+        if (this.health > 0) {
+            this.health -= entity.attack;
+            this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
+            this.recentlyHit = true;
+        }
+    }
+
+    knockBackFunction(attackDirection, knockback, dt) {
+        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
+        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
+        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
+        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
+
+        return;
+    }
+
+    recover() {
+        if (this.elapsed > 0.5) {
+            this.recentlyHit = false;
+            this.elapsed = 0;
+        }
+
     }
 }

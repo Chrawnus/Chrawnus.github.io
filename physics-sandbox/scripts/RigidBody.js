@@ -1,4 +1,4 @@
-import { canvasElem } from "/physics-sandbox/scripts/app.js";
+import { canvasElem } from "./app.js";
 
 export class RigidBody {
     constructor(x, y, density) {

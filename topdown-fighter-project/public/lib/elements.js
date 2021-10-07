@@ -1,3 +1,5 @@
+// Various UI elements
+
 export const canvas = document.querySelector('canvas');
 
 export const incHealthButton = document.querySelector('#health');

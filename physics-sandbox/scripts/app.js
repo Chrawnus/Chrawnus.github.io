@@ -1,6 +1,6 @@
-import { Ball } from "/physics-sandbox/scripts/Ball.js";
+import { Ball } from "./Ball.js";
+import { PhysicsWorld } from "./PhysicsWorld.js";
 //import { Platform } from "/physics-sandbox/scripts/Platform.js";
-import { PhysicsWorld } from "/physics-sandbox/scripts/PhysicsWorld.js";
 
 
 
@@ -8,7 +8,7 @@ export const canvasElem = document.getElementById('canvas');
 
 let prevTime;
 let accumulator = 0;
-
+   
 let gameObjects = [];
 
 const world = new PhysicsWorld();

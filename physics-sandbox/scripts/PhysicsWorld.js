@@ -1,5 +1,4 @@
-import { canvasElem } from "/physics-sandbox/scripts/app.js";
-import { keyArr } from "/physics-sandbox/scripts/app.js";
+import { canvasElem, keyArr } from "./app.js";
 
 export class PhysicsWorld {
     constructor() {

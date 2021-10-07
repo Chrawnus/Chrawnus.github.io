@@ -18,7 +18,7 @@ export class Player extends Entity {
         this.attackDelay = 500;
         this.inputBuffer = [];
         this.attackBox = new AttackBox();
-        this.knockback = 15;
+        this.knockback = 150;
         this.statistics = {
             kills: 0,
             deaths: 0,
@@ -41,15 +41,24 @@ export class Player extends Entity {
     }
 
     update(dt, entityHandler, worldHandler) {
-        this.resetVelocity();
+        this.friction(dt);
         if (this.health > 0) {
+
+            if (intersectRect(this, entityHandler.entities['enemy'].attackBox))
+                this.onAttacked(entityHandler.entities['enemy'], dt);
+
             this.move(dt);
-            this.attackFunction();
-            this.attackBox.update(dt, this);
-            this.inputBufferUpdate(dt);
-            if (intersectRect(this, entityHandler.entities['enemy'].attackBox)) {
-                this.onAttacked(entityHandler.entities['enemy'], dt*20);
+            if (!this.recentlyHit) {
+                this.attackFunction();
+            } else {
+                this.elapsed += dt;
+                this.recover();
             }
+
+            this.inputBufferUpdate(dt);
+            if (this.attackBox.isActive) 
+                this.attackBox.update(dt, this);
+
         }
         for (const entity in entityHandler.entities) {
             if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
@@ -57,7 +66,7 @@ export class Player extends Entity {
             }
         }
 
-        
+
     }
 
     move(dt) {
@@ -135,22 +144,7 @@ export class Player extends Entity {
         this.updateKills();
     }
 
-    onAttacked(entity, dt) {
-        if (this.health > 0) {
-            this.health -= entity.attack;
-            this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
-        }
 
-    }
-
-    knockBackFunction(attackDirection, knockback, dt) {
-        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
-        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
-        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
-        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
-
-        return;
-    }
 }
 
 

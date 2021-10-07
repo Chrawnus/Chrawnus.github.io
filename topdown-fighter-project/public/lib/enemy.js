@@ -2,6 +2,8 @@ import { AttackBox } from "./AttackBox.js";
 import { Entity } from "./Entity.js";
 import { determineAttackDirection, getDistanceBetweenPoints, intersectRect } from "./helperFunctions.js";
 
+// Class to handle creation and updating of enemy entit(y/ies)
+
 export class Enemy extends Entity {
     constructor(id, x, y, width, height, color) {
         super(x, y, width, height, color);
@@ -15,7 +17,7 @@ export class Enemy extends Entity {
         this.initialSpeed = 75;
         this.speed = 50;
         this.maxSpeed = 100;
-        this.knockback = 15;
+        this.knockback = 150;
         this.startingAttackDelay = 300;
         this.attackDelay = 300;
         this.target = undefined;
@@ -29,54 +31,82 @@ export class Enemy extends Entity {
         }
     }
 
+    // update function to get distance to player 
+    // in order to determine whether to attack,
+    // updates attached attackBox, handles
+    // movement, collision with other entities and onAttacked events. 
     update(dt, entityHandler, worldHandler) {
+        const entities = entityHandler.entities;
+        const player = entities['player'];
 
-        if (getDistanceBetweenPoints(this.x, this.y, entityHandler.entities['player'].x, entityHandler.entities['player'].y) < 55) {
-            this.enemyAttack(entityHandler.entities['player'], dt);
+        this.friction(dt);
+
+        if (intersectRect(this, player.attackBox))
+            this.onAttacked(player, dt);
+        
+        this.move(dt, player);
+        if (!this.recentlyHit) {
+
+            if (getDistanceBetweenPoints(this.x, this.y, player.x, player.y) < 55)
+                this.enemyAttack(player, dt);
+        } else {
+            this.elapsed += dt;
+            this.recover();
         }
-        if (this.attackBox.isActive) {
+
+        if (this.attackBox.isActive)
             this.attackBox.update(dt, this);
-        }
-        this.move(dt);
 
-        for (const entity in entityHandler.entities) {
-            if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
-                this.collision(worldHandler, entityHandler.entities[entity]);
+        for (const entity in entities) {
+            if (Object.hasOwnProperty.call(entities, entity)) {
+                this.collision(worldHandler, entities[entity]);
             }
         }
 
-        
-        if (intersectRect(this, entityHandler.entities['player'].attackBox)) {
-            this.onAttacked(entityHandler.entities['player'], dt*20);
-        }
 
 
     };
 
+    // Function to handle movement logic. 
     move(dt) {
+        // If pathToPlayer exist, and enemy has not arrived 
+        // at tile inhabitated by player, 
+        // set last item in pathToPlayer array as next 
+        // target tile for enemy to move towards.
         if (!(this.pathToPlayer === undefined) && this.pathToPlayer.length > 1) {
-            let last = this.pathToPlayer.length - 1;
-            const enemyX = this.x + this.width / 2;
-            const enemyY = this.y + this.height / 2;
-            let targetX = this.pathToPlayer[last].x + this.pathToPlayer[last].width / 2;
-            let targetY = this.pathToPlayer[last].y + this.pathToPlayer[last].height / 2;
-            if (getDistanceBetweenPoints(enemyX, enemyY, targetX, targetY) < 10) {
+            let nextTileIndex = this.pathToPlayer.length - 1;
+            let target = this.pathToPlayer[nextTileIndex];
+
+
+            var { enemyX, enemyY, targetX, targetY } = getCoordinates(target, this);
+
+            // Get delta x and delta y between
+            // target tile coordinates and enemy coordinates
+            // and determine movement direction
+            const dx = targetX - enemyX;
+            const dy = targetY - enemyY;
+            const angle = Math.atan2(dy, dx)
+
+            // move enemy in the determined direction
+            this.vx = this.speed * Math.cos(angle) * dt;
+            this.vy = this.speed * Math.sin(angle) * dt;
+
+            // If enemy gets sufficiently close to target tile, 
+            // remove target tile from pathToPlayer array and exit function.
+            if (getDistanceBetweenPoints(enemyX, enemyY, targetX, targetY) < target.width / 2) {
                 if (this.pathToPlayer.length > 2) {
-                    this.pathToPlayer.splice(last, 1);
+                    this.pathToPlayer.splice(nextTileIndex, 1);
+                    return;
                 }
-
-
-            } else {
-                last = this.pathToPlayer.length - 1;
-                targetX = this.pathToPlayer[last].x + this.pathToPlayer[last].width / 2;
-                targetY = this.pathToPlayer[last].y + this.pathToPlayer[last].height / 2;
-                const dx = targetX - enemyX;
-                const dy = targetY - enemyY;
-                const angle = Math.atan2(dy, dx)
-
-                this.vx = this.speed * Math.cos(angle) * dt;
-                this.vy = this.speed * Math.sin(angle) * dt;
             }
+        }
+
+        function getCoordinates(target, enemy) {
+            const enemyX = enemy.x + enemy.width / 2;
+            const enemyY = enemy.y + enemy.height / 2;
+            let targetX = target.x + target.width / 2;
+            let targetY = target.y + target.height / 2;
+            return { enemyX, enemyY, targetX, targetY };
         }
     }
 
@@ -87,44 +117,16 @@ export class Enemy extends Entity {
         this.attack += this.statBoosts.attack;
     }
 
-    enemyAttack(player, dt) {
+    // Function to handle attack logic
+    enemyAttack(player) {
+        // if player is not dead, call helper function 
+        // to determine attack direction,
+        // then initialize attackBox passing given direction
+        // as parameter. 
         if (player.health > 0) {
-            
             const direction = determineAttackDirection(this, player);
             this.attackBox.create(direction, this);
+            this.recentlyHit = true;
         }
-    }
-
-    onAttacked(entity, dt) {
-        if (this.health > 0) {
-            this.health -= entity.attack;
-            this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
-        }
-
-    }
-
-    knockBackFunction(attackDirection, knockback, dt) {
-
-        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
-        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
-        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
-        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
-
-        return;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

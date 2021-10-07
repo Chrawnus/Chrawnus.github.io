@@ -1,5 +1,7 @@
 import { canvas } from "./elements.js";
 
+
+// Class to handle drawing of game world and it's entities.
 export class Drawer {
     constructor() {
     }
@@ -13,7 +15,6 @@ export class Drawer {
         // Center the camera around the player                                             
         let camX = canvas.width / 2 - entities['player'].x;
         let camY = canvas.height / 2 - entities['player'].y;
-
         ctx.translate(camX, camY);
 
         //Draw everything
@@ -26,8 +27,10 @@ export class Drawer {
     }
 
     /**
- * @param {CanvasRenderingContext2D} ctx
- */
+    * @param {CanvasRenderingContext2D} ctx
+    */
+
+    // This function loops through every array of tiles in worldComponent, and passes each array of tiles as an arguments to the drawTiles function.
     drawWorld(worldComponents, ctx) {
         for (const component in worldComponents) {
             if (Object.hasOwnProperty.call(worldComponents, component)) {
@@ -35,24 +38,21 @@ export class Drawer {
             }
         }
     }
-    
+
+    // Takes a given tile array, and loops through it, calling drawEntity on each tile in order to draw them on the screen.
     drawTiles(tiles, ctx) {
+
         for (let i = 0; i < tiles.length; i++) {
             const tile = tiles[i];
             this.drawEntity(tile, ctx);
         }
     }
 
-    drawPlatforms(ctx) {
-        for (let i = 0; i < this.walls.length; i++) {
-            const platform = this.walls[i];
-            this.drawEntity(platform, ctx);
-        }
-    }
-
     /**
      * @param {CanvasRenderingContext2D} ctx
      */
+
+    // Draws a given entity on the screen, based on the properties of the entity. 
     drawEntity(entity, ctx) {
         ctx.fillStyle = entity.color;
         ctx.fillRect(
@@ -70,6 +70,8 @@ export class Drawer {
         );
     }
 
+    // Loops through an object containing a list of entities, 
+    // and calls drawEntity for each entity in the list.
     drawEntities(entities, ctx) {
         for (const entity in entities) {
             if (Object.hasOwnProperty.call(entities, entity)) {
@@ -78,6 +80,8 @@ export class Drawer {
         }
     }
 
+    // Loops through an object containing a list of entities, 
+    // and calls drawHealthBar for each entity in the list.
     drawEntityHealthBars(ctx, entities) {
         for (const entity in entities) {
             if (Object.hasOwnProperty.call(entities, entity)) {
@@ -87,7 +91,8 @@ export class Drawer {
     }
 
 
-
+    // Draws a red healthbar on top of the entity 
+    // passed as a parameter, that depletes as the entity loses health. 
     drawHealthBar(ctx, entities, entity) {
         ctx.fillStyle = "red";
         let x = entities[entity].x;
