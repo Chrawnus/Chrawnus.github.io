@@ -48,7 +48,7 @@ export class Player extends Entity {
                 this.onAttacked(entityHandler.entities['enemy'], dt);
 
             this.move(dt);
-            if (!this.recentlyHit) {
+            if (!this.knockedBack) {
                 this.attackFunction();
             } else {
                 this.elapsed += dt;

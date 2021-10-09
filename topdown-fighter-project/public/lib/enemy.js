@@ -43,12 +43,22 @@ export class Enemy extends Entity {
 
         if (intersectRect(this, player.attackBox))
             this.onAttacked(player, dt);
-        
-        this.move(dt, player);
-        if (!this.recentlyHit) {
 
+        if (!this.hasAttacked) {
             if (getDistanceBetweenPoints(this.x, this.y, player.x, player.y) < 55)
+            {
                 this.enemyAttack(player, dt);
+                this.hasAttacked = true;
+            }
+        } else {
+            this.attackCooldown += dt;
+            this.resetAttackCooldown();
+        }
+
+
+        if (!this.knockedBack) {
+            this.move(dt, player);
+
         } else {
             this.elapsed += dt;
             this.recover();
@@ -66,6 +76,13 @@ export class Enemy extends Entity {
 
 
     };
+
+    resetAttackCooldown() {
+        if (this.attackCooldown > 0.5) {
+            this.hasAttacked = false;
+            this.attackCooldown = 0;
+        }
+    }
 
     // Function to handle movement logic. 
     move(dt) {
@@ -126,7 +143,7 @@ export class Enemy extends Entity {
         if (player.health > 0) {
             const direction = determineAttackDirection(this, player);
             this.attackBox.create(direction, this);
-            this.recentlyHit = true;
+
         }
     }
 }

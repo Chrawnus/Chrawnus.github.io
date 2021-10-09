@@ -13,8 +13,10 @@ export class Entity {
             x: x,
             y: y,
         }
-        this.recentlyHit = false;
+        this.knockedBack = false;
+        this.hasAttacked = false;
         this.elapsed = 0;
+        this.attackCooldown = 0;
         this.drag = 200;
     }
 
@@ -35,35 +37,43 @@ export class Entity {
         rect.vx = 0;
         return true;
     }
-    
+
     onCollideY(rect, otherRect) {
         rect.vy = 0;
         return true;
     }
 
     onAttacked(entity, dt) {
-        if (this.recentlyHit == true)
+        if (this.knockedBack == true)
             return;
 
         if (this.health > 0) {
             this.health -= entity.attack;
             this.knockBackFunction(entity.attackBox.direction, entity.knockback, dt)
-            this.recentlyHit = true;
+            this.knockedBack = true;
         }
     }
 
     knockBackFunction(attackDirection, knockback, dt) {
-        this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
-        this.vy += attackDirection === 'Down' ? knockback * dt : 0;
-        this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
-        this.vx += attackDirection === 'Right' ? knockback * dt : 0;
+        if (attackDirection === "up" || attackDirection === "down") {
+            this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
+            this.vy += attackDirection === 'Down' ? knockback * dt : 0;
+        } else if (attackDirection === "left" || attackDirection === "right") {
+            this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
+            this.vx += attackDirection === 'Right' ? knockback * dt : 0;
+        }
+
+        // this.vy -= attackDirection === 'Up' ? knockback * dt : 0;
+        // this.vy += attackDirection === 'Down' ? knockback * dt : 0;
+        // this.vx -= attackDirection === 'Left' ? knockback * dt : 0;
+        // this.vx += attackDirection === 'Right' ? knockback * dt : 0;
 
         return;
     }
 
     recover() {
         if (this.elapsed > 0.5) {
-            this.recentlyHit = false;
+            this.knockedBack = false;
             this.elapsed = 0;
         }
 
