@@ -59,7 +59,7 @@ export class World {
         });
     }
 
-    createPlatform(x, y, width, height, color = 'gray', isUnreachable = true) {
+    createWall(x, y, width, height, color = 'gray', isUnreachable = true) {
         if (!(this.walls.filter(e => e.x === x && e.y === y).length > 0)) {
             this.walls.push({
                 x,
@@ -84,7 +84,7 @@ export class World {
 
     placeWalls(upperWall, leftWall, rightWall, lowerWall, tile) {
         if (upperWall || leftWall || rightWall || lowerWall) {
-            this.createPlatform(tile.x, tile.y, 1, 1, "gray");
+            this.createWall(tile.x, tile.y, 1, 1, "gray");
             tile.traversable = 0;
         };
     }

@@ -107,8 +107,6 @@ export class AttackBox {
                 this.width = undefined;
                 this.height = undefined;
             }
-            
-            // }
         }
     }
 };

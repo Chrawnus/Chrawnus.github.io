@@ -18,18 +18,18 @@ export class Engine {
         this.entityHandler = new EntityHandler();
         this.worldHandler = new WorldHandler();
         this.gameStateHandler = new GameStateHandler();
-
         this.pathfinder = new Pathfinding();
         this.elapsed;
     }
 
+    // Initialize world, entities, UI
     initialize() {
         this.worldHandler.initialize();
         this.entityHandler.initialize(this.worldHandler, new Player('player', 0, 0, 32 * 0.8, 32 * 0.8, 'lime'), new Enemy('enemy', 640, 640, 32 * 0.8, 32 * 0.8, 'red'));
         const UI = this.UI;
-
         UI.initializeMenuButtons(this.entityHandler.entities['player'], this.entityHandler.entities['enemy']);
     }
+
 
     start() {
         requestAnimationFrame(gameLoop.bind(this));
@@ -43,34 +43,44 @@ export class Engine {
         }
     }
 
+
     update(dt) {
         const UI = this.UI;
         const entityHandler = this.entityHandler;
         const gameStateHandler = this.gameStateHandler;
         const worldHandler = this.worldHandler;
+        
+        // if paused, return
         if (!UI.running) {
             return
         }
+
+        // If player kills enemy, give points to player,
+        // boost enemy stats, and reset it's position,
+        // then refresh the UI.
         if (gameStateHandler.checkEnemyState(entityHandler)) {
             entityHandler.entities['player'].onEnemyKill();
             entityHandler.entities['enemy'].boostStats();
             entityHandler.resetEnemyPos();
             UI.refreshUI(entityHandler.entities['player']);
         }
+
+        // Check if game over function should be called. 
         if (gameStateHandler.gameOverCheck(entityHandler)) {
             gameStateHandler.onGameOver(entityHandler);
             UI.onGameOver(entityHandler.entities['player']);
         }
+
+        // Get position of player and enemy for pathfinding purposes.
         entityHandler.getPlayerPosition(worldHandler);
         entityHandler.getEnemyPosition(worldHandler);
 
         entityHandler.entities['player'].update(dt, entityHandler, worldHandler);
-
-        this.increaseElapsed(dt);
-        this.refreshPathfinding();
-
-
         entityHandler.entities['enemy'].update(dt, entityHandler, worldHandler);
+
+        
+        this.refreshPathfinding();
+        this.increaseElapsed(dt);
     }
 
     draw() {

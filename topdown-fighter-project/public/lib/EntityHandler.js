@@ -3,6 +3,7 @@ export class EntityHandler {
         this.entities = {}; 
     }
 
+    // Handles placing of entities in the game world.
     initialize(worldHandler, ...entities) {
         this.addEntities(...entities);
         this.setPlayerStartPosition(worldHandler);
@@ -11,17 +12,25 @@ export class EntityHandler {
         this.placeEnemy(worldHandler);
     }
 
+    // Adds entities to this.entities 
+    // so they can be accessed from the
+    // EntityHandler.
     addEntity(entity) {
         this.entities[entity.id] = entity;
     }
 
+    // For adding multiple
+    // entities at once.
     addEntities(...entities) {
         entities.forEach(entity => {
             this.addEntity(entity);
         });
 
     }
-
+    
+    // Determine which Tile on the grid
+    // an entity is occupying, for
+    // pathfinding purposes. 
     getEntityPosOnTileGrid(entity, tileGrid) {
         for (let i = 0; i < tileGrid.length; i++) {
             const tile = tileGrid[i];

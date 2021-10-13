@@ -58,7 +58,6 @@ export class Enemy extends Entity {
 
         if (!this.knockedBack) {
             this.move(dt, player);
-
         } else {
             this.elapsed += dt;
             this.recover();
@@ -72,9 +71,6 @@ export class Enemy extends Entity {
                 this.collision(worldHandler, entities[entity]);
             }
         }
-
-
-
     };
 
     resetAttackCooldown() {
