@@ -6,9 +6,11 @@ export class Drawer {
     constructor() {
     }
 
+    // function that takes the world and game entities as parameters and draws them on the screen.
     draw(world, entities) {
 
         const ctx = canvas.getContext('2d');
+
         ctx.setTransform(1, 0, 0, 1, 0, 0); //reset the transform matrix as it is cumulative
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the viewport AFTER the matrix is reset
 
@@ -17,11 +19,12 @@ export class Drawer {
         let camY = canvas.height / 2 - entities['player'].y;
         ctx.translate(camX, camY);
 
-        //Draw everything
+        // Draw everything
         this.drawWorld(world.worldComponents, ctx)
         this.drawEntities(entities, ctx);
         this.drawEntityHealthBars(ctx, entities);
 
+        // Draw attackboxes
         entities['player'].attackBox.draw(ctx);
         entities['enemy'].attackBox.draw(ctx);
     }

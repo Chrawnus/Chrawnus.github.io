@@ -29,6 +29,7 @@ export function intersectRect(rect1, rect2) {
         rect1.y + rect1.height > rect2.y)
 }
 
+// WIP function to determine which direction a non-player entity should attack
 export function determineAttackDirection(entity1, entity2) {
     const x1 = entity1.x;
     const x2 = entity2.x;
@@ -48,11 +49,7 @@ export function determineAttackDirection(entity1, entity2) {
             return "Left";
         }
     }
-
     return 0;
-
-
-
 }
 
 export function getDelta(now) {

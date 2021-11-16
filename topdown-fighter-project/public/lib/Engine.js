@@ -9,7 +9,7 @@ import { EntityHandler } from "./EntityHandler.js";
 import { WorldHandler } from "./WorldHandler.js";
 
 
-
+// Engine class
 export class Engine {
     constructor() {
         this.engine = this;
@@ -30,7 +30,7 @@ export class Engine {
         UI.initializeMenuButtons(this.entityHandler.entities['player'], this.entityHandler.entities['enemy']);
     }
 
-
+    // Start the game loop
     start() {
         requestAnimationFrame(gameLoop.bind(this));
 
@@ -75,6 +75,7 @@ export class Engine {
         entityHandler.getPlayerPosition(worldHandler);
         entityHandler.getEnemyPosition(worldHandler);
 
+        //update entities
         entityHandler.entities['player'].update(dt, entityHandler, worldHandler);
         entityHandler.entities['enemy'].update(dt, entityHandler, worldHandler);
 
@@ -83,10 +84,12 @@ export class Engine {
         this.increaseElapsed(dt);
     }
 
+    
     draw() {
         this.drawer.draw(this.worldHandler, this.entityHandler.entities);
     }
 
+    // refresh pathfinding update function to make sure enemy has an up to date path to the player.
     refreshPathfinding() {
         const entityHandler = this.entityHandler;
         const player = entityHandler.entities['player'];
@@ -112,7 +115,6 @@ export class Engine {
             this.elapsed += dt;
         }
     }
-
 }
 
 

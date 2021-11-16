@@ -44,6 +44,7 @@ export class Enemy extends Entity {
         if (intersectRect(this, player.attackBox))
             this.onAttacked(player, dt);
 
+        // WIP cooldown function for attacks
         if (!this.hasAttacked) {
             if (getDistanceBetweenPoints(this.x, this.y, player.x, player.y) < 55)
             {
@@ -55,7 +56,7 @@ export class Enemy extends Entity {
             this.resetAttackCooldown();
         }
 
-
+        // WIP stun mechanic
         if (!this.knockedBack) {
             this.move(dt, player);
         } else {
@@ -63,9 +64,11 @@ export class Enemy extends Entity {
             this.recover();
         }
 
+        
         if (this.attackBox.isActive)
             this.attackBox.update(dt, this);
 
+        // collision handling    
         for (const entity in entities) {
             if (Object.hasOwnProperty.call(entities, entity)) {
                 this.collision(worldHandler, entities[entity]);
@@ -114,6 +117,7 @@ export class Enemy extends Entity {
             }
         }
 
+        // Get coordinates for movement logic
         function getCoordinates(target, enemy) {
             const enemyX = enemy.x + enemy.width / 2;
             const enemyY = enemy.y + enemy.height / 2;
@@ -123,6 +127,7 @@ export class Enemy extends Entity {
         }
     }
 
+    // function that boosts enemy stats when called
     boostStats() {
         this.maxHealth += this.statBoosts.health;
         this.speed < this.maxSpeed ? this.speed += this.statBoosts.speed :
@@ -139,7 +144,6 @@ export class Enemy extends Entity {
         if (player.health > 0) {
             const direction = determineAttackDirection(this, player);
             this.attackBox.create(direction, this);
-
         }
     }
 }

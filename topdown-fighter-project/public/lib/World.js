@@ -34,6 +34,7 @@ export class World {
         this.connectTileGrid();
     }
 
+    
     determineTilePosition(i, y, x) {
         if (!(i % this.wallLength) && !(i < this.wallLength)) {
             y += this.tileGridDimensions.width;
@@ -89,6 +90,7 @@ export class World {
         };
     }
 
+    // determine position of wall tiles
     getWallTiles(i) {
         const leftWall = i % this.wallLength === 0;
         const rightWall = (i - (this.wallLength - 1)) % this.wallLength === 0;
@@ -97,6 +99,7 @@ export class World {
         return { upperWall, leftWall, rightWall, lowerWall };
     }
 
+    // connect tiles on the tilegrid for pathfinding purposes.
     connectTileGrid() {
         for (let i = 0; i < this.tileGrid.length; i++) {
             const tile = this.tileGrid[i];

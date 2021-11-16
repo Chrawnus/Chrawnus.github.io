@@ -16,6 +16,8 @@ export class AttackBox {
         this.scale = 2.8;
     }
 
+
+    // draws the attack box
     draw(ctx) {
         if (!this.isActive) {
             return;
@@ -45,7 +47,6 @@ export class AttackBox {
                 this.height = entity.height * this.scale;
             }
         }
-
         if (direction === 'Left' || direction === 'Right') {
             this.y = entity.y;
             if (direction === 'Right') {
@@ -59,12 +60,11 @@ export class AttackBox {
             }
 
         }
-
         this.isActive = true;
     }
 
-    // If delay is > 0, this functions decrements delay until it hits 0, 
-    // after which it updates the AttackBox function according to the
+    // If delay is > 0, this function decrements attackBox delay until it hits 0, 
+    // after which it updates the AttackBox according to the
     // position of the attacking entity until the lifetime of the
     // AttackBox hits 0. When the AttackBox lifetime hits zero, it's 
     // properties are set back to it's default values. 

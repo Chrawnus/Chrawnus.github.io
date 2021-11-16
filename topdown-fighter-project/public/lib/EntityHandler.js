@@ -44,16 +44,19 @@ export class EntityHandler {
         }
     }
 
+    // place player entity at it's start position.
     placePlayer() {
         this.entities['player'].x = this.entities['player'].startPos.x;
         this.entities['player'].y = this.entities['player'].startPos.y;
     };
 
+    // place enemy at it's start position.
     placeEnemy() {
         this.entities['enemy'].x = this.entities['enemy'].startPos.x;
         this.entities['enemy'].y = this.entities['enemy'].startPos.y;
     };
 
+    
     setPlayerStartPosition(worldHandler) {
         const { x, y } = this.determinePosition(worldHandler, 4, 2);
         this.setPosition(x, y, this.entities['player'].startPos);
@@ -64,32 +67,38 @@ export class EntityHandler {
         this.setPosition(x, y, this.entities['enemy'].startPos);
     };
 
+    
     resetPlayerPos() {
         this.placePlayer();
         this.entities['player'].health = this.entities['player'].maxHealth;
         this.entities['player'].attack = this.entities['player'].initialAttack;
-    };
+    }; 
 
+    // reset enemy entity to it's start position
     resetEnemyPos() {
         this.placeEnemy();
         this.entities['enemy'].health = this.entities['enemy'].maxHealth;
     };
 
+    // set spawn position for entity.
     setPosition(x, y, entityStartPos) {
         entityStartPos.x = x;
         entityStartPos.y = y;
     }
 
+    // get coordinates on world for spawn position.
     determinePosition(worldHandler, hor, ver) {
         const x = worldHandler.worldComponents[0][Math.floor(Math.sqrt(worldHandler.world.tileGridSize) / hor)].x;
         const y = worldHandler.worldComponents[0][Math.floor(worldHandler.world.tileGridSize / ver)].y;
         return { x, y };
     }
 
+    // Determine index of tile currently inhabitated by enemy entity
     getEnemyPosition(worldHandler) {
         this.getEntityPosOnTileGrid(this.entities['enemy'], worldHandler.worldComponents[0]);
     }
 
+    // Determine index of tile currently inhabitated by player entity
     getPlayerPosition(worldHandler) {
         this.getEntityPosOnTileGrid(this.entities['player'], worldHandler.worldComponents[0]);
     }

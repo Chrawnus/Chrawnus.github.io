@@ -17,6 +17,8 @@ export class UserInterface {
         this.running = false;
     }
 
+
+    // Initialize menu and button text and functions.
     initializeMenuButtons(player, enemy) {
         this.incHealthButton.addEventListener('click', e => this.checkStatButton(e, player));
         this.incHealingButton.addEventListener('click', e => this.checkStatButton(e, player));
@@ -54,16 +56,18 @@ export class UserInterface {
         this.incAttackSpeedButton.textContent = `attack speed: -${player.statBoosts.attackSpeed}%`;
     }
 
+    // check if game is not paused, then call increaseStat.
     checkStatButton(e, player) {
         if (this.running) {
             return;
         } else {
             this.increaseStat(e, player);
         }
-    
-
     }
 
+    // check if player has stat points left,
+    // then increase the player stat corresponding
+    // to the id of the button that was pressed.
     increaseStat(e, player) {
         if (player.statistics.statPoints > 0) {
             switch (e.target.id) {
@@ -115,6 +119,7 @@ export class UserInterface {
         }
     }
 
+    // Refresh UI text when information changes. 
     refreshUI(player) {
         this.statPoints.textContent = `stat points: ${player.statistics.statPoints}`;
         this.killStats.textContent = `kills: ${player.statistics.kills}`;
@@ -122,6 +127,7 @@ export class UserInterface {
         this.incHealingButton.textContent = `healing power: ${player.statBoosts.healing}`;
     }
 
+    // Function to pause the game. 
     pauseGame(player) {
         if (this.running) {
             player.attackBox.lifetime = 0;
@@ -130,6 +136,7 @@ export class UserInterface {
         }
     }
     
+    // function to start the game. 
     startGame(player) {
         if (player.statistics.statPoints <= 0 && !this.running) {
             this.running = true;
@@ -138,11 +145,13 @@ export class UserInterface {
         }
     }
 
+    // pause game when Game Over state is reached
     onGameOver(player) {
         this.refreshUI(player);
         this.pauseGame(player);
     }
     
+    // Save player and enemy statistics to database.
     saveGame(player, enemy) {
         const playerSave = {
             x: player.x,
@@ -205,6 +214,7 @@ export class UserInterface {
             });
     }
     
+    // retrieve player and enemy statistics to database.
     loadGame(player, enemy) {
 
         fetch('/load', {
@@ -232,7 +242,7 @@ export class UserInterface {
     
     }
     
-    
+    // sync entity stats with stats retrieved from database.
     loadEntity(entity, entitySave) {
         console.log(entity);
         entity.x = entitySave.x;

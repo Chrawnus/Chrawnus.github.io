@@ -3,6 +3,8 @@ import { getKey, keyCodes } from "./input.js";
 import { AttackBox } from "./AttackBox.js";
 import { intersectRect } from "./helperFunctions.js";
 
+// Player class
+
 export class Player extends Entity {
     constructor(id, x, y, width, height, color) {
         super(x, y, width, height, color);
@@ -42,12 +44,17 @@ export class Player extends Entity {
 
     update(dt, entityHandler, worldHandler) {
         this.friction(dt);
-        if (this.health > 0) {
 
+        if (this.health > 0) {
+            
             if (intersectRect(this, entityHandler.entities['enemy'].attackBox))
                 this.onAttacked(entityHandler.entities['enemy'], dt);
 
             this.move(dt);
+            
+            // allow attacking when not in knockedback state, 
+            // otherwise update elapsed and call recover function until
+            // no longer knockedback.
             if (!this.knockedBack) {
                 this.attackFunction();
             } else {
@@ -55,11 +62,14 @@ export class Player extends Entity {
                 this.recover();
             }
 
+            // update input buffer.
             this.inputBufferUpdate(dt);
             if (this.attackBox.isActive) 
                 this.attackBox.update(dt, this);
 
         }
+
+        // collision handling.
         for (const entity in entityHandler.entities) {
             if (Object.hasOwnProperty.call(entityHandler.entities, entity)) {
                 this.collision(worldHandler, entityHandler.entities[entity]);
@@ -69,6 +79,7 @@ export class Player extends Entity {
 
     }
 
+    // movement handling
     move(dt) {
         this.vy -= getKey(keyCodes.w) || getKey(keyCodes.W) ? this.speed * dt : 0;
         this.vx -= getKey(keyCodes.a) || getKey(keyCodes.A) ? this.speed * dt : 0;
@@ -76,6 +87,7 @@ export class Player extends Entity {
         this.vx += getKey(keyCodes.d) || getKey(keyCodes.D) ? this.speed * dt : 0;
     }
 
+    // recover player health when called
     heal() {
         if (this.maxHealth - this.health >= this.statBoosts.healing) {
             this.health += this.statBoosts.healing;
@@ -84,18 +96,23 @@ export class Player extends Entity {
         }
     };
 
-
+    // function that handles attacking
     attackFunction() {
-        // multidirectional attack
+        // multidirectional attack, if player is holding down shift 
+        // and input buffer is not full,
+        // store attack direction in input buffer.
         if (this.inputBuffer.length < this.storedAttacks && getKey(keyCodes.shift)) {
             this.checkAttackDirection();
         }
-        // regular attack
+
+        // regular attack, store attack direction in input buffer.
         if (this.inputBuffer.length < 1 && !getKey(keyCodes.shift)) {
             this.checkAttackDirection();
         }
     }
 
+    // Check which directional is being held down 
+    // and store the info in the input buffer
     checkAttackDirection() {
         getKey(keyCodes.arrowUp) ? this.storeInput('arrowUp') : 0;
         getKey(keyCodes.arrowRight) ? this.storeInput('arrowRight') : 0;
@@ -103,6 +120,7 @@ export class Player extends Entity {
         getKey(keyCodes.arrowLeft) ? this.storeInput('arrowLeft') : 0;
     }
 
+    // function to handle storing attacks in input buffer
     storeInput(slashDirection) {
         if (!this.inputBuffer.includes(slashDirection)) {
             this.inputBuffer.push(slashDirection);
@@ -112,6 +130,12 @@ export class Player extends Entity {
         }
     }
 
+    // function that updates input buffer. 
+    // Decreases attackDelay until it is equal to or below
+    // zero, after which it creates an attackbox based
+    // on the attack direction stored at index 0, 
+    // and then removes the first item in the input buffer array. 
+    // if input buffer is empty, resets attackDelay.  
     inputBufferUpdate(dt) {
         if (this.inputBuffer.length > 0 && this.attackBox.isActive === false) {
             if (this.attackDelay > 0) {
