@@ -3,7 +3,7 @@ const mods = [-42, -30, 25, 75, 80];
 
 let reqMods = [0, 0, 0, 0, 0];
 
-let reqModPermutations = [];
+
 const JSONFile = "reqModPermutations.json";
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function () {
@@ -15,7 +15,7 @@ xhttp.open("GET", JSONFile, true);
 xhttp.send();
 
 function myFunction(xml) {
-    reqModPermutations = JSON.parse(xml.response);
+    let reqModPermutations = JSON.parse(xml.response);
     
     const lifetime = Number.parseInt(window.prompt("Enter lifetime of projectile"));
     const target_lifetime_add = ((-1) * lifetime - 1);
