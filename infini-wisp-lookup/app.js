@@ -15,7 +15,6 @@ function myFunction(xml) {
     const names = ["Reduce Lifetime", "Chain Spell", "Ping-pong Path/Orbiting Arc", "Spiral Arc", "Phasing"];
     const mods = [-42, -30, 25, 75, 80];
     const reqModPermutations = JSON.parse(xml.response);
-
     const lifetime = Number.parseInt(window.prompt("Enter lifetime of projectile"));
     const target_lifetime_add = ((-1) * lifetime - 1);
 
