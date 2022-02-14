@@ -1,18 +1,28 @@
+* { padding: 0; margin: 0; }
+
 html, body {
-    margin:0px;
-  }
+  height: 100%;
+  
+  display: flex;
+  flex-direction: column;
+}
+
+body > * {
+  flex-shrink: 0;
+}
+
 
 #container {
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #202020;
-    height:100vh;
-
+    flex-grow: 1;
 }
 
 #info {
     font-size: 2em;
     color: aliceblue;
     line-height: 5vh;
+    margin: 2.5vh;
 }
