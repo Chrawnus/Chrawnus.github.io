@@ -1,7 +1,6 @@
-const names = ["Reduce Lifetime", "Chain Spell", "Ping-pong Path/Orbiting Arc", "Spiral Arc", "Phasing"];
-const mods = [-42, -30, 25, 75, 80];
 
-let reqMods = [0, 0, 0, 0, 0];
+
+const paragraph = document.querySelector("#info");
 
 
 const JSONFile = "reqModPermutations.json";
@@ -15,27 +14,31 @@ xhttp.open("GET", JSONFile, true);
 xhttp.send();
 
 function myFunction(xml) {
+    const names = ["Reduce Lifetime", "Chain Spell", "Ping-pong Path/Orbiting Arc", "Spiral Arc", "Phasing"];
+    const mods = [-42, -30, 25, 75, 80];
     let reqModPermutations = JSON.parse(xml.response);
-    
+
     const lifetime = Number.parseInt(window.prompt("Enter lifetime of projectile"));
     const target_lifetime_add = ((-1) * lifetime - 1);
-    
+
     let validPermutations = reqModPermutations.filter(permutation => (permutation[0] * mods[0] + permutation[1] * mods[1] + permutation[2] * mods[2] + permutation[3] * mods[3] + permutation[4] * mods[4] === target_lifetime_add));
 
     const totalModifiers = Number.parseInt(window.prompt(`${validPermutations.length} valid permutations found, please enter a desired max amount of total modifiers`));
 
     let acceptablePermutations = validPermutations.filter(permutation => (permutation[0] + permutation[1] + permutation[2] + permutation[3] + permutation[4] <= totalModifiers));
-    
+
     for (let i = 0; i < acceptablePermutations.length; i++) {
         const p = acceptablePermutations[i];
-        console.log(`${p[0]} ${names[0]}, ${p[1]} ${names[1]}, ${p[2]} ${names[2]}, ${p[3]} ${names[3]}, ${p[4]} ${names[4]}, total: ${p[0]+p[1]+p[2]+p[3]+p[4]}` )
+        paragraph.textContent = paragraph.textContent + `${p[0]} ${names[0]}, ${p[1]} ${names[1]}, ${p[2]} ${names[2]}, ${p[3]} ${names[3]}, ${p[4]} ${names[4]}, total: ${p[0] + p[1] + p[2] + p[3] + p[4]} <br>`;
     }
 }
 
 
 
 
-/* let maxCount = 31;
+/* 
+let reqMods = [0, 0, 0, 0, 0];
+let maxCount = 31;
 let maxPpCount = 3;
 let maxIncreaseCount = 16;
 let maxPhasingCount = 16;
