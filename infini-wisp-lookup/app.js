@@ -29,7 +29,7 @@ function myFunction(xml) {
 
     for (let i = 0; i < acceptablePermutations.length; i++) {
         const p = acceptablePermutations[i];
-        paragraph.innerHTML = paragraph.innerHTML + `${p[0]} ${names[0]}, ${p[1]} ${names[1]}, ${p[2]} ${names[2]}, ${p[3]} ${names[3]}, ${p[4]} ${names[4]}, total: ${p[0] + p[1] + p[2] + p[3] + p[4]} <br>`;
+        paragraph.innerHTML = paragraph.innerHTML + `<img src="./img/Spell_lifetime_down.png" alt="${names[0]}"> x ${p[0]}, <img src="./img/Spell_chain_shot.png" alt="${names[1]}"> x ${p[1]}, <img src="./img/Spell_orbit_shot.png" alt="${names[2]}"> x ${p[2]}, <img src="./img/Spell_lifetime.png" alt="${names[3]}"> x ${p[3]}, <img src="./img/Spell_phasing_arc.png" alt="${names[4]}"> x ${p[4]}, total: ${p[0] + p[1] + p[2] + p[3] + p[4]} <br>`;
     }
 }
 
