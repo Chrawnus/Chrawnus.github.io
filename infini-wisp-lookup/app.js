@@ -12,46 +12,80 @@ const defaultInputValues = {
     "limit": 5
 }
 
-var xhttp = new XMLHttpRequest();
-lookupButton.addEventListener("click", () => {
-    const JSONFile = "reqModPermutations.json";
 
+lookupButton.addEventListener("click", () => {
 
     let lifetime = Number.parseInt(lifetimeInputField.value);
     let variance = Number.parseInt(varianceInputField.value);
     let limit = Number.parseInt(limitInputField.value);
 
     // compare variables with themselves to check for NaN, and replace with default input values if true;
+    checkInputforNaN();
 
-    if (lifetime !== lifetime)
+    const jsonArray = [];
+    const permutationArray = []
+
+    for (let i = lifetime - variance; i < lifetime + variance; i++) {
+        const JSONFile = `lifetime${i}.json`;
+        jsonArray.push(JSONFile);
+    }
+
+    for (let i = 0; i < jsonArray.length; i++) {
+        const e = jsonArray[i];
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", e, true);
+        xhr.onload = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    permutationArray.push(JSON.parse(xhr.response));
+                    if (i === jsonArray.length - 1) {
+                        myFunction(permutationArray, lifetime, variance, limit);
+                    }
+                } else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = function (e) {
+            console.error(xhr.statusText);
+        };
+        xhr.send(null);
+
+    }
+
+
+
+
+    /*     var xhttp = new XMLHttpRequest();
+        const JSONFile = "reqModPermutations.json";
     
-        lifetime = defaultInputValues.lifetime;
-        
-    if (variance !== variance) {
-        variance = defaultInputValues.variance;
-    }
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+    
+                myFunction(this, lifetime, variance, limit);
+            }
+        };
+        xhttp.open("GET", JSONFile, true);
+        xhttp.send(); */
 
-    if (limit !== limit) {
-        limit = defaultInputValues.limit;
-    }
+    function checkInputforNaN() {
+        if (lifetime !== lifetime)
+            lifetime = defaultInputValues.lifetime;
 
-
-
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-
-            myFunction(this, lifetime, variance, limit);
+        if (variance !== variance) {
+            variance = defaultInputValues.variance;
         }
-    };
-    xhttp.open("GET", JSONFile, true);
-    xhttp.send();
+
+        if (limit !== limit) {
+            limit = defaultInputValues.limit;
+        }
+    }
 })
 
 
 
 
-
-function myFunction(xml, lifetimeInput, varianceInput, limitInput) {
+function myFunction(lifetimeArray, lifetimeInput, varianceInput, limitInput) {
 
     paragraph.innerHTML = "";
 
@@ -63,8 +97,7 @@ function myFunction(xml, lifetimeInput, varianceInput, limitInput) {
     checkIfVariance();
 
 
-    const reqModPermutations = JSON.parse(xml.response);
-
+    const reqModPermutations = lifetimeArray;
     let acceptablePermutations;
     getValidPermutations();
 
@@ -73,7 +106,7 @@ function myFunction(xml, lifetimeInput, varianceInput, limitInput) {
     function getValidPermutations() {
         let validPermutations = [];
         if (target_lifetime_add.length > 1) {
-            
+
             for (let i = 0; i < target_lifetime_add.length; i++) {
                 const lifetime_add = target_lifetime_add[i];
 
@@ -110,7 +143,7 @@ function myFunction(xml, lifetimeInput, varianceInput, limitInput) {
                     () => resolve(printArray(p)), 500
                 )
             );
-        
+
         for (let i = 0; i < acceptablePermutations.length; i++) {
             const p = acceptablePermutations[i];
             asyncPrint(p)
