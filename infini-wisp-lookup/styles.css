@@ -11,9 +11,14 @@ body > * {
   flex-shrink: 0;
 }
 
+button {
+  margin: 1rem;
+  font-size: 2rem;
+}
 
 #container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #202020;
@@ -25,4 +30,9 @@ body > * {
     color: aliceblue;
     line-height: 5vh;
     margin: 2.5vh;
+}
+
+#input-field-container > input {
+  margin: 1rem;
+  font-size: 2rem;
 }
