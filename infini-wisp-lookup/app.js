@@ -27,7 +27,7 @@ lookupButton.addEventListener("click", () => {
     let variance = Number.parseInt(varianceInputField.value);
     let limit = Number.parseInt(limitInputField.value);
 
-    
+
     // compare variables with themselves to check for NaN, and replace with default input values if true;
     checkInputforNaN();
 
@@ -95,7 +95,7 @@ lookupButton.addEventListener("click", () => {
         if (lifetime !== lifetime)
             lifetime = defaultInputValues.lifetime;
 
-        if (variance !== variance) { 
+        if (variance !== variance) {
             variance = defaultInputValues.variance;
         }
 

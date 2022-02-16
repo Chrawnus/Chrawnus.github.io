@@ -1,1 +1,202 @@
-[{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":0,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":49,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":42,"Chain Spell":7,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":51,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":1,"Pingpong Path":2,"Increase Lifetime":0,"Phasing":1,"Total":51,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":2,"Pingpong Path":0,"Increase Lifetime":0,"Phasing":2,"Total":51,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":37,"Chain Spell":14,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":53,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":42,"Chain Spell":8,"Pingpong Path":2,"Increase Lifetime":0,"Phasing":1,"Total":53,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":42,"Chain Spell":9,"Pingpong Path":0,"Increase Lifetime":0,"Phasing":2,"Total":53,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":32,"Chain Spell":21,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":55,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":37,"Chain Spell":15,"Pingpong Path":2,"Increase Lifetime":0,"Phasing":1,"Total":55,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":37,"Chain Spell":16,"Pingpong Path":0,"Increase Lifetime":0,"Phasing":2,"Total":55,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":5,"Pingpong Path":1,"Increase Lifetime":3,"Phasing":0,"Total":56,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":27,"Chain Spell":28,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":57,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":32,"Chain Spell":22,"Pingpong Path":2,"Increase Lifetime":0,"Phasing":1,"Total":57,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":32,"Chain Spell":23,"Pingpong Path":0,"Increase Lifetime":0,"Phasing":2,"Total":57,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":42,"Chain Spell":12,"Pingpong Path":1,"Increase Lifetime":3,"Phasing":0,"Total":58,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":6,"Pingpong Path":2,"Increase Lifetime":2,"Phasing":1,"Total":58,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":47,"Chain Spell":7,"Pingpong Path":0,"Increase Lifetime":2,"Phasing":2,"Total":58,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":22,"Chain Spell":35,"Pingpong Path":1,"Increase Lifetime":1,"Phasing":0,"Total":59,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":27,"Chain Spell":29,"Pingpong Path":2,"Increase Lifetime":0,"Phasing":1,"Total":59,"lifetime_add":-1874},{"Lifetime":1873,"Reduce Lifetime":27,"Chain Spell":30,"Pingpong Path":0,"Increase Lifetime":0,"Phasing":2,"Total":59,"lifetime_add":-1874}]
+[
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 0,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 49,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 42,
+        "Chain Spell": 7,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 51,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 1,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 0,
+        "Phasing": 1,
+        "Total": 51,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 2,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 0,
+        "Phasing": 2,
+        "Total": 51,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 37,
+        "Chain Spell": 14,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 53,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 42,
+        "Chain Spell": 8,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 0,
+        "Phasing": 1,
+        "Total": 53,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 42,
+        "Chain Spell": 9,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 0,
+        "Phasing": 2,
+        "Total": 53,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 32,
+        "Chain Spell": 21,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 55,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 37,
+        "Chain Spell": 15,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 0,
+        "Phasing": 1,
+        "Total": 55,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 37,
+        "Chain Spell": 16,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 0,
+        "Phasing": 2,
+        "Total": 55,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 5,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 3,
+        "Phasing": 0,
+        "Total": 56,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 27,
+        "Chain Spell": 28,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 57,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 32,
+        "Chain Spell": 22,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 0,
+        "Phasing": 1,
+        "Total": 57,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 32,
+        "Chain Spell": 23,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 0,
+        "Phasing": 2,
+        "Total": 57,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 42,
+        "Chain Spell": 12,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 3,
+        "Phasing": 0,
+        "Total": 58,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 6,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 2,
+        "Phasing": 1,
+        "Total": 58,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 47,
+        "Chain Spell": 7,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 2,
+        "Phasing": 2,
+        "Total": 58,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 22,
+        "Chain Spell": 35,
+        "Pingpong Path": 1,
+        "Increase Lifetime": 1,
+        "Phasing": 0,
+        "Total": 59,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 27,
+        "Chain Spell": 29,
+        "Pingpong Path": 2,
+        "Increase Lifetime": 0,
+        "Phasing": 1,
+        "Total": 59,
+        "lifetime_add": -1874
+    },
+    {
+        "Lifetime": 1873,
+        "Reduce Lifetime": 27,
+        "Chain Spell": 30,
+        "Pingpong Path": 0,
+        "Increase Lifetime": 0,
+        "Phasing": 2,
+        "Total": 59,
+        "lifetime_add": -1874
+    }
+]
