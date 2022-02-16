@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,21 +8,52 @@
     <title>Infini-Wisp Lookup</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="container">
         <div id="input-field-container">
-            <input type="text" name="lifetime" id="lifetime" placeholder="Lifetime, Def: 40">
-            <input type="text" name="variance" id="variance" placeholder="Lifetime Variance, Def: 7">
-            <input type="text" name="limit" id="limit" placeholder="Result Limit, Def: 5">
+            <input type="text" name="lifetime" id="lifetime_input" placeholder="Lifetime, Def: 40">
+            <input type="text" name="variance" id="variance_input" placeholder="Lifetime Variance, Def: 0">
+            <input type="text" name="limit" id="limit_input" placeholder="Result Limit, Def: 5">
         </div>
         <div id="button-container">
             <button type="submit" id="lookup">Look Up</button>
 
         </div>
 
-        <p id="info"></p>
+        <div id="info">
+            <div>
+                <p>Lifetime</p>
+                <p id="lifetime"></p>
+            </div>
+            <div>
+                <div id="image_container"><img src="./img/Spell_lifetime_down.png" alt="Reduce Lifetime"></div>
+                <p id="reduce_lifetime"></p>
+            </div>
+            <div>
+                <div id="image_container"><img src="./img/Spell_chain_shot.png" alt="Chain Spell"></div>
+                <p id="chain_spell"></p>
+            </div>
+            <div>
+                <div id="image_container"><img src="./img/Spell_orbit_shot.png" alt="Orbiting Arc"><img src="./img/Spell_pingpong_path.png" alt="Ping-pong Path"></div>
+                <p id="orbiting_arc"></p>
+            </div>
+            <div>
+                <div id="image_container"><img src="./img/Spell_lifetime.png" alt="increase_lifetime"></div>
+                <p id="increase_lifetime"></p>
+            </div>
+            <div>
+                <div id="image_container"><img src="./img/Spell_phasing_arc.png" alt=""></div>
+                <p id="phasing_arc"></p>
+            </div>
+            <div>
+                <p>Total</p>
+                <p id="total"></p>
+            </div>
+        </div>
     </div>
 
     <script src="app.js" type="module"></script>
 </body>
+
 </html>

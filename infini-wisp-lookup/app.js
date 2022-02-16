@@ -1,14 +1,22 @@
 const paragraph = document.querySelector("#info");
-const lifetimeInputField = document.querySelector("#lifetime");
-const limitInputField = document.querySelector("#limit");
-const varianceInputField = document.querySelector("#variance");
+const lifetimeInputField = document.querySelector("#lifetime_input");
+const limitInputField = document.querySelector("#limit_input");
+const varianceInputField = document.querySelector("#variance_input");
 const lookupButton = document.querySelector("#lookup");
+
+const lifetimeP = document.querySelector("#lifetime");
+const reduceLifetimeP = document.querySelector("#reduce_lifetime");
+const chainSpellP = document.querySelector("#chain_spell");
+const orbitingArcP = document.querySelector("#orbiting_arc");
+const increaseLifetimeP = document.querySelector("#increase_lifetime");
+const phasingArcP = document.querySelector("#phasing_arc");
+const totalP = document.querySelector("#total");
 
 const names = ["Reduce Lifetime", "Chain Spell", "Ping-pong Path/Orbiting Arc", "Spiral Arc", "Phasing"];
 
 const defaultInputValues = {
     "lifetime": 40,
-    "variance": 7,
+    "variance": 0,
     "limit": 5
 }
 
@@ -19,21 +27,36 @@ lookupButton.addEventListener("click", () => {
     let variance = Number.parseInt(varianceInputField.value);
     let limit = Number.parseInt(limitInputField.value);
 
+    
     // compare variables with themselves to check for NaN, and replace with default input values if true;
     checkInputforNaN();
 
     const jsonArray = [];
     const permutationArray = []
 
-    for (let i = lifetime - variance; i < lifetime + variance; i++) {
-        const JSONFile = `lifetime${i}.json`;
+    if (variance <= 0) {
+        const JSONFile = `lifetime${lifetime}.json`;
         jsonArray.push(JSONFile);
+    } else {
+        if (lifetime - variance <= 0) {
+            for (let i = 1; i < lifetime + variance + 1; i++) {
+                const JSONFile = `lifetime${i}.json`;
+                jsonArray.push(JSONFile);
+            }
+        } else {
+            for (let i = lifetime - variance; i < lifetime + variance + 1; i++) {
+                const JSONFile = `lifetime${i}.json`;
+                jsonArray.push(JSONFile);
+            }
+        }
+
     }
+
 
     for (let i = 0; i < jsonArray.length; i++) {
         const e = jsonArray[i];
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", e, true);
+        xhr.open("GET", `./json/${e}`, true);
         xhr.onload = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -72,7 +95,7 @@ lookupButton.addEventListener("click", () => {
         if (lifetime !== lifetime)
             lifetime = defaultInputValues.lifetime;
 
-        if (variance !== variance) {
+        if (variance !== variance) { 
             variance = defaultInputValues.variance;
         }
 
@@ -87,7 +110,13 @@ lookupButton.addEventListener("click", () => {
 
 function myFunction(lifetimeArray, lifetimeInput, varianceInput, limitInput) {
 
-    paragraph.innerHTML = "";
+    lifetimeP.innerHTML = "";
+    reduceLifetimeP.innerHTML = "";
+    chainSpellP.innerHTML = "";
+    orbitingArcP.innerHTML = "";
+    increaseLifetimeP.innerHTML = "";
+    phasingArcP.innerHTML = "";
+    totalP.innerHTML = "";
 
     const lifetime = lifetimeInput;
     const totalModifiers = limitInput;
@@ -127,6 +156,7 @@ function myFunction(lifetimeArray, lifetimeInput, varianceInput, limitInput) {
     function checkIfVariance() {
         if (variance <= 0) {
             target_lifetime_add = ((-1) * lifetime - 1);
+
         } else {
             target_lifetime_add = [];
             for (let i = -variance; i < variance; i++) {
@@ -152,80 +182,15 @@ function myFunction(lifetimeArray, lifetimeInput, varianceInput, limitInput) {
 
 
         function printArray(p) {
-            paragraph.innerHTML = paragraph.innerHTML + `Lifetime: ${(-1) * p["lifetime_add"] - 1}, <img src="./img/Spell_lifetime_down.png" alt="${names[0]}"> x ${p["Reduce Lifetime"]}, <img src="./img/Spell_chain_shot.png" alt="${names[1]}"> x ${p["Chain Spell"]}, <img src="./img/Spell_orbit_shot.png" alt="${names[2]}"> x ${p["Pingpong Path"]}, <img src="./img/Spell_lifetime.png" alt="${names[3]}"> x ${p["Increase Lifetime"]}, <img src="./img/Spell_phasing_arc.png" alt="${names[4]}"> x ${p["Phasing"]}, total: ${p["Total"]} <br>`;
+            lifetimeP.innerHTML = lifetimeP.innerHTML + `${p["Lifetime"]} <br>`;
+            reduceLifetimeP.innerHTML = reduceLifetimeP.innerHTML + `${p["Reduce Lifetime"]} <br>`;
+            chainSpellP.innerHTML = chainSpellP.innerHTML + `${p["Chain Spell"]} <br>`;
+            orbitingArcP.innerHTML = orbitingArcP.innerHTML + `${p["Pingpong Path"]} <br>`;
+            increaseLifetimeP.innerHTML = increaseLifetimeP.innerHTML + `${p["Increase Lifetime"]} <br>`;
+            phasingArcP.innerHTML = phasingArcP.innerHTML + `${p["Phasing"]} <br>`;
+            totalP.innerHTML = totalP.innerHTML + `${p["Total"]} <br>`;
         }
     }
 }
-
-
-
-
-
-/* const reqMods = [0, 0, 0, 0, 0];
-const maxCount = 31;
-const maxPpCount = 3;
-const maxIncreaseCount = 16;
-const maxPhasingCount = 16;
-const mods = [-42, -30, 25, 75, 80];
-const reqModPermutations = [];
-
-console.log("building initial array of objects");
-for (let i = 0; i < maxCount; i++) {
-    reqMods[0] = i;
-    for (let j = 0; j < maxCount; j++) {
-        reqMods[1] = j;
-        for (let k = 0; k < maxPpCount; k++) {
-            reqMods[2] = k;
-            for (let l = 0; l < maxIncreaseCount; l++) {
-                reqMods[3] = l;
-                for (let m = 0; m < maxPhasingCount; m++) {
-                    reqMods[4] = m;
-                    const lifetime_add = i * mods[0] + j * mods[1] + k * mods[2] + l * mods[3] + m * mods[4];
-                    const total = i + j + k + l + m;
-                    reqModPermutations.push({
-                        "Reduce Lifetime": i,
-                        "Chain Spell": j,
-                        "Pingpong Path": k,
-                        "Increase Lifetime": l,
-                        "Phasing": m,
-                        "Total": total,
-                        "lifetime_add": lifetime_add,
-                    });
-                }
-            }
-        }
-    }
-}
-
-console.log("Removing positive lifetime_add");
-for (let i = 0; i < reqModPermutations.length; i++) {
-    const element = reqModPermutations[i];
-    if (element["lifetime_add"] >= 0) {
-        reqModPermutations.splice(i, 1);
-        i--;
-    }
-
-}
-
-console.log("Sorting permutations by lifetime_add");
-let sortedReqModPermutations = reqModPermutations.sort(function (a, b) {
-    return b["lifetime_add"] - a["lifetime_add"];
-});
-
-
-console.log("chunking array");
-let chunkedSortedPermutations = []
-let i = 0;
-while (sortedReqModPermutations.length > 0) {
-    chunkedSortedPermutations.push(sortedReqModPermutations.filter(p => p["lifetime_add"] === sortedReqModPermutations[0]["lifetime_add"]).sort(function (a, b) {
-        return a["Total"] - b["Total"];
-    }));
-    sortedReqModPermutations.splice(0, chunkedSortedPermutations[chunkedSortedPermutations.length-1].length);
-    i++;
-
-}
-
-console.log(chunkedSortedPermutations); */
-
 
 
