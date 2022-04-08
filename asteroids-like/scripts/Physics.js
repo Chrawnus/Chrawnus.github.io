@@ -16,9 +16,13 @@ export class Physics {
     }
 
     update(now) {
+        console.log(this.entities)
         let dt = this.getDelta(now);
         for (let i = 0; i < this.entities.length; i++) {
             const entity = this.entities[i];
+            if (entity.lifetime !== undefined && entity.lifetime <= 0) {
+                this.entities.splice(this.entities.indexOf(entity), 1);
+            }
             entity.update(dt)
         }
         this.physics(dt)

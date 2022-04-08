@@ -1,7 +1,9 @@
 import { Vector } from "./Vector.js";
 import { Point2d } from "./Point2d.js";
 import { helper } from "./app.js";
-
+import { Helper } from "./helperFunctions.js";
+import { Projectile } from "./Projectile.js";
+import { engine } from "./app.js";
 
 export class Player {
     constructor(x, y, r) {
@@ -11,6 +13,10 @@ export class Player {
         this.externalAngle = 120 * (Math.PI / 180);
 
         this.velocity = 250;
+        this.isMouseDown = false;
+        this.hasShot = false;
+        this.cooldown = 0.4;
+        this.cooldownOrig = 0.4;
     }
 
     draw(ctx) {
@@ -37,7 +43,7 @@ export class Player {
         ctx.lineTo(p3.x, p3.y);
         
 
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         ctx.strokeStyle = "black";
         ctx.lineWidth = 1;
         ctx.fill();
@@ -47,8 +53,30 @@ export class Player {
     }
 
     update(dt) {
-        this.moveTowardsCursor(dt);
 
+        this.checkCooldown(dt);
+        this.shootProjectile();
+        this.moveTowardsCursor(dt);
+    }
+
+    shootProjectile() {
+        if (this.hasShot === false && Helper.isMouseDown) {
+            const angle = Math.atan2(helper.mouseC.x - this.pos.x, helper.mouseC.y - this.pos.y);
+            const bullet = new Projectile(this.pos.x, this.pos.y, 500, angle);
+            engine.addEntity(bullet);
+            this.hasShot = true;
+        }
+    }
+
+    checkCooldown(dt) {
+        if (this.hasShot) {
+            if (this.cooldown > 0) {
+                this.cooldown -= dt;
+            } else {
+                this.hasShot = false;
+                this.cooldown = this.cooldownOrig;
+            }
+        }
     }
 
     moveTowardsCursor(dt) {
@@ -59,7 +87,7 @@ export class Player {
         const angle = Math.atan2(helper.mouseC.x - this.pos.x, helper.mouseC.y - this.pos.y);
 
         
-        this.pos.x += distance * 5 * Math.sin(angle) * dt;
-        this.pos.y += distance * 5 * Math.cos(angle) * dt;
+        this.pos.x += distance * 1.5 * Math.sin(angle) * dt;
+        this.pos.y += distance * 1.5 * Math.cos(angle) * dt;
     }
 }

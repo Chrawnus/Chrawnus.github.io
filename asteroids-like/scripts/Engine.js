@@ -20,7 +20,6 @@ export class Engine{
     }
 
     addEntity(entity) {
-        this.canvas.addEntity(entity);
         this.physics.addEntity(entity);
     }
 }

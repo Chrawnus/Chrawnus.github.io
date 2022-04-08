@@ -3,9 +3,9 @@ import { Point2d } from "./Point2d.js";
 export class Helper {
     constructor() {
         this.mouseC = new Point2d(0, 0);
-        
+        this.isMouseDown = false;
     }
-    static isMouseDown = false;
+    
 
 
     getMousePos(canvas, evt) {
