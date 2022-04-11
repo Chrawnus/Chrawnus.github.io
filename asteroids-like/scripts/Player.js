@@ -6,9 +6,9 @@ import { engine } from "./app.js";
 import { canvas } from "./Elements.js";
 
 export class Player {
-    constructor(x, y, r) {
+    constructor(x, y, radius) {
         this.pos = new Point2d(x, y)
-        this.radius = r;
+        this.radius = radius;
         this.internalAngle = 60 * (Math.PI / 180);
         this.externalAngle = 120 * (Math.PI / 180);
 
@@ -56,22 +56,8 @@ export class Player {
 
         this.checkCooldown(dt);
         this.shootProjectile();
-        this.moveTowardsCursor(dt);
         this.wrap();
-    }
-
-    wrap() {
-        if (this.pos.x > canvas.width + this.radius) {
-            this.pos.x = -this.radius;
-        } else if (this.pos.x < -this.radius) {
-            this.pos.x = canvas.width + this.radius
-        }
-
-        if (this.pos.y > canvas.height + this.radius) {
-            this.pos.y = -this.radius;
-        } else if (this.pos.y < -this.radius) {
-            this.pos.y = canvas.height + this.radius;
-        }
+        this.moveTowardsCursor(dt);
     }
 
     shootProjectile() {
@@ -104,5 +90,19 @@ export class Player {
         
         this.pos.x += distance * 1.5 * Math.sin(angle) * dt;
         this.pos.y += distance * 1.5 * Math.cos(angle) * dt;
+    }
+
+    wrap() {
+        if (this.x > canvas.width + this.radius) {
+            this.x = -this.radius;
+        } else if (this.x < -this.radius) {
+            this.x = canvas.width + this.radius
+        }
+
+        if (this.y > canvas.height + this.radius) {
+            this.y = -this.radius;
+        } else if (this.y < -this.radius) {
+            this.y = canvas.height + this.radius;
+        }
     }
 }
