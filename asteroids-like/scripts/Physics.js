@@ -15,13 +15,13 @@ export class Physics {
         this.entities = [];
     }
 
-    update(now) {
-        console.log(this.entities)
+    update(now, entities) {
+
         let dt = this.getDelta(now);
-        for (let i = 0; i < this.entities.length; i++) {
-            const entity = this.entities[i];
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
             if (entity.lifetime !== undefined && entity.lifetime <= 0) {
-                this.entities.splice(this.entities.indexOf(entity), 1);
+                entities.splice(this.entities.indexOf(entity), 1);
             }
             entity.update(dt)
         }
@@ -68,7 +68,4 @@ export class Physics {
         return dt;
     }
 
-    addEntity(entity) {
-        this.entities.push(entity);
-    }
 }

@@ -1,9 +1,9 @@
-import { Vector } from "./Vector.js";
 import { Point2d } from "./Point2d.js";
 import { helper } from "./app.js";
 import { Helper } from "./helperFunctions.js";
 import { Projectile } from "./Projectile.js";
 import { engine } from "./app.js";
+import { canvas } from "./Elements.js";
 
 export class Player {
     constructor(x, y, r) {
@@ -57,6 +57,21 @@ export class Player {
         this.checkCooldown(dt);
         this.shootProjectile();
         this.moveTowardsCursor(dt);
+        this.wrap();
+    }
+
+    wrap() {
+        if (this.pos.x > canvas.width + this.r) {
+            this.pos.x = -this.r;
+        } else if (this.pos.x < -this.r) {
+            this.pos.x = canvas.width + this.r
+        }
+
+        if (this.pos.y > canvas.height + this.r) {
+            this.pos.y = -this.r;
+        } else if (this.pos.y < -this.r) {
+            this.pos.y = canvas.height + this.r;
+        }
     }
 
     shootProjectile() {

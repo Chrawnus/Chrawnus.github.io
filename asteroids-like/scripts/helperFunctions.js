@@ -23,6 +23,10 @@ export class Helper {
         const angle = Math.atan2(this.mouseC.y - entity.pos.y, this.mouseC.x - entity.pos.x);
         return angle - (Math.PI/2);
     }
+
+    static getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+      }
 }
 
 window.addEventListener('pointerdown', () => Helper.isMouseDown = true);

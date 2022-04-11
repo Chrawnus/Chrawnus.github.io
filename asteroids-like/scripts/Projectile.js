@@ -1,4 +1,3 @@
-import { engine } from "./app.js"
 import { Point2d } from "./Point2d.js";
 
 export class Projectile {
@@ -34,7 +33,6 @@ export class Projectile {
 
     updateLifetime(dt) {
         if (this.lifetime <= 0) {
-            console.log("hi")
         } else {
             this.lifetime -= dt;
         }

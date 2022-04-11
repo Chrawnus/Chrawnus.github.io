@@ -5,6 +5,7 @@ export class Engine{
     {
         this.canvas = canvas;
         this.physics = physics;
+        this.entities = [];
     }
 
     start() {
@@ -14,13 +15,13 @@ export class Engine{
             requestAnimationFrame(gameLoop.bind(this));
     
             
-            this.physics.update(now, helper.mouseC);
-            this.canvas.draw();
+            this.physics.update(now, this.entities);
+            this.canvas.draw(this.entities);
         }
     }
 
     addEntity(entity) {
-        this.physics.addEntity(entity);
+        this.entities.push(entity);
     }
 }
 
