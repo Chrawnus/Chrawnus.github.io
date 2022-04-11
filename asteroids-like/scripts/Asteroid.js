@@ -1,7 +1,8 @@
 import { Point2d } from "./Point2d.js";
 import { Helper } from "./helperFunctions.js";
 import { canvas } from "./Elements.js";
-
+import { Vector } from "./Vector.js";
+import { helper } from "./app.js";
 export class Asteroid {
     constructor() {
         this.x = Helper.getRandomArbitrary(0, canvas.width)
@@ -10,6 +11,8 @@ export class Asteroid {
         this.sideNumber = Math.floor(Helper.getRandomArbitrary(5, 15));
         this.radius = Helper.getRandomArbitrary(15, 50);
         this.offset = this.addOffsets();
+        this.angle = Helper.getRandomArbitrary(0, Math.PI*2);
+        this.speed = Helper.getRandomArbitrary(150, 250);
     }
 
     addOffsets() {
@@ -20,9 +23,15 @@ export class Asteroid {
         return offsetArr;
     }
 
+    getVelocity() {
+        const Vel = new Vector(this.x + (Helper.getRandomArbitrary(-300, 300)), this.y + (Helper.getRandomArbitrary(-300, 300)))
+        return Vel;
+    }
+
 
     update(dt) {
-
+        this.move(dt)
+        this.wrap();
     }
 
     draw(ctx) {
@@ -66,6 +75,25 @@ export class Asteroid {
 
         ctx.stroke();
         ctx.closePath();
+    }
+
+    wrap() {
+        if (this.x > canvas.width + this.radius) {
+            this.x = -this.radius;
+        } else if (this.x < -this.radius) {
+            this.x = canvas.width + this.radius
+        }
+
+        if (this.y > canvas.height + this.radius) {
+            this.y = -this.radius;
+        } else if (this.y < -this.radius) {
+            this.y = canvas.height + this.radius;
+        }
+    }
+
+    move(dt) {
+        this.x += this.speed * Math.sin(this.angle) * dt;
+        this.y += this.speed * Math.cos(this.angle) * dt;
     }
 
 

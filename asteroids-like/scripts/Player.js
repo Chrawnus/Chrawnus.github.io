@@ -8,7 +8,7 @@ import { canvas } from "./Elements.js";
 export class Player {
     constructor(x, y, r) {
         this.pos = new Point2d(x, y)
-        this.r = r;
+        this.radius = r;
         this.internalAngle = 60 * (Math.PI / 180);
         this.externalAngle = 120 * (Math.PI / 180);
 
@@ -31,7 +31,7 @@ export class Player {
         
         ctx.rotate(angle)
         
-        const p1 = new Point2d(0, 0 + this.r)
+        const p1 = new Point2d(0, 0 + this.radius)
         const p2 = new Point2d(p1.x * Math.cos(this.externalAngle) - ( p1.y * Math.sin(this.externalAngle)), p1.x * Math.sin(this.externalAngle) + ( p1.y * Math.cos(this.externalAngle)));
         const p3 = new Point2d(p1.x * Math.cos(this.externalAngle*2) - ( p1.y * Math.sin(this.externalAngle*2)), p1.x * Math.sin(this.externalAngle*2) + ( p1.y * Math.cos(this.externalAngle*2)))
         
@@ -61,16 +61,16 @@ export class Player {
     }
 
     wrap() {
-        if (this.pos.x > canvas.width + this.r) {
-            this.pos.x = -this.r;
-        } else if (this.pos.x < -this.r) {
-            this.pos.x = canvas.width + this.r
+        if (this.pos.x > canvas.width + this.radius) {
+            this.pos.x = -this.radius;
+        } else if (this.pos.x < -this.radius) {
+            this.pos.x = canvas.width + this.radius
         }
 
-        if (this.pos.y > canvas.height + this.r) {
-            this.pos.y = -this.r;
-        } else if (this.pos.y < -this.r) {
-            this.pos.y = canvas.height + this.r;
+        if (this.pos.y > canvas.height + this.radius) {
+            this.pos.y = -this.radius;
+        } else if (this.pos.y < -this.radius) {
+            this.pos.y = canvas.height + this.radius;
         }
     }
 
