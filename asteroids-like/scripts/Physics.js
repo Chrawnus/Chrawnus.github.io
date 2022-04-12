@@ -13,27 +13,41 @@ export class Physics {
         this.f = f;
 
         this.entities = [];
+        this.entitiesCollisionChecked = [];
     }
 
     update(now, entities) {
 
         let dt = this.getDelta(now);
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            if (entity.lifetime !== undefined && entity.lifetime <= 0) {
-                entities.splice(this.entities.indexOf(entity), 1);
-            }
-            entity.update(dt)
-        }
-        this.physics(dt)
+        this.updateEntities(entities, dt);
+        this.physics(entities, dt)
     }
     
-    physics(dt) {
-        this.getPhysicsDelta(dt);
+    updateEntities(entities, dt) {
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            this.checkLifetime(entity, entities);
+            entity.update(dt);
+        }
+    }
+
+    checkLifetime(entity, entities) {
+        if (entity.lifetime !== undefined && entity.lifetime <= 0) {
+            this.killEntity(entities, entity);
+        }
+    }
+
+    killEntity(entities, entity) {
+        entities.splice(this.entities.indexOf(entity), 1);
+    }
+
+    physics(entities, dt) {
+        this.getPhysicsDelta(entities, dt);
     }
 
 
-    getPhysicsDelta(dt) {
+    getPhysicsDelta(entities, dt) {
+
         let pdt = 0.01;
         this.accumulator += dt;
         
@@ -41,13 +55,15 @@ export class Physics {
             this.accumulator -= pdt;
             if (this.enableGravity) {
                 
-                this.gravity(this.entities)
+                this.gravity(entities, this.entities)
             }
-        
+            this.detectCollisions(entities);
 
         }
 
     }
+
+
 
 
     gravity(entities) {
@@ -66,6 +82,32 @@ export class Physics {
         let dt = (now - this.prevTime) / 1000;
         this.prevTime = now;
         return dt;
+    }
+
+    detectCollisions(entities) {
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            for (let j = i+1; j < entities.length; j++) {
+                const collisionEntity = entities[j];
+                if(this.checkCollision(entity, collisionEntity)) {
+                    entity.strokeStyle = "red";
+                } else {
+                    entity.strokeStyle = "white";
+                }
+            }
+
+        }
+    }
+
+    checkCollision(entity, collisionEntity) {
+        const dx = collisionEntity.pos.x - entity.pos.x;
+        const dy = collisionEntity.pos.y - entity.pos.y;
+        const radii = entity.hitboxRadius + collisionEntity.hitboxRadius;
+        if ( ( dx * dx ) + (dy * dy ) < radii * radii) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

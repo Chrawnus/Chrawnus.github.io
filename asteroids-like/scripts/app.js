@@ -24,7 +24,7 @@ export const physics = new Physics(false, 0, 90, true, 0.01);
 export const engine = new Engine(drawer, physics);
 
 
-const player = new Player(canvas.width/2, canvas.height/2, 15)
+const player = new Player(canvas.width/2, canvas.height/2, 30)
 
 
 for (let i = 0; i < 10; i++) {

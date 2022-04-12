@@ -2,17 +2,19 @@ import { Point2d } from "./Point2d.js";
 import { Helper } from "./helperFunctions.js";
 import { canvas } from "./Elements.js";
 import { Vector } from "./Vector.js";
-import { helper } from "./app.js";
+
 export class Asteroid {
     constructor() {
-        this.x = Helper.getRandomArbitrary(0, canvas.width)
-        this.y = Helper.getRandomArbitrary(0, canvas.height);
+        this.pos = new Point2d(Helper.getRandomArbitrary(0, canvas.width), Helper.getRandomArbitrary(0, canvas.height));
         this.sideLength = Helper.getRandomArbitrary(20, 50);
         this.sideNumber = Math.floor(Helper.getRandomArbitrary(5, 15));
         this.radius = Helper.getRandomArbitrary(15, 50);
+        this.hitboxRadius = this.radius;
         this.offset = this.addOffsets();
         this.angle = Helper.getRandomArbitrary(0, Math.PI*2);
         this.speed = Helper.getRandomArbitrary(150, 250);
+        this.rotationSpeed = Helper.getRandomArbitrary((Math.PI*2*0.005) * -1, Math.PI*2*0.005);
+        this.points = this.getVertexPoints();
     }
 
     addOffsets() {
@@ -24,7 +26,7 @@ export class Asteroid {
     }
 
     getVelocity() {
-        const Vel = new Vector(this.x + (Helper.getRandomArbitrary(-300, 300)), this.y + (Helper.getRandomArbitrary(-300, 300)))
+        const Vel = new Vector(this.pos.x + (Helper.getRandomArbitrary(-300, 300)), this.pos.y + (Helper.getRandomArbitrary(-300, 300)))
         return Vel;
     }
 
@@ -35,18 +37,23 @@ export class Asteroid {
     }
 
     draw(ctx) {
-        let x = this.x;
-        let y = this.y;
+        let x = this.pos.x;
+        let y = this.pos.y;
+
         ctx.save();
         ctx.translate(x, y)
-        const points = this.getCoordsFromAngle();
+        const points = this.points;
+        
+        this.rotateVertexArr(points)
         this.drawShape(ctx, points)
+    
         ctx.restore();
+
     }
 
     //Determine the endpoint of a line given an angle, length,
     //and starting point [x, y]
-    getCoordsFromAngle() {
+    getVertexPoints() {
         const pArr = [];
         let angleTotal = Math.PI*2;
         for (let i = 0; i < this.sideNumber; i++) {
@@ -58,8 +65,14 @@ export class Asteroid {
             const point = new Point2d(x, y)
             pArr.push(point)
         }
-        
         return pArr
+    }
+
+    rotateVertexArr(points) {
+        for (let i = 0; i < points.length; i++) {
+            const point = points[i];
+            point.rotate(this.rotationSpeed);
+        }
     }
 
     drawShape(ctx, points) {
@@ -70,7 +83,7 @@ export class Asteroid {
         }
         ctx.lineTo(points[0].x, points[0].y);
         
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = this.strokeStyle;
         ctx.lineWidth = 1;
 
         ctx.stroke();
@@ -78,22 +91,22 @@ export class Asteroid {
     }
 
     wrap() {
-        if (this.x > canvas.width + this.radius) {
-            this.x = -this.radius;
-        } else if (this.x < -this.radius) {
-            this.x = canvas.width + this.radius
+        if (this.pos.x > canvas.width + this.radius) {
+            this.pos.x = -this.radius;
+        } else if (this.pos.x < -this.radius) {
+            this.pos.x = canvas.width + this.radius
         }
 
-        if (this.y > canvas.height + this.radius) {
-            this.y = -this.radius;
-        } else if (this.y < -this.radius) {
-            this.y = canvas.height + this.radius;
+        if (this.pos.y > canvas.height + this.radius) {
+            this.pos.y = -this.radius;
+        } else if (this.pos.y < -this.radius) {
+            this.pos.y = canvas.height + this.radius;
         }
     }
 
     move(dt) {
-        this.x += this.speed * Math.sin(this.angle) * dt;
-        this.y += this.speed * Math.cos(this.angle) * dt;
+        this.pos.x += this.speed * Math.sin(this.angle) * dt;
+        this.pos.y += this.speed * Math.cos(this.angle) * dt;
     }
 
 
