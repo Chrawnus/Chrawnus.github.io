@@ -1,4 +1,3 @@
-import { helper } from "./app.js";
 import { Vector } from "./Vector.js";
 
 export class Physics {
@@ -11,9 +10,6 @@ export class Physics {
         this.gVector.setAngle(gAngle);
         this.enableFriction = enableFriction;
         this.f = f;
-
-        this.entities = [];
-        this.entitiesCollisionChecked = [];
     }
 
     update(now, entities) {
@@ -38,7 +34,7 @@ export class Physics {
     }
 
     killEntity(entities, entity) {
-        entities.splice(this.entities.indexOf(entity), 1);
+        entities.splice(entities.indexOf(entity), 1);
     }
 
     physics(entities, dt) {
@@ -55,7 +51,7 @@ export class Physics {
             this.accumulator -= pdt;
             if (this.enableGravity) {
                 
-                this.gravity(entities, this.entities)
+                this.gravity(entities)
             }
             this.detectCollisions(entities);
 
@@ -87,17 +83,17 @@ export class Physics {
     detectCollisions(entities) {
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
-            for (let j = i+1; j < entities.length; j++) {
+            for (let j = i + 1; j < entities.length; j++) {
                 const collisionEntity = entities[j];
-                if(this.checkCollision(entity, collisionEntity)) {
-                    entity.strokeStyle = "red";
+                if(this.checkCollision(collisionEntity, entity)) {
+                    
                 } else {
-                    entity.strokeStyle = "white";
+
                 }
             }
-
         }
     }
+
 
     checkCollision(entity, collisionEntity) {
         const dx = collisionEntity.pos.x - entity.pos.x;
