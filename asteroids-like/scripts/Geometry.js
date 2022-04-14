@@ -1,19 +1,23 @@
 import { Point2d } from "./Point2d.js";
+import { Draw } from "./Draw.js";
 import { Helper } from "./helperFunctions.js";
 
 export class Geometry {
     constructor(pos, sideNumber, radius) {
+        this.angle = 0;
         this.pos = pos;
         this.sideNumber = sideNumber;
+        this.offsets = new Array(this.sideNumber).fill(0);
         this.radius = radius;
         this.strokeStyle = "white";
         this.isColliding = false;
+        this.rotationAngle = 0;
     }
 
     addOffsets() {
         const offsetArr = []
         for (let i = 0; i < this.sideNumber; i++) {
-            offsetArr[i] = Helper.getRandomArbitrary(-10, 10);
+            offsetArr[i] = Helper.Math.Random.getRandomArbitrary(-10, 10);
         }
         return offsetArr;
     }
@@ -26,14 +30,12 @@ export class Geometry {
     }
 
     draw(ctx) {
-        let x = this.pos.x;
-        let y = this.pos.y;
-
         ctx.save();
-        ctx.translate(x, y)
-        const points = this.points;
+        Draw.canvasMethods.translateOriginToEntity(ctx, this);
+        Draw.canvasMethods.rotateAroundEntity(ctx, this);
 
-        this.drawShape(ctx, points)
+        Draw.Geometry.drawShape(ctx, this.points, this.strokeStyle);
+
 
         ctx.restore();
 
@@ -46,8 +48,7 @@ export class Geometry {
         let angleTotal = Math.PI*2;
         for (let i = 0; i < this.sideNumber; i++) {
             let angle = angleTotal * (i/this.sideNumber);
-            
-            const r = this.radius;
+            const r = this.radius + this.offsets[i];
             const x = r * Math.cos(angle);
             const y = r * Math.sin(angle);
             const point = new Point2d(x, y)
@@ -57,18 +58,8 @@ export class Geometry {
     }
 
     drawShape(ctx, points) {
+        return Draw.Geometry.drawShape(ctx, points);
+    } 
 
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 0; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.lineTo(points[0].x, points[0].y);
-        
-        ctx.strokeStyle = this.strokeStyle;
-        ctx.lineWidth = 1;
 
-        ctx.stroke();
-        ctx.closePath();
-    }
 }

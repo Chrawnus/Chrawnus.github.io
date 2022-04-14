@@ -41,7 +41,7 @@ export class Helper {
             const dy = Helper.Math.Geometry.getDeltaY(entity.pos, mouseCoord);
             const angle = Math.atan2(dy, dx);
 
-            return angle - (Math.PI / 2);
+            return angle;
         }
     }
 

@@ -1,6 +1,7 @@
 import { Vector } from "./Vector.js";
-
-export class Physics {
+import { Helper } from "./helperFunctions.js";
+import { Point2d } from "./Point2d.js";
+export class Update {
     constructor(enableGravity, gLength, gAngle, enableFriction, f) {
         this.prevTime;
         this.accumulator = 0;
@@ -106,4 +107,33 @@ export class Physics {
         }
     }
 
+    static Physics = class {
+        static Movement = class {
+
+            static move(dt, entity, speed, speedScaling, angle) {
+                entity.pos.x += speed * speedScaling * Math.sin(angle) * dt;
+                entity.pos.y += speed * speedScaling * Math.cos(angle) * dt;
+            }
+
+            static moveTowardsTarget(dt, entity, target, speedScaling) {
+
+                const dx = Helper.Math.Geometry.getDeltaX(entity.pos, target);
+                const dy = Helper.Math.Geometry.getDeltaY(entity.pos, target);
+                
+                const distance = Helper.Math.Geometry.getDistance(dx, dy);
+  
+                const angle = Helper.Math.Trig.getAngleBetweenPoints(entity.pos, target);
+    
+                this.move(dt, entity, distance, speedScaling, angle);
+            }
+
+            static rotateShape(shape) {
+                if (shape.rotationSpeed) {
+                    shape.rotationAngle += shape.rotationSpeed;
+                } else {
+                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape);
+                }
+            }
+        }
+    }
 }

@@ -1,23 +1,16 @@
 import { Helper } from "./helperFunctions.js";
-import { Drawer } from "./Drawer.js";
-import { Physics } from "./Physics.js";
-import { canvas } from "./Elements.js";
+import { Draw } from "./Draw.js";
 import { Point2d } from "./Point2d.js";
 import { Player } from "./Player.js";
 import { Asteroid } from "./Asteroid.js";
-import { Projectile } from "./Projectile.js";
-
-const drawer = new Drawer()
-const physics = new Physics(false, 0, 90, true, 0.01);
-
-
+import { canvas } from "./Elements.js";
 
 
 
 export class Engine{
-    constructor ()
+    constructor (physics)
     {
-        this.canvas = drawer;
+        this.canvas = canvas;
         this.physics = physics;
         this.entities = [];
         this.player;
@@ -57,10 +50,10 @@ export class Engine{
     
             
             this.physics.update(now, this.entities);
-            
-            this.canvas.draw(this.entities);
+            Draw.canvasMethods.draw(canvas, "black", this.entities);
         }
     }
+
 
     addEntity(entity) {
         this.entities.push(entity);
