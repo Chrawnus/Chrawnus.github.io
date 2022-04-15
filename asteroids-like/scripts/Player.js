@@ -4,6 +4,7 @@ import { Helper } from "./helperFunctions.js";
 import { Projectile } from "./Projectile.js";
 import { engine } from "./app.js";
 import { canvas } from "./Elements.js";
+import { Input } from "./Input.js";
 
 
 export class Player extends Geometry{
@@ -27,7 +28,7 @@ export class Player extends Geometry{
         Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
         this.shootProjectile(dt);
     }
-
+    
     shootProjectile(dt) {
         this.checkCooldown(dt);
         const mouseX = Helper.Cursor.getX();
@@ -49,5 +50,9 @@ export class Player extends Geometry{
                 this.cooldown = this.cooldownOrig;
             }
         }
+    }
+
+    checkKeyPress(keyCode) {
+        return Input.getKey(keyCode);
     }
 }
