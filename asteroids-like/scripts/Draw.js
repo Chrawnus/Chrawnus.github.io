@@ -1,7 +1,7 @@
 export class Draw {
 
     static canvasMethods = class {
-        static draw(canvas, backgroundColor, entities) {
+        static drawScreen(canvas, backgroundColor, entities) {
             const ctx = canvas.getContext("2d");
             Draw.canvasMethods.clearCanvas(canvas, ctx, backgroundColor);
             Draw.drawEntities(ctx, entities);
@@ -18,7 +18,7 @@ export class Draw {
             ctx.translate(entity.pos.x, entity.pos.y);
         }
 
-        static rotateAroundEntity(ctx, entity) {
+        static rotateCanvasAroundEntity(ctx, entity) {
             ctx.rotate(entity.rotationAngle);
         }
 
@@ -55,6 +55,23 @@ export class Draw {
         
                 ctx.stroke();
                 ctx.closePath();
+        }
+        /**
+        * Draws a circle from a given mid point and radius.
+        * @param  {CanvasRenderingContext2D} ctx
+        * @param  {StrokeStyle} strokeStyle
+        * @param  {Number} lineWidth Thickness of the circumference of the circle
+        * @param  {Point2d} center Center coordinate of the circle
+        * @param  {Number} radius Length of the circle radius
+        */
+
+        static drawCircle(ctx, strokeStyle, lineWidth, center, radius) {
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.closePath;
         }
     }
 }

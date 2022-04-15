@@ -13,7 +13,9 @@ export class Engine{
         this.canvas = canvas;
         this.physics = physics;
         this.entities = [];
+        this.checkedEntities = [];
         this.player;
+        this.paused = true;
     }
 
     static Spawner = class {
@@ -46,11 +48,20 @@ export class Engine{
         requestAnimationFrame(gameLoop.bind(this));
 
         function gameLoop(now) {
+            this.moveCheckedEntitiesBacktoEntities();
+            Draw.canvasMethods.drawScreen(canvas, "black", this.entities);
+            this.physics.update(now, this.entities, this.checkedEntities);
+
+
             requestAnimationFrame(gameLoop.bind(this));
-    
-            
-            this.physics.update(now, this.entities);
-            Draw.canvasMethods.draw(canvas, "black", this.entities);
+        }
+    }
+
+    moveCheckedEntitiesBacktoEntities() {
+        for (let i = this.checkedEntities.length - 1; i >= 0; i--) {
+            const entity = this.checkedEntities[i];
+            this.entities.push(entity);
+            this.checkedEntities.splice(i, 1);
         }
     }
 
