@@ -66,9 +66,7 @@ export class PhysicsWorld {
 
     gravity(delta) {
         for (let i = 0; i < this.children.length; i++) {
-
             //if (this.children[i].isAwake) {
-
                 let Fx = -0.5 * this.children[i].Cd * this.children[i].A * this.rho * this.children[i].vx * this.children[i].vx * this.children[i].vx / Math.abs(this.children[i].vx);
                 let Fy = -0.5 * this.children[i].Cd * this.children[i].A * this.rho * this.children[i].vy * this.children[i].vy * this.children[i].vy / Math.abs(this.children[i].vy);
 
@@ -93,10 +91,7 @@ export class PhysicsWorld {
                 if (this.children[i].gracePeriod > 0) {
 
                     this.children[i].gracePeriod -= delta;
-
                 }
-
-
                 if (this.children[i].y >= canvasElem.height - this.children[i].rad) {
                     this.children[i].vy *= this.children[i].restitution;
                     this.children[i].y = canvasElem.height - this.children[i].rad;
@@ -114,7 +109,6 @@ export class PhysicsWorld {
                 }
 
                 this.children[i].vx *= 1 - delta * this.children[i].drag;
-
 
                 if (!(keyArr.includes("ArrowLeft")) != !(keyArr.includes("ArrowRight"))) {
                     if (this.children[i].speedMult < delta * 450) {
