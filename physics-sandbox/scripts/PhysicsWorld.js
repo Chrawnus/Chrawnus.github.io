@@ -59,8 +59,6 @@ export class PhysicsWorld {
         }
     }
 
-
-
     physics(delta) {
         this.gravity(delta);
         this.collisionHandler(delta);
@@ -68,10 +66,6 @@ export class PhysicsWorld {
 
     gravity(delta) {
         for (let i = 0; i < this.children.length; i++) {
-
-
-
-
 
             //if (this.children[i].isAwake) {
 
@@ -92,8 +86,6 @@ export class PhysicsWorld {
                 }
                 this.children[i].vy += ay;
                 this.children[i].vx += ax;
-
-
 
                 if (this.children[i].speedMult > 50 * delta) {
                     this.children[i].speedMult = 50 * delta;
@@ -205,7 +197,6 @@ export class PhysicsWorld {
                             const pushPercentage1 = Math.abs(d1 / intersectLength1);
                             const pushPercentage2 = Math.abs(d2 / intersectLength2);
 
-
                             const vectors = length ? this.normalize(x, y, length) : { x: 0, y: -1 };
 
                             let vRelativeVelocity = { x: this.collisionGroups[key][i].vx - this.collisionGroups[key][j].vx, y: this.collisionGroups[key][i].vy - this.collisionGroups[key][j].vy };
@@ -223,26 +214,12 @@ export class PhysicsWorld {
                                 this.collisionGroups[key][j].vy += (impulse * this.collisionGroups[key][i].mass * vectors.y) * 0.98;
                             }
 
-
-
-
-
                             this.collisionGroups[key][i].x += overlap * pushPercentage2 * vectors.x;
                             this.collisionGroups[key][i].y += overlap * pushPercentage2 * vectors.y;
 
-
-
                             this.collisionGroups[key][j].x -= overlap * pushPercentage1 * vectors.x;
                             this.collisionGroups[key][j].y -= overlap * pushPercentage1 * vectors.y;
-
-
-
-
-
-
-
                         }
-
                     }
                 }
             }
