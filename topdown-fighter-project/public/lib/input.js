@@ -33,8 +33,7 @@ export function getKey(key) {
     return keys[key];
 }
 
-export const keyCodes = {
-    
+export const keyCodes = {  
     W: 'W',
     w: 'w',
     A: 'A',
