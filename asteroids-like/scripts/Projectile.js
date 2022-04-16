@@ -9,6 +9,7 @@ export class Projectile extends Geometry{
         super()
         this.pos = new Point2d(x, y);
         this.radius = 4;
+        this.hitboxRadius = this.radius;
         this.speed = 600;
         this.speedScaling = 1;
         this.angle = angle;

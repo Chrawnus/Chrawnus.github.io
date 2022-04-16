@@ -3,44 +3,78 @@ import { Draw } from "./Draw.js";
 import { Point2d } from "./Point2d.js";
 import { Player } from "./Player.js";
 import { Asteroid } from "./Asteroid.js";
+import { Projectile } from "./Projectile.js";
 import { canvas } from "./Elements.js";
 
 
 
-export class Engine{
-    constructor (physics)
-    {
+export class Engine {
+    constructor(physics) {
         this.canvas = canvas;
         this.physics = physics;
         this.entities = [];
-        this.checkedEntities = [];
+        this.projectiles = [];
         this.player;
         this.paused = true;
     }
 
     static Spawner = class {
-        
+
         static spawnAsteroids(engine, count) {
+
+            const radius = [20, 30, 50]
+
             for (let i = 0; i < count; i++) {
-                this.spawnAsteroid(engine);
+                const x = Helper.Math.Random.getRandomArbitrary(0, canvas.width),
+                    y = Helper.Math.Random.getRandomArbitrary(0, canvas.height),
+                    sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
+                    angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
+                this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
 
             }
         }
 
-        static spawnAsteroid(engine) {
-            const pos = new Point2d(Helper.Math.Random.getRandomArbitrary(0, canvas.width), Helper.Math.Random.getRandomArbitrary(0, canvas.height));
-            const sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15));
-            const radius = Helper.Math.Random.getRandomArbitrary(15, 50);
-            const angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
-            const asteroid = new Asteroid(pos, sideNumber, radius, angle)
+        static spawnAsteroidsFromAsteroid(engine, asteroid) {
+            const allowedRadii = [15, 25, 50]
+            for (let i = allowedRadii.length - 1; i >= 0; i--) {
+                if (allowedRadii[i] >= asteroid.radius) {
+                    allowedRadii.splice(i, 1);
+                }
+            }
+
+            allowedRadii.splice(0, allowedRadii.length - 1);
+            console.log(allowedRadii)
+            if (allowedRadii.length === 0) {
+                return 0;
+            }
+            for (let i = 0; i < 3; i++) {
+                const x = asteroid.pos.x,
+                    y = asteroid.pos.y,
+                    sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
+                    angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
+                this.spawnAsteroid(engine, x, y, sideNumber, allowedRadii, angle);
+
+            }
+        }
+
+        static spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
+            const pos = new Point2d(x, y);
+            const randomRadiiSelector = Helper.Math.Random.getRandomInt(0, radius.length);
+            const asteroid = new Asteroid(pos, sideNumber, radius[randomRadiiSelector], angle)
             engine.addEntity(asteroid);
         }
 
         static spawnPlayer(engine) {
-            const pos = new Point2d(canvas.width/2, canvas.height/2)
+            const pos = new Point2d(canvas.width / 2, canvas.height / 2)
             const player = new Player(pos, 3, 30)
-            engine.addEntity(player);
-            this.player = player;
+
+            engine.player = player;
+        }
+
+        static spawnProjectile(engine, pos, angle) {
+            const bullet = new Projectile(pos.x, pos.y, angle);
+            engine.addProjectile(bullet);
+
         }
     }
 
@@ -48,26 +82,21 @@ export class Engine{
         requestAnimationFrame(gameLoop.bind(this));
 
         function gameLoop(now) {
-            this.moveCheckedEntitiesBacktoEntities();
-            Draw.canvasMethods.drawScreen(canvas, "black", this.entities);
-            this.physics.update(now, this.entities, this.checkedEntities);
+            const player = this.player;
+            Draw.canvasMethods.drawScreen(canvas, "black", player, this.projectiles, this.entities);
+            this.physics.update(now, player, this.projectiles, this.entities);
 
 
             requestAnimationFrame(gameLoop.bind(this));
         }
     }
 
-    moveCheckedEntitiesBacktoEntities() {
-        for (let i = this.checkedEntities.length - 1; i >= 0; i--) {
-            const entity = this.checkedEntities[i];
-            this.entities.push(entity);
-            this.checkedEntities.splice(i, 1);
-        }
-    }
-
-
     addEntity(entity) {
         this.entities.push(entity);
+    }
+
+    addProjectile(projectile) {
+        this.projectiles.push(projectile);
     }
 }
 

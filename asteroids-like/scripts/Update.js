@@ -1,5 +1,7 @@
 import { Vector } from "./Vector.js";
 import { Helper } from "./helperFunctions.js";
+import { Engine } from "./Engine.js";
+import { engine } from "./app.js";
 
 export class Update {
     constructor(enableGravity, gLength, gAngle, enableFriction, f) {
@@ -13,11 +15,12 @@ export class Update {
         this.f = f;
     }
 
-    update(now, entities, checkedEntities) {
-
+    update(now, player, projectiles, entities, checkedEntities) {
         let dt = this.getDelta(now);
+        this.updatePlayer(player, dt);
+        this.updateProjectiles(projectiles, dt);
         this.updateEntities(entities, dt);
-        this.physics(entities, dt, checkedEntities)
+        this.physics(entities, projectiles, player, dt)
     }
     
     updateEntities(entities, dt) {
@@ -31,17 +34,26 @@ export class Update {
         }
     }
 
+    updateProjectiles(projectiles, dt) {
+        for (let i = projectiles.length - 1; i >= 0; i--) {
+            const entity = projectiles[i];
+            entity.update(dt);
+            if (Update.EntityMethods.isOutOfLifetime(entity)) {
+                Update.EntityMethods.killEntity(entity, projectiles);
+            }    
+        }
+    }
 
+    updatePlayer(player, dt) {
+        player.update(dt);
+    }
 
-
-
-    physics(entities, dt, checkedEntities) {
-        this.getPhysicsDelta(entities, dt, checkedEntities);
+    physics(entities, projectiles, player, dt) {
+        this.getPhysicsDelta(entities, projectiles, player, dt);
     }
 
 
-    getPhysicsDelta(entities, dt, checkedEntities) {
-
+    getPhysicsDelta(entities, projectiles, player, dt) {
         let pdt = 0.01;
         this.accumulator += dt;
         
@@ -51,14 +63,11 @@ export class Update {
                 
                 this.gravity(entities)
             }
-            this.detectCollisions(entities, checkedEntities);
-
+            this.detectPlayerCollisions(entities, player);
+            this.detectProjectileCollisions(projectiles, entities);
         }
 
     }
-
-
-
 
     gravity(entities) {
         for (let i = 0; i < entities.length; i++) {
@@ -78,27 +87,34 @@ export class Update {
         return dt;
     }
 
-    detectCollisions(entities, checkedEntities) {
-        while (entities.length > 0) {
-            for (let i = entities.length - 1; i >= 0; i--) {
-                const entity = entities[i];
-                for (let j = i - 1; j >= 0; j--) {
-                    const collisionEntity = entities[j];
-                    if(this.checkCircleCollision(collisionEntity, entity)) {
-                        entity.angle *= -1;
-                        collisionEntity.angle *= -1;
-                        this.entityPushback(entity, collisionEntity);
-                    } else {
-                        entity.strokeStyle = "white";
-                        collisionEntity.strokeStyle = "white";
-    
-                    }
-                }
-                checkedEntities.push(entity)
-                entities.splice(entities.indexOf(entity), 1);
+    detectPlayerCollisions(entities, player) {
+        for (let i = entities.length - 1; i >= 0; i--) {
+            const entity = entities[i];
+            if (this.checkCircleCollision(entity, player)) {
+                entity.angle *= -1;
+                player.angle *= -1;
+                this.entityPushback(entity, player);
             }
         }
     }
+
+    detectProjectileCollisions(projectiles, entities) {
+        for (let i = projectiles.length - 1; i >= 0; i--) {
+            const projectile = projectiles[i];
+            for (let j = entities.length - 1; j >= 0; j--) {
+                const entity = entities[j];
+                if (this.checkCircleCollision(projectile, entity)) {
+                    
+                    Update.EntityMethods.killEntity(projectile, projectiles);
+                    Engine.Spawner.spawnAsteroidsFromAsteroid(engine, entity)
+                    Update.EntityMethods.killEntity(entity, entities);
+                    
+                }
+            }
+        }
+    }
+
+    
 
     entityPushback(entity1, entity2) {
         let dx = entity2.pos.x - entity1.pos.x;
@@ -117,7 +133,7 @@ export class Update {
         }
     }
 
-    checkCircleCollision(entity, collisionEntity, dt) {
+    checkCircleCollision(entity, collisionEntity) {
         const dx = collisionEntity.pos.x - entity.pos.x;
         const dy = collisionEntity.pos.y - entity.pos.y;
         const radii = entity.hitboxRadius + collisionEntity.hitboxRadius;

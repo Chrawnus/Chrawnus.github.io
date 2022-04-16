@@ -5,6 +5,7 @@ import { Projectile } from "./Projectile.js";
 import { engine } from "./app.js";
 import { canvas } from "./Elements.js";
 import { Input } from "./Input.js";
+import { Engine } from "./Engine.js";
 
 
 export class Player extends Geometry{
@@ -35,8 +36,7 @@ export class Player extends Geometry{
         const mouseY = Helper.Cursor.getY();
         if (this.hasShot === false && Helper.Cursor.isMouseDown) {
             const angle = Math.atan2(mouseX - this.pos.x, mouseY - this.pos.y);
-            const bullet = new Projectile(this.pos.x, this.pos.y, angle);
-            engine.addEntity(bullet);
+            Engine.Spawner.spawnProjectile(engine, this.pos, angle);
             this.hasShot = true;
         }
     }
