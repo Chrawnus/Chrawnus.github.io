@@ -2,7 +2,6 @@ import { Geometry } from "./Geometry.js";
 import { Update } from "./Update.js";
 import { Helper } from "./helperFunctions.js";
 import { engine } from "./app.js";
-import { canvas } from "./Elements.js";
 import { Input } from "./Input.js";
 import { Engine } from "./Engine.js";
 
@@ -22,7 +21,7 @@ export class Player extends Geometry {
     update(dt) {
 
         Update.Physics.Movement.rotateShape(this);
-        Helper.Movement.wrap(this, canvas)
+        Helper.Movement.wrap(this)
         if (Input.getButton(2)) {
             Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
         }
@@ -34,10 +33,7 @@ export class Player extends Geometry {
 
     shootProjectile() {
         const mousePos = Helper.Cursor.mouseC;
-        const dx = Helper.Math.Geometry.getDeltaX(this, mousePos);
-        const dy = Helper.Math.Geometry.getDeltaY(this, mousePos);
-
-        const angle = Math.atan2(dy, dx);
+        const angle = Helper.Math.Trig.getAngleBetweenEntities(this, mousePos);
         Engine.Spawner.spawnProjectile(engine, this.pos, angle);
 
     }

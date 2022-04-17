@@ -1,47 +1,17 @@
-import { Point2d } from "./Point2d.js";
-import { canvas } from "./Elements.js";
-
+import { canvasClass } from "./Canvas.js";
 
 export class Helper {
-    constructor() {
-        
-    }
-
     static Movement = class {
-        static wrap(entity, canvas) {
-
-            const wrapDestination = isOutsideCanvas(entity, canvas)
-
+        static wrap(entity) {
+            const wrapDestination = isOutsideCanvas(entity)
             if (wrapDestination) {
-                wrapTo(entity, canvas, wrapDestination);
+                wrapTo(entity, wrapDestination);
             }
-
-        }
-
-        static moveTowardsCursor(dt, entity) {
-
-            const mouseCoord = Helper.Cursor.mouseC;
-
-            const dx = Helper.Math.Geometry.getDeltaX(entity.pos, mouseCoord);
-            const dy = Helper.Math.Geometry.getDeltaY(entity.pos, mouseCoord);
-            
-            const distance = Helper.Math.Geometry.getDistance(dx, dy);
-
-            const angle = Helper.Math.Trig.getAngleBetweenPoints(entity.pos, mouseCoord);
-
-
-            entity.pos.x += distance * 1.5 * Math.sin(angle) * dt;
-            entity.pos.y += distance * 1.5 * Math.cos(angle) * dt;
         }
 
         static getRotationAngle(entity) {
             const mouseCoord = Helper.Cursor.mouseC;
-
-            const dx = Helper.Math.Geometry.getDeltaX(entity, mouseCoord);
-            const dy = Helper.Math.Geometry.getDeltaY(entity, mouseCoord);
-            const angle = Math.atan2(dy, dx);
-
-            return angle;
+            return Helper.Math.Trig.getAngleBetweenEntities(entity, mouseCoord);
         }
     }
 
@@ -54,10 +24,10 @@ export class Helper {
         };
         static isMouseDown = false;
 
-        static getCursorPos(canvas, evt) {
-            const rect = canvas.getBoundingClientRect(), // abs. size of element
-                scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
-                scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
+        static getCursorPos(evt) {
+            const rect = canvasClass.canvas.getBoundingClientRect(), // abs. size of element
+                scaleX = canvasClass.canvas.width / rect.width,    // relationship bitmap vs. element for x
+                scaleY = canvasClass.canvas.height / rect.height;  // relationship bitmap vs. element for y
             
             this.mouseC.pos.x = (evt.clientX - rect.left) * scaleX;
             this.mouseC.pos.y = (evt.clientY - rect.top) * scaleY;
@@ -74,22 +44,33 @@ export class Helper {
 
     static Math = class {
         static Geometry = class {
+
+            static getDistanceBetweenEntities(entity1, entity2) {
+                const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
+                const distance = Helper.Math.Geometry.getDistance(dx, dy);
+                return distance;
+            }
+
             static getDistance(deltaX, deltaY) {
                 return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             }
 
-            static getDeltaX(point1, point2) {
-                return point2.pos.x - point1.pos.x;
+            static getDeltas(entity1, entity2) {
+                const dx = this.getDeltaX(entity1, entity2);
+                const dy = this.getDeltaY(entity1, entity2);
+                return {dx, dy};
+            }
+            static getDeltaX(entity1, entity2) {
+                return entity2.pos.x - entity1.pos.x;
             }
 
-            static getDeltaY(point1, point2) {
-                return point2.pos.y - point1.pos.y;
+            static getDeltaY(entity1, entity2) {
+                return entity2.pos.y - entity1.pos.y;
             }
         }
         static Trig = class {
-             static getAngleBetweenPoints(point1, point2) {
-                const dx = Helper.Math.Geometry.getDeltaX(point1, point2);
-                const dy = Helper.Math.Geometry.getDeltaY(point1, point2);
+             static getAngleBetweenEntities(entity1, entity2) {
+                const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
                 return Math.atan2(dy, dx);
              }
         }
@@ -104,14 +85,8 @@ export class Helper {
                 max = Math.floor(max);
                 return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
               }
-        }
-
-
-
-        
+        } 
     }
-
-
 }
 
 window.addEventListener('pointerdown', () => Helper.Cursor.isMouseDown = true);
@@ -120,10 +95,10 @@ window.addEventListener('pointerup', () => Helper.Cursor.isMouseDown = false);
 
 
 
-function isOutsideCanvas(entity, canvas) {
-    const isOutsideRightCanvasBoundary = entity.pos.x > canvas.width + entity.radius;
+function isOutsideCanvas(entity) {
+    const isOutsideRightCanvasBoundary = entity.pos.x > canvasClass.canvas.width + entity.radius;
     const isOutsideLeftCanvasBoundary = entity.pos.x < -entity.radius;
-    const isBelowCanvasBoundary = entity.pos.y > canvas.height + entity.radius;
+    const isBelowCanvasBoundary = entity.pos.y > canvasClass.canvas.height + entity.radius;
     const isAboveCanvasBoundary = entity.pos.y < -entity.radius;
 
     if (isOutsideRightCanvasBoundary) {
@@ -143,11 +118,11 @@ function isOutsideCanvas(entity, canvas) {
     }
 };
 
-function wrapTo(entity, canvas, boundary) {
+function wrapTo(entity, boundary) {
     const leftOfCanvas = -entity.radius;
-    const RightOfCanvas = canvas.width + entity.radius;
+    const RightOfCanvas = canvasClass.canvas.width + entity.radius;
     const aboveCanvas = -entity.radius;
-    const belowCanvas = canvas.height + entity.radius;
+    const belowCanvas = canvasClass.canvas.height + entity.radius;
 
     if (boundary === "left") {
         entity.pos.x = leftOfCanvas;
@@ -163,6 +138,5 @@ function wrapTo(entity, canvas, boundary) {
 };
 
 window.addEventListener("mousemove", function (e) {
-    Helper.Cursor.getCursorPos(canvas, e);
-
+    Helper.Cursor.getCursorPos(e);
 });

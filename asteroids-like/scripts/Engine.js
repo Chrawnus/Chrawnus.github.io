@@ -4,13 +4,12 @@ import { Point2d } from "./Point2d.js";
 import { Player } from "./Player.js";
 import { Asteroid } from "./Asteroid.js";
 import { Projectile } from "./Projectile.js";
-import { canvas } from "./Elements.js";
+import { canvasClass } from "./Canvas.js";
 
 
 
 export class Engine {
     constructor(physics) {
-        this.canvas = canvas;
         this.physics = physics;
         this.entities = [];
         this.projectiles = [];
@@ -22,14 +21,12 @@ export class Engine {
     }
 
     static Spawner = class {
-
         static spawnAsteroids(engine, count) {
-
             const radius = [15, 30, 60]
 
             for (let i = 0; i < count; i++) {
-                const x = Helper.Math.Random.getRandomArbitrary(0, canvas.width),
-                    y = Helper.Math.Random.getRandomArbitrary(0, canvas.height),
+                const x = Helper.Math.Random.getRandomArbitrary(0, canvasClass.canvas.width),
+                    y = Helper.Math.Random.getRandomArbitrary(0, canvasClass.canvas.height),
                     sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
                     angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
                 this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
@@ -66,9 +63,8 @@ export class Engine {
         }
 
         static spawnPlayer(engine) {
-            const pos = new Point2d(canvas.width / 2, canvas.height / 2)
+            const pos = new Point2d(canvasClass.canvas.width / 2, canvasClass.canvas.height / 2)
             const player = new Player(pos, 3, 30)
-
             engine.player = player;
         }
 
@@ -79,29 +75,18 @@ export class Engine {
     }
 
     start() {
-        let runningState;
-        
         function gameLoop() {
-
             if (this.paused) {
-
                 return 0;
             } else {
-
-
                 const player = this.player;
                 this.physics.update(player, this.projectiles, this.entities);
-                Draw.canvasMethods.drawScreen(canvas, "black", player, this.projectiles, this.entities);
+                Draw.canvasMethods.drawScreen(canvasClass.canvas, "black", player, this.projectiles, this.entities);
 
-                runningState = requestAnimationFrame(gameLoop.bind(this));
+                requestAnimationFrame(gameLoop.bind(this));
             }
-
-
         }
-
-        runningState = requestAnimationFrame(gameLoop.bind(this));
-
-
+        requestAnimationFrame(gameLoop.bind(this));
     }
 
     addEntity(entity) {

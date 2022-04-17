@@ -31,13 +31,10 @@ export class Geometry {
 
     draw(ctx) {
         ctx.save();
-        
         Draw.canvasMethods.translateOriginToEntity(ctx, this);
         Draw.canvasMethods.rotateCanvasAroundEntity(ctx, this);
         Draw.Geometry.drawShape(ctx, this.points, this.strokeStyle);
-        
         ctx.restore();
-        
         //hitbox
         Draw.Geometry.drawCircle(ctx, "red", 2, this.pos, this.hitboxRadius)
     }
@@ -57,10 +54,4 @@ export class Geometry {
         }
         return pArr
     }
-
-    drawShape(ctx, points) {
-        return Draw.Geometry.drawShape(ctx, points);
-    } 
-
-
 }

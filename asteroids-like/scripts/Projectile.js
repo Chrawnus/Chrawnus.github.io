@@ -1,9 +1,9 @@
 import { Point2d } from "./Point2d.js";
 import { Update } from "./Update.js";
 import { Draw } from "./Draw.js";
-import { canvas } from "./Elements.js";
 import { Geometry } from "./Geometry.js";
 import { Helper } from "./helperFunctions.js";
+
 export class Projectile extends Geometry{
     constructor(x, y, angle){
         super()
@@ -22,7 +22,7 @@ export class Projectile extends Geometry{
 
     update(dt) {
         Update.EntityMethods.updateLifetime(dt, this);
-        Helper.Movement.wrap(this, canvas)
+        Helper.Movement.wrap(this)
         Update.Physics.Movement.move(dt, this, this.speed, this.speedScaling, this.angle); 
     }
 }

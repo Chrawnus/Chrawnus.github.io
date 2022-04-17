@@ -1,6 +1,5 @@
 import { Geometry } from "./Geometry.js";
 import { Helper } from "./helperFunctions.js";
-import { canvas } from "./Elements.js";
 import { Update } from "./Update.js";
 
 export class Asteroid extends Geometry {
@@ -18,7 +17,7 @@ export class Asteroid extends Geometry {
 
     update(dt) {
         Update.Physics.Movement.rotateShape(this);
-        Helper.Movement.wrap(this, canvas)
+        Helper.Movement.wrap(this)
         Update.Physics.Movement.move(dt, this, this.speed, this.speedScaling, this.angle); 
     }
 }

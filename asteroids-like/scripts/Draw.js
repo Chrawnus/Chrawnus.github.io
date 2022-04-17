@@ -1,5 +1,4 @@
 export class Draw {
-
     static canvasMethods = class {
         static drawScreen(canvas, backgroundColor, player, entities, projectiles) {
             const ctx = canvas.getContext("2d");
@@ -7,7 +6,7 @@ export class Draw {
             Draw.drawPlayer(ctx, player);
             Draw.drawEntities(ctx, projectiles);
             Draw.drawEntities(ctx, entities);
-            
+
         }
 
         static clearCanvas(canvas, ctx, fillStyle) {
@@ -38,7 +37,7 @@ export class Draw {
         player.draw(ctx);
     }
 
-    
+
 
     static Geometry = class {
 
@@ -49,19 +48,18 @@ export class Draw {
         * @param  {StrokeStyle} strokeStyle
         */
         static drawShape(ctx, points, strokeStyle) {
-                ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 0; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-                ctx.lineTo(points[0].x, points[0].y);
-                
-                ctx.strokeStyle = strokeStyle;
-                ctx.lineWidth = 1;
-        
-                ctx.stroke();
-                ctx.closePath();
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.lineTo(points[0].x, points[0].y);
+            ctx.stroke();
+            ctx.closePath();
         }
+
         /**
         * Draws a circle from a given mid point and radius.
         * @param  {CanvasRenderingContext2D} ctx
@@ -70,12 +68,11 @@ export class Draw {
         * @param  {Point2d} center Center coordinate of the circle
         * @param  {Number} radius Length of the circle radius
         */
-
         static drawCircle(ctx, strokeStyle, lineWidth, center, radius) {
             ctx.strokeStyle = strokeStyle;
             ctx.lineWidth = lineWidth;
             ctx.beginPath();
-            ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
+            ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
             ctx.stroke();
             ctx.closePath;
         }

@@ -4,8 +4,6 @@ export class Vector {
         this.y = y;
     }
 
-
-
     setX(x) {
         this.x = x;
     }
@@ -43,7 +41,6 @@ export class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-
     add(v2) {
         return new Vector(this.x + v2.getX(), this.y + v2.getY());
     }
@@ -79,5 +76,4 @@ export class Vector {
         this.x /= val;
         this.y /= val;
     }
-
 }
