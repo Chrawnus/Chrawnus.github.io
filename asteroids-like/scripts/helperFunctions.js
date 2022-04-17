@@ -85,7 +85,7 @@ export class Helper {
              static getAngleBetweenPoints(point1, point2) {
                 const dx = Helper.Math.Geometry.getDeltaX(point1, point2);
                 const dy = Helper.Math.Geometry.getDeltaY(point1, point2);
-                return Math.atan2(dx, dy);
+                return Math.atan2(dy, dx);
              }
         }
 

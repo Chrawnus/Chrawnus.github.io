@@ -30,16 +30,13 @@ export class Player extends Geometry {
            this.shootProjectile(); 
            Input.mouseBtnReleased = undefined;
         }
-            
-        
-
     }
 
     shootProjectile() {
         const mouseX = Helper.Cursor.getX();
         const mouseY = Helper.Cursor.getY();
 
-        const angle = Math.atan2(mouseX - this.pos.x, mouseY - this.pos.y);
+        const angle = Math.atan2(mouseY - this.pos.y, mouseX - this.pos.x);
         Engine.Spawner.spawnProjectile(engine, this.pos, angle);
 
     }

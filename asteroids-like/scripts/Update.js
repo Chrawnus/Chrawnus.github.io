@@ -147,8 +147,8 @@ export class Update {
         static Movement = class {
 
             static move(dt, entity, speed, speedScaling, angle) {
-                entity.pos.x += speed * speedScaling * Math.sin(angle) * dt;
-                entity.pos.y += speed * speedScaling * Math.cos(angle) * dt;
+                entity.pos.x += speed * speedScaling * Math.cos(angle) * dt;
+                entity.pos.y += speed * speedScaling * Math.sin(angle) * dt;
             }
 
             static moveTowardsTarget(dt, entity, target, speedScaling) {
