@@ -37,8 +37,8 @@ export class Helper {
         static getRotationAngle(entity) {
             const mouseCoord = Helper.Cursor.mouseC;
 
-            const dx = Helper.Math.Geometry.getDeltaX(entity.pos, mouseCoord);
-            const dy = Helper.Math.Geometry.getDeltaY(entity.pos, mouseCoord);
+            const dx = Helper.Math.Geometry.getDeltaX(entity, mouseCoord);
+            const dy = Helper.Math.Geometry.getDeltaY(entity, mouseCoord);
             const angle = Math.atan2(dy, dx);
 
             return angle;
@@ -46,7 +46,12 @@ export class Helper {
     }
 
     static Cursor = class {
-        static mouseC = new Point2d(0, 0);
+        static mouseC = {
+            pos: {
+                x: 0,
+                y: 0
+            }
+        };
         static isMouseDown = false;
 
         static getCursorPos(canvas, evt) {
@@ -54,8 +59,8 @@ export class Helper {
                 scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
                 scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
             
-            this.mouseC.x = (evt.clientX - rect.left) * scaleX;
-            this.mouseC.y = (evt.clientY - rect.top) * scaleY;
+            this.mouseC.pos.x = (evt.clientX - rect.left) * scaleX;
+            this.mouseC.pos.y = (evt.clientY - rect.top) * scaleY;
         }
 
         static getX() {
@@ -74,11 +79,11 @@ export class Helper {
             }
 
             static getDeltaX(point1, point2) {
-                return point2.x - point1.x;
+                return point2.pos.x - point1.pos.x;
             }
 
             static getDeltaY(point1, point2) {
-                return point2.y - point1.y;
+                return point2.pos.y - point1.pos.y;
             }
         }
         static Trig = class {

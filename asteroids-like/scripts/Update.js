@@ -79,36 +79,69 @@ export class Update {
         }
     }
 
-
-
     getDelta(now) {
         let dt = (now) / 1000;
         return dt;
     }
 
     detectPlayerCollisions(entities, player) {
+        if (entities.length <= 0) {
+            return 0;
+        }
+        let closestEntity;
+        let dist;
+
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            if (this.checkCircleCollision(entity, player)) {
-                entity.angle *= -1;
-                player.angle *= -1;
-                this.entityPushback(entity, player);
+            const dx = Helper.Math.Geometry.getDeltaX(player, entity);
+            const dy = Helper.Math.Geometry.getDeltaY(player, entity);
+            const currDist = Helper.Math.Geometry.getDistance(dx, dy);
+            
+            if (i === entities.length - 1) {
+                closestEntity = entity;
+                dist = currDist;
+            } else if (currDist < dist) {
+                dist = currDist;
+                closestEntity = entity;
             }
+
+
+        }
+
+        if (this.checkCircleCollision(closestEntity, player)) {
+            closestEntity.angle *= -1;
+            player.angle *= -1;
+            this.entityPushback(closestEntity, player);
         }
     }
 
     detectProjectileCollisions(projectiles, entities) {
+        if (entities.length <= 0) {
+            return 0;
+        }
+        let closestEntity;
+        let dist;
         for (let i = projectiles.length - 1; i >= 0; i--) {
             const projectile = projectiles[i];
+
             for (let j = entities.length - 1; j >= 0; j--) {
                 const entity = entities[j];
-                if (this.checkCircleCollision(projectile, entity)) {
-                    
-                    Update.EntityMethods.killEntity(projectile, projectiles);
-                    Engine.Spawner.spawnAsteroidsFromAsteroid(engine, entity)
-                    Update.EntityMethods.killEntity(entity, entities);
-                    
+                const dx = Helper.Math.Geometry.getDeltaX(projectile, entity);
+                const dy = Helper.Math.Geometry.getDeltaY(projectile, entity);
+                const currDist = Helper.Math.Geometry.getDistance(dx, dy);
+                if (j === entities.length - 1) {
+                    closestEntity = entity;
+                    dist = currDist;
+                } else if (currDist < dist) {
+                    dist = currDist;
+                    closestEntity = entity;
                 }
+
+            }
+            if (this.checkCircleCollision(projectile, closestEntity)) {     
+                Update.EntityMethods.killEntity(projectile, projectiles);
+                Engine.Spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
+                Update.EntityMethods.killEntity(closestEntity, entities);
             }
         }
     }
@@ -133,8 +166,9 @@ export class Update {
     }
 
     checkCircleCollision(entity, collisionEntity) {
-        const dx = collisionEntity.pos.x - entity.pos.x;
-        const dy = collisionEntity.pos.y - entity.pos.y;
+        console.log(entity, collisionEntity)
+        const dx = Helper.Math.Geometry.getDeltaX(entity, collisionEntity);
+        const dy = Helper.Math.Geometry.getDeltaY(entity, collisionEntity);
         const radii = entity.hitboxRadius + collisionEntity.hitboxRadius;
         if ( ( dx * dx ) + (dy * dy ) < radii * radii) {
             return true;
@@ -153,12 +187,12 @@ export class Update {
 
             static moveTowardsTarget(dt, entity, target, speedScaling) {
 
-                const dx = Helper.Math.Geometry.getDeltaX(entity.pos, target);
-                const dy = Helper.Math.Geometry.getDeltaY(entity.pos, target);
+                const dx = Helper.Math.Geometry.getDeltaX(entity, target);
+                const dy = Helper.Math.Geometry.getDeltaY(entity, target);
                 
                 const distance = Helper.Math.Geometry.getDistance(dx, dy);
   
-                const angle = Helper.Math.Trig.getAngleBetweenPoints(entity.pos, target);
+                const angle = Helper.Math.Trig.getAngleBetweenPoints(entity, target);
     
                 this.move(dt, entity, distance, speedScaling, angle);
             }

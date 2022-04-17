@@ -33,10 +33,11 @@ export class Player extends Geometry {
     }
 
     shootProjectile() {
-        const mouseX = Helper.Cursor.getX();
-        const mouseY = Helper.Cursor.getY();
+        const mousePos = Helper.Cursor.mouseC;
+        const dx = Helper.Math.Geometry.getDeltaX(this, mousePos);
+        const dy = Helper.Math.Geometry.getDeltaY(this, mousePos);
 
-        const angle = Math.atan2(mouseY - this.pos.y, mouseX - this.pos.x);
+        const angle = Math.atan2(dy, dx);
         Engine.Spawner.spawnProjectile(engine, this.pos, angle);
 
     }
