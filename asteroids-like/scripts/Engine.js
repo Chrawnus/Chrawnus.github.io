@@ -15,14 +15,17 @@ export class Engine {
         this.entities = [];
         this.projectiles = [];
         this.player;
-        this.paused = true;
+        this.paused = false;
+        this.lastFrame = 0;
+        this.dt = 0;
+        this.time = 0;
     }
 
     static Spawner = class {
 
         static spawnAsteroids(engine, count) {
 
-            const radius = [20, 30, 50]
+            const radius = [15, 30, 60]
 
             for (let i = 0; i < count; i++) {
                 const x = Helper.Math.Random.getRandomArbitrary(0, canvas.width),
@@ -35,15 +38,13 @@ export class Engine {
         }
 
         static spawnAsteroidsFromAsteroid(engine, asteroid) {
-            const allowedRadii = [15, 25, 50]
+            const allowedRadii = [15, 30, 60]
             for (let i = allowedRadii.length - 1; i >= 0; i--) {
                 if (allowedRadii[i] >= asteroid.radius) {
                     allowedRadii.splice(i, 1);
                 }
             }
-
             allowedRadii.splice(0, allowedRadii.length - 1);
-            console.log(allowedRadii)
             if (allowedRadii.length === 0) {
                 return 0;
             }
@@ -74,21 +75,33 @@ export class Engine {
         static spawnProjectile(engine, pos, angle) {
             const bullet = new Projectile(pos.x, pos.y, angle);
             engine.addProjectile(bullet);
-
         }
     }
 
     start() {
-        requestAnimationFrame(gameLoop.bind(this));
+        let runningState;
+        
+        function gameLoop() {
 
-        function gameLoop(now) {
-            const player = this.player;
-            Draw.canvasMethods.drawScreen(canvas, "black", player, this.projectiles, this.entities);
-            this.physics.update(now, player, this.projectiles, this.entities);
+            if (this.paused) {
+
+                return 0;
+            } else {
 
 
-            requestAnimationFrame(gameLoop.bind(this));
+                const player = this.player;
+                this.physics.update(player, this.projectiles, this.entities);
+                Draw.canvasMethods.drawScreen(canvas, "black", player, this.projectiles, this.entities);
+
+                runningState = requestAnimationFrame(gameLoop.bind(this));
+            }
+
+
         }
+
+        runningState = requestAnimationFrame(gameLoop.bind(this));
+
+
     }
 
     addEntity(entity) {

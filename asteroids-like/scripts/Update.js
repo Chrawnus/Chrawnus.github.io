@@ -2,10 +2,11 @@ import { Vector } from "./Vector.js";
 import { Helper } from "./helperFunctions.js";
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
+import { Input } from "./Input.js";
 
 export class Update {
-    constructor(enableGravity, gLength, gAngle, enableFriction, f) {
-        this.prevTime;
+    constructor(stepSize, enableGravity, gLength, gAngle, enableFriction, f) {
+        this.stepSize = stepSize;
         this.accumulator = 0;
         this.enableGravity = enableGravity;
         this.gVector = new Vector();
@@ -15,8 +16,8 @@ export class Update {
         this.f = f;
     }
 
-    update(now, player, projectiles, entities, checkedEntities) {
-        let dt = this.getDelta(now);
+    update(player, projectiles, entities) {
+        const dt = this.getDelta(this.stepSize)
         this.updatePlayer(player, dt);
         this.updateProjectiles(projectiles, dt);
         this.updateEntities(entities, dt);
@@ -81,9 +82,7 @@ export class Update {
 
 
     getDelta(now) {
-        if (!this.prevTime) { this.prevTime = now; }
-        let dt = (now - this.prevTime) / 1000;
-        this.prevTime = now;
+        let dt = (now) / 1000;
         return dt;
     }
 

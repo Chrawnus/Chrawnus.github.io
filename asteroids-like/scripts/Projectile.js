@@ -10,10 +10,10 @@ export class Projectile extends Geometry{
         this.pos = new Point2d(x, y);
         this.radius = 4;
         this.hitboxRadius = this.radius;
-        this.speed = 600;
+        this.speed = 2400;
         this.speedScaling = 1;
         this.angle = angle;
-        this.lifetime = 1.5;
+        this.lifetime = 0.3;
     }
 
     draw(ctx) {

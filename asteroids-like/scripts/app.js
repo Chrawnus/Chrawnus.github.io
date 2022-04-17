@@ -1,15 +1,15 @@
 import { Engine } from "./Engine.js"
 import { Update } from "./Update.js";
-import { Helper } from "./helperFunctions.js";
-import { canvas } from "./Elements.js";
-const physics = new Update(false, 2, Math.PI, false, 0.01);
+import { Input } from "./Input.js";
 
+const physics = new Update(3, false, 2, Math.PI, false, 0.01);
 export const engine = new Engine(physics);
 
+const amount = 3;
+
 Engine.Spawner.spawnPlayer(engine);
-
-const amount = 5;
-
 Engine.Spawner.spawnAsteroids(engine, amount);
+
 engine.start();
+
 

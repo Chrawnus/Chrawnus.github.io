@@ -1,7 +1,9 @@
 
 // Various UI elements
 export const canvas = document.querySelector('canvas');
-
+canvas.oncontextmenu = function (e) {
+    e.preventDefault();
+};
 resizeCanvas();
 
 // resizes canvas when the browser window is resized.
