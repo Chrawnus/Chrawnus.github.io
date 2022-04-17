@@ -1,10 +1,9 @@
-import { Geometry } from "./Geometry.js";
-import { Update } from "./Update.js";
-import { Helper } from "./helperFunctions.js";
-import { engine } from "./app.js";
-import { Input } from "./Input.js";
 import { Engine } from "./Engine.js";
-
+import { engine } from "./app.js";
+import { Geometry } from "./Geometry.js";
+import { Helper } from "./helperFunctions.js";
+import { Input } from "./Input.js";
+import { Update } from "./Update.js";
 
 export class Player extends Geometry {
     constructor(pos, sideNumber, radius) {
@@ -13,13 +12,12 @@ export class Player extends Geometry {
         this.hitboxRadius = radius * 0.50;
         this.speed = 450;
         this.speedScaling = 10;
-        this.points = this.getVertexPoints();
         this.rotationAngle = Helper.Movement.getRotationAngle(this);
         this.rotationSpeed = 0;
+        this.points = Helper.EntityMethods.getVertexPoints(this);
     }
 
     update(dt) {
-
         Update.Physics.Movement.rotateShape(this);
         Helper.Movement.wrap(this)
         if (Input.getButton(2)) {
@@ -35,6 +33,5 @@ export class Player extends Geometry {
         const mousePos = Helper.Cursor.mouseC;
         const angle = Helper.Math.Trig.getAngleBetweenEntities(this, mousePos);
         Engine.Spawner.spawnProjectile(engine, this.pos, angle);
-
     }
 }

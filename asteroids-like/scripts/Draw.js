@@ -6,7 +6,6 @@ export class Draw {
             Draw.drawPlayer(ctx, player);
             Draw.drawEntities(ctx, projectiles);
             Draw.drawEntities(ctx, entities);
-
         }
 
         static clearCanvas(canvas, ctx, fillStyle) {
@@ -22,9 +21,7 @@ export class Draw {
         static rotateCanvasAroundEntity(ctx, entity) {
             ctx.rotate(entity.rotationAngle);
         }
-
     }
-
 
     static drawEntities(ctx, entities) {
         for (let i = 0; i < entities.length; i++) {
@@ -37,10 +34,7 @@ export class Draw {
         player.draw(ctx);
     }
 
-
-
     static Geometry = class {
-
         /**
         * Draws a shape from an array of point2D objects.
         * @param  {CanvasRenderingContext2D} ctx

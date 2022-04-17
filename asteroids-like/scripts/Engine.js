@@ -1,12 +1,10 @@
-import { Helper } from "./helperFunctions.js";
-import { Draw } from "./Draw.js";
-import { Point2d } from "./Point2d.js";
-import { Player } from "./Player.js";
 import { Asteroid } from "./Asteroid.js";
+import { CanvasClass } from "./Canvas.js";
+import { Draw } from "./Draw.js";
+import { Helper } from "./helperFunctions.js";
+import { Player } from "./Player.js";
+import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
-import { canvasClass } from "./Canvas.js";
-
-
 
 export class Engine {
     constructor(physics) {
@@ -19,18 +17,15 @@ export class Engine {
         this.dt = 0;
         this.time = 0;
     }
-
     static Spawner = class {
         static spawnAsteroids(engine, count) {
             const radius = [15, 30, 60]
-
             for (let i = 0; i < count; i++) {
-                const x = Helper.Math.Random.getRandomArbitrary(0, canvasClass.canvas.width),
-                    y = Helper.Math.Random.getRandomArbitrary(0, canvasClass.canvas.height),
+                const x = Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.width),
+                    y = Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.height),
                     sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
                     angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
                 this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
-
             }
         }
 
@@ -51,7 +46,6 @@ export class Engine {
                     sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
                     angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
                 this.spawnAsteroid(engine, x, y, sideNumber, allowedRadii, angle);
-
             }
         }
 
@@ -63,13 +57,14 @@ export class Engine {
         }
 
         static spawnPlayer(engine) {
-            const pos = new Point2d(canvasClass.canvas.width / 2, canvasClass.canvas.height / 2)
+            const pos = new Point2d(CanvasClass.canvas.width / 2, CanvasClass.canvas.height / 2)
             const player = new Player(pos, 3, 30)
             engine.player = player;
         }
 
-        static spawnProjectile(engine, pos, angle) {
-            const bullet = new Projectile(pos.x, pos.y, angle);
+        static spawnProjectile(engine, shooterPosition, shooterAngle) {
+            const position = new Point2d(shooterPosition.x, shooterPosition.y);
+            const bullet = new Projectile(position, shooterAngle);
             engine.addProjectile(bullet);
         }
     }
@@ -81,8 +76,7 @@ export class Engine {
             } else {
                 const player = this.player;
                 this.physics.update(player, this.projectiles, this.entities);
-                Draw.canvasMethods.drawScreen(canvasClass.canvas, "black", player, this.projectiles, this.entities);
-
+                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", player, this.projectiles, this.entities);
                 requestAnimationFrame(gameLoop.bind(this));
             }
         }

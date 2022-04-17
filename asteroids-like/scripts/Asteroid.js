@@ -12,7 +12,7 @@ export class Asteroid extends Geometry {
         this.speedScaling = 1;
         this.rotationSpeed = Helper.Math.Random.getRandomArbitrary((Math.PI*2*0.005) * -1, Math.PI*2*0.005);
         this.rotationAngle = 0;
-        this.points = this.getVertexPoints();
+        this.points = Helper.EntityMethods.getVertexPoints(this);
     }
 
     update(dt) {

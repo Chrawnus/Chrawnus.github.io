@@ -1,24 +1,17 @@
-import { Vector } from "./Vector.js";
-import { Helper } from "./helperFunctions.js";
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
+import { Helper } from "./helperFunctions.js";
 
 export class Update {
-    constructor(stepSize, enableGravity, gLength, gAngle, enableFriction, f) {
+    constructor(stepSize) {
         this.stepSize = stepSize;
         this.accumulator = 0;
-        this.enableGravity = enableGravity;
-        this.gVector = new Vector();
-        this.gVector.setLength(gLength);
-        this.gVector.setAngle(gAngle);
-        this.enableFriction = enableFriction;
-        this.f = f;
     }
 
     update(player, projectiles, entities) {
         const dt = this.getDelta(this.stepSize)
         this.updatePlayer(player, dt);
-        this.updateProjectiles(projectiles, dt);
+        this.updateEntities(projectiles, dt);
         this.updateEntities(entities, dt);
         this.physics(entities, projectiles, player, dt)
     }
@@ -27,13 +20,6 @@ export class Update {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
             this.updateEntity(entity, dt, entities); 
-        }
-    }
-
-    updateProjectiles(projectiles, dt) {
-        for (let i = projectiles.length - 1; i >= 0; i--) {
-            const entity = projectiles[i];
-            this.updateEntity(entity, dt, projectiles);  
         }
     }
 
@@ -56,23 +42,10 @@ export class Update {
     getPhysicsDelta(entities, projectiles, player, dt) {
         let pdt = 0.01;
         this.accumulator += dt;
-        
         while (this.accumulator >= pdt) {
             this.accumulator -= pdt;
-            if (this.enableGravity) { 
-                this.gravity(entities, dt)
-            }
             this.detectEntityToEntitiesCollision(player, entities);
             this.detectEntitiesToEntitiesCollisions(projectiles, entities);
-        }
-
-    }
-
-    gravity(entities, dt) {
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            entity.pos.x += this.gVector.x * dt;
-            entity.pos.y += this.gVector.y * dt;
         }
     }
 
@@ -90,14 +63,12 @@ export class Update {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
             const currDist = Helper.Math.Geometry.getDistanceBetweenEntities(player, entity);
-            
             if (i === entities.length - 1) {
                 ({ dist, closestEntity } = this.setClosestDistanceAndEntity(dist, currDist, closestEntity, entity));
             } else if (currDist < dist) {
                 ({ dist, closestEntity } = this.setClosestDistanceAndEntity(dist, currDist, closestEntity, entity));
             }
         }
-
         if (this.checkCircleCollision(closestEntity, player)) {
             closestEntity.angle *= -1;
             player.angle *= -1;
@@ -136,13 +107,10 @@ export class Update {
         return { dist, closestEntity };
     }
     
-
     entityPushback(entity1, entity2) {
         let {dx, dy} = Helper.Math.Geometry.getDeltas(entity1, entity2);
         const length = Helper.Math.Geometry.getDistanceBetweenEntities(entity1, entity2);
-
         const step = entity1.radius + entity2.radius - length;
-
         if (step > 0) {
             dx /= length; dy /= length;
             entity1.pos.x -= dx*step/2; entity1.pos.y -= dy*step/2;
@@ -166,13 +134,11 @@ export class Update {
                 entity.pos.x += speed * speedScaling * Math.cos(angle) * dt;
                 entity.pos.y += speed * speedScaling * Math.sin(angle) * dt;
             }
-
             static moveTowardsTarget(dt, entity, target, speedScaling) {
                 const distance = Helper.Math.Geometry.getDistanceBetweenEntities(entity, target);
                 const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
                 this.move(dt, entity, distance, speedScaling, angle);
             }
-
             static rotateShape(shape) {
                 if (shape.rotationSpeed) {
                     shape.rotationAngle += shape.rotationSpeed;
@@ -187,15 +153,11 @@ export class Update {
         static updateLifetime(dt, entity) {
             entity.lifetime -= dt;
         }
-        
         static isOutOfLifetime(entity) {
             return (entity.lifetime !== undefined && entity.lifetime <= 0)      
         }
-
         static killEntity(entity, entities) {
             entities.splice(entities.indexOf(entity), 1);
         }
-
-
     }
 }

@@ -1,13 +1,12 @@
-import { Point2d } from "./Point2d.js";
-import { Update } from "./Update.js";
 import { Draw } from "./Draw.js";
 import { Geometry } from "./Geometry.js";
 import { Helper } from "./helperFunctions.js";
+import { Update } from "./Update.js";
 
 export class Projectile extends Geometry{
-    constructor(x, y, angle){
+    constructor(pos, angle){
         super()
-        this.pos = new Point2d(x, y);
+        this.pos = pos;
         this.radius = 4;
         this.hitboxRadius = this.radius;
         this.speed = 2400;

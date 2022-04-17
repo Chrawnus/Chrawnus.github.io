@@ -1,4 +1,3 @@
-import { Point2d } from "./Point2d.js";
 import { Draw } from "./Draw.js";
 import { Helper } from "./helperFunctions.js";
 
@@ -25,8 +24,6 @@ export class Geometry {
     update(dt) {
         this.move(dt)
         this.wrap();
-        console.log()
-        
     }
 
     draw(ctx) {
@@ -35,23 +32,6 @@ export class Geometry {
         Draw.canvasMethods.rotateCanvasAroundEntity(ctx, this);
         Draw.Geometry.drawShape(ctx, this.points, this.strokeStyle);
         ctx.restore();
-        //hitbox
-        Draw.Geometry.drawCircle(ctx, "red", 2, this.pos, this.hitboxRadius)
-    }
-
-    //Determine the endpoint of a line given an angle, length,
-    //and starting point [x, y]
-    getVertexPoints() {
-        const pArr = [];
-        let angleTotal = Math.PI*2;
-        for (let i = 0; i < this.sideNumber; i++) {
-            let angle = angleTotal * (i/this.sideNumber);
-            const r = this.radius + this.offsets[i];
-            const x = r * Math.cos(angle);
-            const y = r * Math.sin(angle);
-            const point = new Point2d(x, y)
-            pArr.push(point)
-        }
-        return pArr
+        Draw.Geometry.drawCircle(ctx, "red", 2, this.pos, this.hitboxRadius) //hitbox
     }
 }

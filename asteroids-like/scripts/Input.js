@@ -4,16 +4,13 @@ export class Input {
     static keyArray = [];
     static keyPressed;
     static keyReleased;
-
     static mouseButtonArray = [];
-
     static mouseBtnPressed;
     static mouseBtnReleased;
 
     static getKey(code) {
         return Input.keyArray.includes(code);
     }
-
     static getButton(button) {
         return Input.mouseButtonArray.includes(button);
     }
@@ -43,7 +40,6 @@ window.addEventListener("mousedown", e => {
         Input.mouseButtonArray.push(e.button);
     }
     Input.mouseBtnPressed = e.button;
-    
 });
 
 window.addEventListener("mouseup", e => {
