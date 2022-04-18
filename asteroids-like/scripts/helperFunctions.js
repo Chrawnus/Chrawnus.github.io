@@ -44,6 +44,8 @@ export class Helper {
 
     static Math = class {
         static Geometry = class {
+            static deltaLookup = new Map();
+
             static getDistanceBetweenEntities(entity1, entity2) {
                 const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
                 const distance = Helper.Math.Geometry.getDistance(dx, dy);
@@ -60,17 +62,42 @@ export class Helper {
                 return { dx, dy };
             }
             static getDeltaX(entity1, entity2) {
-                return entity2.pos.x - entity1.pos.x;
+                const x1 = Math.floor(entity1.pos.x);
+                const x2 = Math.floor(entity2.pos.x);
+                const key = `${x1} . ${x2}`
+                if (this.deltaLookup.has(key)) {
+                    return this.deltaLookup.get(key);
+                }
+                const dx = x2 - x1
+                this.deltaLookup.set(key, dx);
+                return dx;
             }
 
             static getDeltaY(entity1, entity2) {
-                return entity2.pos.y - entity1.pos.y;
+                const y1 = Math.floor(entity1.pos.y);
+                const y2 = Math.floor(entity2.pos.y);
+                const key = `${y1} . ${y2}`
+                if (this.deltaLookup.has(key)) {
+                    return this.deltaLookup.get(key);
+                }
+                const dy = y2 - y1
+                this.deltaLookup.set(key, dy);
+                return dy;
             }
         }
         static Trig = class {
+            static trigAngleLookup = new Map();
+
             static getAngleBetweenEntities(entity1, entity2) {
                 const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
-                return Math.atan2(dy, dx);
+                const key = `${dy.toString()} . ${dx.toString()}`
+                if (this.trigAngleLookup.has(key)) {
+                    return this.trigAngleLookup.get(key);
+                }
+                const angle = Math.atan2(dy, dx).toFixed(4);
+                this.trigAngleLookup.set(key, angle);
+                
+                return angle;
             }
         }
 
