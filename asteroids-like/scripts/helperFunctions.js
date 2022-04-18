@@ -2,6 +2,31 @@ import { CanvasClass } from "./Canvas.js";
 import { Point2d } from "./Point2d.js";
 
 export class Helper {
+
+    static ArrayFunctions = class {
+        /*
+        remove method that is hopefully faster
+        than splice by first swapping
+        item at index with last item in array, then
+        popping the item off the array.
+        */
+        static remove(index, array) {
+            const lastIndex = array.length - 1;
+            // if item is already last, nothing needs to be done, so just pop the item off the array. 
+            if (lastIndex === index) {
+                array.pop();
+                return array;
+            } else {
+                // swap item at index with last item in array.
+                [array[index], array[lastIndex]] = [array[lastIndex], array[index]];
+                // pop item from the array
+                array.pop();
+                return array;
+            }
+        }
+            
+        
+    }
     static Movement = class {
         static wrap(entity) {
             const wrapDestination = isOutsideCanvas(entity)
@@ -84,20 +109,55 @@ export class Helper {
                 this.deltaLookup.set(key, dy);
                 return dy;
             }
+
+            static RectCircleIntersects(circle, rect) {
+                const distX = Math.abs(circle.pos.x - rect.pos.x - rect.width / 2);
+                const distY = Math.abs(circle.pos.y - rect.pos.y - rect.height / 2);
+        
+                if (distX > (rect.width / 2 + circle.radius)) { return false; }
+                if (distY > (rect.height / 2 + circle.radius)) { return false; }
+        
+                if (distX <= (rect.width / 2)) { return true; }
+                if (distY <= (rect.height / 2)) { return true; }
+        
+                const dx = distX - rect.width / 2;
+                const dy = distY - rect.height / 2;
+                return (dx * dx + dy * dy <= (circle.radius * circle.radius));
+            }
         }
         static Trig = class {
             static trigAngleLookup = new Map();
 
             static getAngleBetweenEntities(entity1, entity2) {
                 const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
-                const key = `${dy.toString()} . ${dx.toString()}`
-                if (this.trigAngleLookup.has(key)) {
-                    return this.trigAngleLookup.get(key);
+                
+                let trigKey;
+                trigKey = Helper.Math.Trig.getTrigKey(dx, dy, trigKey);
+                
+                if (this.trigAngleLookup.has(trigKey)) {
+                    return this.trigAngleLookup.get(trigKey);
                 }
                 const angle = Math.atan2(dy, dx).toFixed(4);
-                this.trigAngleLookup.set(key, angle);
+                this.trigAngleLookup.set(trigKey, angle);
                 
                 return angle;
+            }
+
+            static getTrigKey(dx, dy, key) {
+                if (dx < 0 && dy < 0) {
+                    key = `${(dy / dx).toFixed(4)}.bN`;
+                }
+                if (dx > 0 && dy < 0) {
+                    key = `${(dy / dx).toFixed(4)}.xPyN`;
+                }
+                if (dx > 0 && dy > 0) {
+                    key = `${(dy / dx).toFixed(4)}.xPyP`;
+                }
+        
+                if (dx < 0 && dy > 0) {
+                    key = `${(dy / dx).toFixed(4)}.xNyP`;
+                }
+                return key;
             }
         }
 

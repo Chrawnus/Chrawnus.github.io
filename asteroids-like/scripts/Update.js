@@ -8,12 +8,12 @@ export class Update {
         this.accumulator = 0;
     }
 
-    update(player, projectiles, entities) {
+    update(player, projectiles, entities, collisionTree) {
         const dt = this.getDelta(this.stepSize)
-        this.updatePlayer(player, dt);
-        this.updateEntities(projectiles, dt);
-        this.updateEntities(entities, dt);
+        collisionTree.split();
+  
         this.physics(entities, projectiles, player, dt)
+        collisionTree.prune();
     }
     
     updateEntities(entities, dt) {
@@ -46,6 +46,10 @@ export class Update {
             this.accumulator -= pdt;
             this.detectEntityToEntitiesCollision(player, entities);
             this.detectEntitiesToEntitiesCollisions(projectiles, entities);
+            this.updatePlayer(player, dt);
+            this.updateEntities(projectiles, dt);
+            this.updateEntities(entities, dt);
+
         }
     }
 
