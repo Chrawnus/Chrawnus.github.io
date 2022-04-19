@@ -21,33 +21,36 @@ export class Input {
     }
 
     static switchPauseState(e) {
-        if (e.code === "KeyP") {
+        if (e.code !== "KeyP") {
+            return 0
+        }
+
+        if (Input.keyInputObject["KeyP"] !== false) {
             engine.paused = !engine.paused;
             if (engine.paused === false) {
                 engine.dt = 0;
                 engine.start();
             }
         }
+
     }
+
 }
 
 window.addEventListener('keydown', e => {
     const isKeyinObject = e.code in Input.keyInputObject;
-    if(!isKeyinObject) {
-        Input.keyInputObject[e.code] = true;
-    } else {
-        Input.keyInputObject[e.code] = true;
-    }
+
+    Input.keyInputObject[e.code] = true;
+    console.log(Input.keyInputObject)
+    Input.switchPauseState(e);
 });
 
 window.addEventListener('keyup', e => {
     const isKeyinObject = e.code in Input.keyInputObject;
-    if(!isKeyinObject) {
-        Input.keyInputObject[e.code] = false;
-    } else {
-        Input.keyInputObject[e.code] = false;
-    }
-    Input.switchPauseState(e);
+    Input.keyInputObject[e.code] = false;
+    console.log(Input.keyInputObject)
+
+
 });
 
 window.addEventListener("mousedown", e => {
