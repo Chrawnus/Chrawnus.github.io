@@ -15,6 +15,7 @@ export class Player extends Geometry {
         this.rotationAngle = Helper.Movement.getRotationAngle(this);
         this.rotationSpeed = 0;
         this.points = Helper.EntityMethods.getVertexPoints(this);
+        this.lives = 3;
     }
 
     update(dt) {
@@ -24,8 +25,8 @@ export class Player extends Geometry {
             Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
         }
         if (Input.mouseBtnReleased === 0) {
-           this.shootProjectile();
-           Input.mouseBtnReleased = undefined;
+            this.shootProjectile();
+            Input.mouseBtnReleased = undefined;
         }
     }
 
@@ -33,5 +34,12 @@ export class Player extends Geometry {
         const mousePos = Helper.Cursor.mouseC;
         const angle = Helper.Math.Trig.getAngleBetweenEntities(this, mousePos);
         Engine.Spawner.spawnProjectile(engine, this.pos, angle);
+    }
+
+    onCollision() {
+        
+
+        this.lives--;
+
     }
 }

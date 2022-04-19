@@ -22,8 +22,7 @@ export class Geometry {
     }
 
     update(dt) {
-        this.move(dt)
-        this.wrap();
+
     }
 
     draw(ctx) {

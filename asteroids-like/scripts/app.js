@@ -7,7 +7,6 @@ export const engine = new Engine(physics);
 
 Engine.Spawner.spawnPlayer(engine);
 Engine.Spawner.spawnAsteroids(engine, asteroidAmount);
-
 engine.start();
 
 

@@ -74,5 +74,18 @@ export class Draw {
             ctx.stroke();
             ctx.closePath;
         }
+
+        static drawLine(ctx, strokeStyle, points) {
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            //ctx.lineTo(points[0].x, points[0].y);
+            ctx.stroke();
+            ctx.closePath();
+        }
     }
 }

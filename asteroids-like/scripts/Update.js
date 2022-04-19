@@ -75,6 +75,7 @@ export class Update {
             closestEntity.angle *= -1;
             player.angle *= -1;
             this.entityPushback(closestEntity, player);
+            player.onCollision();
         }
     }
 
