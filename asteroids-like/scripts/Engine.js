@@ -23,10 +23,10 @@ export class Engine {
         static spawnAsteroids(engine, count) {
             const radius = [15, 30, 60]
             for (let i = 0; i < count; i++) {
-                const x = Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.width),
-                    y = Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.height),
+                const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.width)),
+                    y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, CanvasClass.canvas.height)),
                     sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
-                    angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
+                    angle = Math.floor(Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2));
                 this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
             }
         }

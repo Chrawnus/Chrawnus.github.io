@@ -135,17 +135,18 @@ export class Update {
     static Physics = class {
         static Movement = class {
             static move(dt, entity, speed, speedScaling, angle) {
-                entity.pos.x += speed * speedScaling * Math.cos(angle) * dt;
-                entity.pos.y += speed * speedScaling * Math.sin(angle) * dt;
+                console.log(speed)
+                entity.pos.x += (speed * speedScaling * Math.cos(angle) * dt);
+                entity.pos.y += (speed * speedScaling * Math.sin(angle) * dt);
             }
             static moveTowardsTarget(dt, entity, target, speedScaling) {
                 const distance = Helper.Math.Geometry.getDistanceBetweenEntities(entity, target);
                 const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
                 this.move(dt, entity, distance, speedScaling, angle);
             }
-            static rotateShape(shape) {
+            static rotateShape(shape, dt) {
                 if (shape.rotationSpeed) {
-                    shape.rotationAngle += shape.rotationSpeed;
+                    shape.rotationAngle += shape.rotationSpeed * dt;
                 } else {
                     shape.rotationAngle = Helper.Movement.getRotationAngle(shape);
                 }

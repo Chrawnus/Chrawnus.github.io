@@ -34,7 +34,6 @@ export class CollisionTree {
 
         if (this.childNodes.length === 0) {
             for (let i = 0; i < 4; i++) {
-                console.log("creating 4 child nodes")
                 this.createChildNode(maxDepth, this.maxEntities, posArray[i], height, width);
             }
         } else {
@@ -45,7 +44,6 @@ export class CollisionTree {
                     if (childNode.pos.x === position.x && childNode.pos.y === position.y) {
                         continue
                     }
-                    console.log("creating child node")
                     this.createChildNode(maxDepth, this.maxEntities, position, height, width)
                 }
             }
@@ -100,7 +98,6 @@ export class CollisionTree {
         }
 
         if (this.container.length > this.maxEntities) {
-            console.log("splitting")
             this.createChildNodes();
 
         }

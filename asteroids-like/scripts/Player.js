@@ -18,7 +18,7 @@ export class Player extends Geometry {
     }
 
     update(dt) {
-        Update.Physics.Movement.rotateShape(this);
+        Update.Physics.Movement.rotateShape(this, dt);
         Helper.Movement.wrap(this)
         if (Input.getButton(2)) {
             Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
