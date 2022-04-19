@@ -1,38 +1,54 @@
 import { engine } from "./app.js";
 
 export class Input {
-    static keyArray = [];
-    static keyPressed;
-    static keyReleased;
-    static mouseButtonArray = [];
-    static mouseBtnPressed;
-    static mouseBtnReleased;
+    static keyInputObject = {
+        "KeyP": false
+    };
 
+    static mouseInputObject = {
+        "0": false,             // left mouse button
+        "1": false,             // middle mouse button
+        "2": false,             // right mouse button
+        "3": false,             // back side button
+        "4": false              // forward side button
+    }
+    static mouseButtonArray = [];
+    
     static getKey(code) {
         return Input.keyArray.includes(code);
     }
     static getButton(button) {
         return Input.mouseButtonArray.includes(button);
     }
+
+    static switchPauseState(e) {
+        if (e.code === "KeyP") {
+            engine.paused = !engine.paused;
+            if (engine.paused === false) {
+                engine.dt = 0;
+                engine.start();
+            }
+        }
+    }
 }
 
 window.addEventListener('keydown', e => {
-    if (!Input.keyArray.includes(e.code)) {
-        Input.keyArray.push(e.code);
+    const isKeyinObject = e.code in Input.keyInputObject;
+    if(!isKeyinObject) {
+        Input.keyInputObject[e.code] = true;
+    } else {
+        Input.keyInputObject[e.code] = true;
     }
-    Input.keyPressed = e.code;
 });
 
 window.addEventListener('keyup', e => {
-    Input.keyArray.splice(Input.keyArray.indexOf(e.code), 1);
-    Input.keyReleased = e.code;
-    if (Input.keyReleased === "KeyP") {
-        engine.paused = !engine.paused;
-        if (engine.paused === false) {
-            engine.dt = 0;
-            engine.start();
-        }
+    const isKeyinObject = e.code in Input.keyInputObject;
+    if(!isKeyinObject) {
+        Input.keyInputObject[e.code] = false;
+    } else {
+        Input.keyInputObject[e.code] = false;
     }
+    Input.switchPauseState(e);
 });
 
 window.addEventListener("mousedown", e => {

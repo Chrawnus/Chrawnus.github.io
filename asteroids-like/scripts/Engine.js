@@ -6,7 +6,7 @@ import { Player } from "./Player.js";
 import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
 import { CollisionTree } from "./CollisionTree.js"
-
+import { Input } from "./Input.js";
 export class Engine {
     constructor(physics) {
         this.physics = physics;
@@ -17,7 +17,7 @@ export class Engine {
         this.lastFrame = 0;
         this.dt = 0;
         this.time = 0;
-        this.collisionTree = new CollisionTree(3, 3, new Point2d(0, 0), CanvasClass.canvas.height, CanvasClass.canvas.width, null)
+        this.collisionTree = new CollisionTree(6, 1, new Point2d(0, 0), CanvasClass.canvas.height, CanvasClass.canvas.width, null)
     }
     static Spawner = class {
         static spawnAsteroids(engine, count) {

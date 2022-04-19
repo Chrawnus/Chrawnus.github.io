@@ -6,6 +6,7 @@ export class CollisionTree {
     constructor(maxDepth, maxEntities, pos, height, width, parentNode) {
         this.maxDepth = maxDepth
         this.maxEntities = maxEntities;
+        this.minEntities = Math.floor(maxEntities/4);
         this.pos = pos;
         this.height = height;
         this.width = width;
@@ -21,6 +22,7 @@ export class CollisionTree {
 
     createChildNodes() {
         if (this.childNodes.length >= this.maxNodes) {
+            
             return;
         }
         const upperLeft = new Point2d(this.pos.x, this.pos.y);
@@ -48,8 +50,6 @@ export class CollisionTree {
                 }
             }
         }
-
-        
     }
 
     createChildNode(maxDepth, maxEntities, pos, height, width) {
@@ -71,11 +71,14 @@ export class CollisionTree {
                 const childNode = this.childNodes[i];
                 childNode.deleteNode();
             }
+            return 0;
         }
         
         // move entities back up to parent node
         for (let i = this.container.length - 1; i >= 0; i--) {
-            this.parentNode.container.push();
+            const entity = this.container[i];
+            console.log("pushing to parent")
+            this.parentNode.container.push(entity);
             this.container.pop();
         }
 
@@ -96,21 +99,24 @@ export class CollisionTree {
                 childNode.split();
             }
         }
-
-        if (this.container.length > this.maxEntities) {
+        console.log(this.container.length >= this.maxEntities)
+        if (this.container.length >= this.maxEntities) {
             this.createChildNodes();
 
         }
     }
 
     prune() {
-        if (this.childNodes.length) {
+        if (this.childNodes.length > 0) {
             for (let i = this.childNodes.length - 1; i >= 0; i--) {
                 const childNode = this.childNodes[i];
                 childNode.prune();
             }
+
+            return 0;
         }
-        if (this.container.length <= 2) {
+
+        if (this.container.length < this.minEntities) {
 
             this.deleteNode();
         }

@@ -1,6 +1,7 @@
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
 import { Helper } from "./helperFunctions.js";
+import { Input } from "./Input.js";
 
 export class Update {
     constructor(stepSize) {
@@ -9,11 +10,14 @@ export class Update {
     }
 
     update(player, projectiles, entities, collisionTree) {
+
+
+        //console.log(collisionTree)
         const dt = this.getDelta(this.stepSize)
         collisionTree.split();
-  
         this.physics(entities, projectiles, player, dt)
         collisionTree.prune();
+
     }
     
     updateEntities(entities, dt) {
@@ -135,7 +139,6 @@ export class Update {
     static Physics = class {
         static Movement = class {
             static move(dt, entity, speed, speedScaling, angle) {
-                console.log(speed)
                 entity.pos.x += (speed * speedScaling * Math.cos(angle) * dt);
                 entity.pos.y += (speed * speedScaling * Math.sin(angle) * dt);
             }
