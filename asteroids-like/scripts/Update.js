@@ -1,6 +1,6 @@
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Input } from "./Input.js";
 
 export class Update {
@@ -19,11 +19,11 @@ export class Update {
         collisionTree.prune();
 
     }
-    
+
     updateEntities(entities, dt) {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            this.updateEntity(entity, dt, entities); 
+            this.updateEntity(entity, dt, entities);
         }
     }
 
@@ -101,7 +101,7 @@ export class Update {
                     ({ dist, closestEntity } = this.setClosestDistanceAndEntity(dist, currDist, closestEntity, entity2));
                 }
             }
-            if (this.checkCircleCollision(entity1, closestEntity)) {     
+            if (this.checkCircleCollision(entity1, closestEntity)) {
                 Update.EntityMethods.killEntity(entity1, entities1);
                 Engine.Spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
                 Update.EntityMethods.killEntity(closestEntity, entities2);
@@ -114,7 +114,7 @@ export class Update {
         closestEntity = entity;
         return { dist, closestEntity };
     }
-    
+
     entityPushback(entity1, entity2) {
         let {dx, dy} = Helper.Math.Geometry.getDeltas(entity1, entity2);
         const length = Helper.Math.Geometry.getDistanceBetweenEntities(entity1, entity2);
@@ -122,7 +122,7 @@ export class Update {
         if (step > 0) {
             dx /= length; dy /= length;
             entity1.pos.x -= dx*step/2; entity1.pos.y -= dy*step/2;
-            entity2.pos.x += dx*step/2; entity2.pos.y += dy*step/2; 
+            entity2.pos.x += dx*step/2; entity2.pos.y += dy*step/2;
         }
     }
 
@@ -162,7 +162,7 @@ export class Update {
             entity.lifetime -= dt;
         }
         static isOutOfLifetime(entity) {
-            return (entity.lifetime !== undefined && entity.lifetime <= 0)      
+            return (entity.lifetime !== undefined && entity.lifetime <= 0)
         }
         static killEntity(entity, entities) {
             entities.splice(entities.indexOf(entity), 1);

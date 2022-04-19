@@ -13,7 +13,6 @@ export class Input {
         "4": false              // forward side button
     }
     static mouseButtonArray = [];
-    
     static getKey(code) {
         return Input.keyArray.includes(code);
     }

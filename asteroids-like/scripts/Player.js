@@ -1,7 +1,7 @@
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
 import { Geometry } from "./Geometry.js";
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Input } from "./Input.js";
 import { Update } from "./Update.js";
 
@@ -24,7 +24,7 @@ export class Player extends Geometry {
             Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
         }
         if (Input.mouseBtnReleased === 0) {
-           this.shootProjectile(); 
+           this.shootProjectile();
            Input.mouseBtnReleased = undefined;
         }
     }

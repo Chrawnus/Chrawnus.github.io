@@ -1,12 +1,13 @@
+/*jslint es6 */
 import { Asteroid } from "./Asteroid.js";
 import { CanvasClass } from "./Canvas.js";
 import { Draw } from "./Draw.js";
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Player } from "./Player.js";
 import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
 import { CollisionTree } from "./CollisionTree.js"
-import { Input } from "./Input.js";
+
 export class Engine {
     constructor(physics) {
         this.physics = physics;
@@ -74,15 +75,12 @@ export class Engine {
     start() {
         this.initialize()
         function gameLoop() {
-            
             if (this.paused) {
                 return 0;
             } else {
                 const player = this.player;                
                 this.physics.update(player, this.projectiles, this.entities, this.collisionTree);
-                
                 Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", player, this.projectiles, this.entities, this.collisionTree);
-
                 requestAnimationFrame(gameLoop.bind(this));
             }
         }

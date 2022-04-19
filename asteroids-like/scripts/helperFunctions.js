@@ -12,7 +12,7 @@ export class Helper {
         */
         static remove(index, array) {
             const lastIndex = array.length - 1;
-            // if item is already last, nothing needs to be done, so just pop the item off the array. 
+            // if item is already last, nothing needs to be done, so just pop the item off the array.
             if (lastIndex === index) {
                 array.pop();
                 return array;
@@ -24,8 +24,7 @@ export class Helper {
                 return array;
             }
         }
-            
-        
+
     }
     static Movement = class {
         static wrap(entity) {
@@ -113,13 +112,13 @@ export class Helper {
             static RectCircleIntersects(circle, rect) {
                 const distX = Math.abs(circle.pos.x - rect.pos.x - rect.width / 2);
                 const distY = Math.abs(circle.pos.y - rect.pos.y - rect.height / 2);
-        
+
                 if (distX > (rect.width / 2 + circle.radius)) { return false; }
                 if (distY > (rect.height / 2 + circle.radius)) { return false; }
-        
+
                 if (distX <= (rect.width / 2)) { return true; }
                 if (distY <= (rect.height / 2)) { return true; }
-        
+
                 const dx = distX - rect.width / 2;
                 const dy = distY - rect.height / 2;
                 return (dx * dx + dy * dy <= (circle.radius * circle.radius));
@@ -130,16 +129,16 @@ export class Helper {
 
             static getAngleBetweenEntities(entity1, entity2) {
                 const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
-                
+
                 let trigKey;
                 trigKey = Helper.Math.Trig.getTrigKey(dx, dy, trigKey);
-                
+
                 if (this.trigAngleLookup.has(trigKey)) {
                     return this.trigAngleLookup.get(trigKey);
                 }
                 const angle = Math.atan2(dy, dx).toFixed(4);
                 this.trigAngleLookup.set(trigKey, angle);
-                
+
                 return angle;
             }
 
@@ -153,7 +152,7 @@ export class Helper {
                 if (dx > 0 && dy > 0) {
                     key = `${(dy / dx).toFixed(4)}.xPyP`;
                 }
-        
+
                 if (dx < 0 && dy > 0) {
                     key = `${(dy / dx).toFixed(4)}.xNyP`;
                 }

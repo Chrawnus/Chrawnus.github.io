@@ -1,5 +1,5 @@
 import { Draw } from "./Draw.js";
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 
 export class Geometry {
     constructor(pos, sideNumber, radius) {

@@ -1,12 +1,11 @@
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Point2d } from "./Point2d.js";
-
 
 export class CollisionTree {
     constructor(maxDepth, maxEntities, pos, height, width, parentNode) {
         this.maxDepth = maxDepth
         this.maxEntities = maxEntities;
-        this.minEntities = Math.floor(maxEntities/4);
+        this.minEntities = Math.floor(maxEntities / 4);
         this.pos = pos;
         this.height = height;
         this.width = width;
@@ -22,17 +21,16 @@ export class CollisionTree {
 
     createChildNodes() {
         if (this.childNodes.length >= this.maxNodes) {
-            
             return;
         }
         const upperLeft = new Point2d(this.pos.x, this.pos.y);
-        const upperRight = new Point2d(this.width/2, this.pos.y);
-        const lowerLeft = new Point2d(this.pos.x, this.height/2);
-        const lowerRight = new Point2d(this.width/2, this.height/2);
+        const upperRight = new Point2d(this.width / 2, this.pos.y);
+        const lowerLeft = new Point2d(this.pos.x, this.height / 2);
+        const lowerRight = new Point2d(this.width / 2, this.height / 2);
         const posArray = [upperLeft, upperRight, lowerLeft, lowerRight];
         const maxDepth = this.maxDepth - 1;
-        const height = this.height/2;
-        const width = this.width/2;
+        const height = this.height / 2;
+        const width = this.width / 2;
 
         if (this.childNodes.length === 0) {
             for (let i = 0; i < 4; i++) {
@@ -73,7 +71,6 @@ export class CollisionTree {
             }
             return 0;
         }
-        
         // move entities back up to parent node
         for (let i = this.container.length - 1; i >= 0; i--) {
             const entity = this.container[i];
@@ -81,7 +78,6 @@ export class CollisionTree {
             this.parentNode.container.push(entity);
             this.container.pop();
         }
-
         // remove self from parent node
         const pCNodes = this.parentNode.childNodes
         const IdxInParent = pCNodes.indexOf(this);
@@ -121,15 +117,12 @@ export class CollisionTree {
             this.deleteNode();
         }
     }
-
-    
     populateContainer(entities) {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
             if (this.parentNode === null) {
                 this.container.push(entity);
             } else {
-                
                 if (Helper.Math.Geometry.RectCircleIntersects(entity, this)) {
                     let entityIsNotInSibling = true;
                     for (let j = this.parentNode.childNodes.length - 1; j >= 0; j--) {
@@ -164,13 +157,5 @@ export class CollisionTree {
         for (let i = this.childNodes.length - 1; i >= 0; i--) {
             this.childNodes[i].draw(ctx);
         }
-
-
-
-
-
-
-
-
     }
 }

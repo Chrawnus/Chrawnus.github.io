@@ -1,5 +1,5 @@
 import { Geometry } from "./Geometry.js";
-import { Helper } from "./helperFunctions.js";
+import { Helper } from "./HelperFunctions.js";
 import { Update } from "./Update.js";
 
 export class Asteroid extends Geometry {
