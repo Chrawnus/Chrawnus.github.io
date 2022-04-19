@@ -9,15 +9,9 @@ export class Update {
         this.accumulator = 0;
     }
 
-    update(player, projectiles, entities, collisionTree) {
-
-
-        //console.log(collisionTree)
+    update(player, projectiles, entities) {
         const dt = this.getDelta(this.stepSize)
-        collisionTree.split();
         this.physics(entities, projectiles, player, dt)
-        collisionTree.prune();
-
     }
 
     updateEntities(entities, dt) {

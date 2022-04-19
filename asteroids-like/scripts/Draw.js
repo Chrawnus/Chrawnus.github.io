@@ -1,12 +1,11 @@
 export class Draw {
     static canvasMethods = class {
-        static drawScreen(canvas, backgroundColor, player, entities, projectiles, collisionTree) {
+        static drawScreen(canvas, backgroundColor, player, entities, projectiles) {
             const ctx = canvas.getContext("2d");
             Draw.canvasMethods.clearCanvas(canvas, ctx, backgroundColor);
             Draw.drawPlayer(ctx, player);
             Draw.drawEntities(ctx, projectiles);
             Draw.drawEntities(ctx, entities);
-            collisionTree.draw(ctx)
         }
 
         static clearCanvas(canvas, ctx, fillStyle) {

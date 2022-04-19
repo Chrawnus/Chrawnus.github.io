@@ -1,5 +1,5 @@
-import { Helper } from "./HelperFunctions.js";
-import { Point2d } from "./Point2d.js";
+import { Helper } from "../../asteroids-like/scripts/HelperFunctions.js";
+import { Point2d } from "../../asteroids-like/scripts/Point2d.js";
 
 export class CollisionTree {
     constructor(maxDepth, maxEntities, pos, height, width, parentNode) {
@@ -74,7 +74,6 @@ export class CollisionTree {
         // move entities back up to parent node
         for (let i = this.container.length - 1; i >= 0; i--) {
             const entity = this.container[i];
-            console.log("pushing to parent")
             this.parentNode.container.push(entity);
             this.container.pop();
         }
@@ -95,7 +94,6 @@ export class CollisionTree {
                 childNode.split();
             }
         }
-        console.log(this.container.length >= this.maxEntities)
         if (this.container.length >= this.maxEntities) {
             this.createChildNodes();
 

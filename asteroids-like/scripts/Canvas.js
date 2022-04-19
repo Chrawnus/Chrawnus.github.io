@@ -9,9 +9,10 @@ export class CanvasClass {
 CanvasClass.resizeCanvas();
 
 // Resize canvas when the browser window is resized.
-window.addEventListener('resize', () => {
+/* window.addEventListener('resize', () => {
+    console.log("resizing")
     CanvasClass.resizeCanvas()
-})
+}) */
 
 // Prevent context menu from appearing when right clicking canvas.
 CanvasClass.canvas.oncontextmenu = function (e) {

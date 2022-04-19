@@ -1,4 +1,3 @@
-/*jslint es6 */
 import { Asteroid } from "./Asteroid.js";
 import { CanvasClass } from "./Canvas.js";
 import { Draw } from "./Draw.js";
@@ -6,7 +5,6 @@ import { Helper } from "./HelperFunctions.js";
 import { Player } from "./Player.js";
 import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
-import { CollisionTree } from "./CollisionTree.js"
 
 export class Engine {
     constructor(physics) {
@@ -18,7 +16,6 @@ export class Engine {
         this.lastFrame = 0;
         this.dt = 0;
         this.time = 0;
-        this.collisionTree = new CollisionTree(6, 1, new Point2d(0, 0), CanvasClass.canvas.height, CanvasClass.canvas.width, null)
     }
     static Spawner = class {
         static spawnAsteroids(engine, count) {
@@ -73,14 +70,13 @@ export class Engine {
     }
 
     start() {
-        this.initialize()
         function gameLoop() {
             if (this.paused) {
                 return 0;
             } else {
                 const player = this.player;                
-                this.physics.update(player, this.projectiles, this.entities, this.collisionTree);
-                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", player, this.projectiles, this.entities, this.collisionTree);
+                this.physics.update(player, this.projectiles, this.entities);
+                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", player, this.projectiles, this.entities);
                 requestAnimationFrame(gameLoop.bind(this));
             }
         }
@@ -93,10 +89,6 @@ export class Engine {
 
     addProjectile(projectile) {
         this.projectiles.push(projectile);
-    }
-
-    initialize() {
-        this.collisionTree.initialize(this.entities);
     }
 }
 
