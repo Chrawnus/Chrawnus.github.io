@@ -1,6 +1,7 @@
 import { CanvasClass } from "./Canvas.js";
 import { Point2d } from "./Point2d.js";
 
+
 export class Helper {
 
     static ArrayFunctions = class {
