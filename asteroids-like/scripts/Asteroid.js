@@ -17,7 +17,7 @@ export class Asteroid extends Geometry {
 
     update(dt) {
         Update.Physics.Movement.rotateShape(this, dt);
-        Helper.Movement.wrap(this)
+        Update.Physics.Movement.wrap(this)
         Update.Physics.Movement.move(dt, this, this.speed, this.speedScaling, this.angle); 
     }
 }

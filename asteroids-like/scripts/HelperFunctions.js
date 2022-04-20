@@ -1,9 +1,7 @@
-import { CanvasClass } from "./Canvas.js";
+import { Draw } from "./Draw.js";
 import { Point2d } from "./Point2d.js";
 
-
 export class Helper {
-
     static ArrayFunctions = class {
         /*
         remove method that is hopefully faster
@@ -28,12 +26,7 @@ export class Helper {
 
     }
     static Movement = class {
-        static wrap(entity) {
-            const wrapDestination = isOutsideCanvas(entity)
-            if (wrapDestination) {
-                wrapTo(entity, wrapDestination);
-            }
-        }
+
         static getRotationAngle(entity) {
             const mouseCoord = Helper.Cursor.mouseC;
             return Helper.Math.Trig.getAngleBetweenEntities(entity, mouseCoord);
@@ -48,12 +41,10 @@ export class Helper {
             }
         };
 
-        static isMouseDown = false;
-
         static getCursorPos(evt) {
-            const rect = CanvasClass.canvas.getBoundingClientRect(), // abs. size of element
-                scaleX = CanvasClass.canvas.width / rect.width,    // relationship bitmap vs. element for x
-                scaleY = CanvasClass.canvas.height / rect.height;  // relationship bitmap vs. element for y
+            const rect = Draw.Canvas.gameScreen.getBoundingClientRect(), // abs. size of element
+                scaleX = Draw.Canvas.gameScreen.width / rect.width,    // relationship bitmap vs. element for x
+                scaleY = Draw.Canvas.gameScreen.height / rect.height;  // relationship bitmap vs. element for y
             this.mouseC.pos.x = (evt.clientX - rect.left) * scaleX;
             this.mouseC.pos.y = (evt.clientY - rect.top) * scaleY;
         }
@@ -189,48 +180,47 @@ export class Helper {
             }
             return pArr
         }
+
+        static isOutsideCanvas(entity) {
+            const isOutsideRightCanvasBoundary = entity.pos.x > Draw.Canvas.gameScreen.width + entity.radius;
+            const isOutsideLeftCanvasBoundary = entity.pos.x < -entity.radius;
+            const isBelowCanvasBoundary = entity.pos.y > Draw.Canvas.gameScreen.height + entity.radius;
+            const isAboveCanvasBoundary = entity.pos.y < -entity.radius;
+            if (isOutsideRightCanvasBoundary) {
+                return "left";
+            }
+            if (isOutsideLeftCanvasBoundary) {
+                return "right";
+            }
+            if (isBelowCanvasBoundary) {
+                return "above";
+            }
+            if (isAboveCanvasBoundary) {
+                return "below";
+            }
+        };
+        
+        static wrapTo(entity, boundary) {
+            const leftOfCanvas = -entity.radius;
+            const RightOfCanvas = Draw.Canvas.gameScreen.width + entity.radius;
+            const aboveCanvas = -entity.radius;
+            const belowCanvas = Draw.Canvas.gameScreen.height + entity.radius;
+        
+            if (boundary === "left") {
+                entity.pos.x = leftOfCanvas;
+            } else if (boundary === "right") {
+                entity.pos.x = RightOfCanvas;
+            }
+            if (boundary === "above") {
+                entity.pos.y = aboveCanvas;
+            } else if (boundary === "below") {
+                entity.pos.y = belowCanvas;
+            }
+        };
     }
 }
 
-window.addEventListener('pointerdown', () => Helper.Cursor.isMouseDown = true);
-window.addEventListener('pointerup', () => Helper.Cursor.isMouseDown = false);
 
-function isOutsideCanvas(entity) {
-    const isOutsideRightCanvasBoundary = entity.pos.x > CanvasClass.canvas.width + entity.radius;
-    const isOutsideLeftCanvasBoundary = entity.pos.x < -entity.radius;
-    const isBelowCanvasBoundary = entity.pos.y > CanvasClass.canvas.height + entity.radius;
-    const isAboveCanvasBoundary = entity.pos.y < -entity.radius;
-    if (isOutsideRightCanvasBoundary) {
-        return "left";
-    }
-    if (isOutsideLeftCanvasBoundary) {
-        return "right";
-    }
-    if (isBelowCanvasBoundary) {
-        return "above";
-    }
-    if (isAboveCanvasBoundary) {
-        return "below";
-    }
-};
-
-function wrapTo(entity, boundary) {
-    const leftOfCanvas = -entity.radius;
-    const RightOfCanvas = CanvasClass.canvas.width + entity.radius;
-    const aboveCanvas = -entity.radius;
-    const belowCanvas = CanvasClass.canvas.height + entity.radius;
-
-    if (boundary === "left") {
-        entity.pos.x = leftOfCanvas;
-    } else if (boundary === "right") {
-        entity.pos.x = RightOfCanvas;
-    }
-    if (boundary === "above") {
-        entity.pos.y = aboveCanvas;
-    } else if (boundary === "below") {
-        entity.pos.y = belowCanvas;
-    }
-};
 
 window.addEventListener("mousemove", function (e) {
     Helper.Cursor.getCursorPos(e);

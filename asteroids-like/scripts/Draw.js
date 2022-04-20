@@ -1,19 +1,23 @@
 export class Draw {
+
+    static Canvas = class {
+        static gameScreen = document.querySelector('#canvas-game');
+        static UI = document.querySelector('#canvas-menu');
+        static gameCtx = this.gameScreen.getContext("2d");
+        static UICtx = this.UI.getContext("2d");
+    }
+
     static canvasMethods = class {
-        static drawScreen(canvas, backgroundColor, menu, player, entities, projectiles) {
-
-            const ctx = canvas.getContext("2d");
-            menu.draw();
-            Draw.canvasMethods.clearCanvas(canvas, ctx, backgroundColor);
-            Draw.drawPlayer(ctx, player);
-            Draw.drawEntities(ctx, projectiles);
-            Draw.drawEntities(ctx, entities);
-        }
-
-        static drawPauseScreen(canvas, backgroundColor, menu) {
-            const ctx = canvas.getContext("2d");
-            menu.draw();
-            Draw.canvasMethods.clearCanvas(canvas, ctx, backgroundColor);
+        static drawScreen(backgroundColor, menu, player, entities, projectiles) {
+            const gameCtx = Draw.Canvas.gameCtx;
+            const UICtx = Draw.Canvas.UICtx;
+            Draw.canvasMethods.clearCanvas(Draw.Canvas.UI, UICtx, "transparent")
+            menu.draw(UICtx);
+            Draw.canvasMethods.clearCanvas(Draw.Canvas.gameScreen, gameCtx, backgroundColor);
+            Draw.drawPlayer(gameCtx, player);
+            Draw.drawEntities(gameCtx, projectiles);
+            Draw.drawEntities(gameCtx, entities);
+            gameCtx.scale(Draw.Canvas.scaleX, Draw.Canvas.scaleY)
         }
 
         static clearCanvas(canvas, ctx, fillStyle) {
@@ -93,3 +97,12 @@ export class Draw {
         }
     }
 }
+
+// Prevent context menu from appearing when right clicking canvas.
+Draw.Canvas.gameScreen.oncontextmenu = function (e) {
+    e.preventDefault();
+};
+
+Draw.Canvas.UI.oncontextmenu = function (e) {
+    e.preventDefault();
+};

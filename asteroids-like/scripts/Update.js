@@ -1,6 +1,6 @@
-import { Engine } from "./Engine.js";
-import { engine } from "./app.js";
+import { Spawner } from "./Spawner.js";
 import { Helper } from "./HelperFunctions.js";
+import { Input } from "./Input.js";
 
 export class Update {
     constructor(stepSize) {
@@ -8,9 +8,13 @@ export class Update {
         this.accumulator = 0;
     }
 
-    update(player, projectiles, entities) {
+    update(engine, player, entities, projectiles) {
         const dt = this.getDelta(this.stepSize)
-        this.physics(entities, projectiles, player, dt)
+        this.updatePlayer(engine, dt, player);
+        this.updateEntities(projectiles, dt);
+        this.updateEntities(entities, dt);
+        this.physics(dt, engine, player, entities, projectiles)
+
     }
 
     updateEntities(entities, dt) {
@@ -20,8 +24,10 @@ export class Update {
         }
     }
 
-    updatePlayer(player, dt) {
-        player.update(dt);
+    updatePlayer(engine, dt, player) {
+        this.handleInputs(engine, dt, player);
+        Update.Physics.Movement.rotateShape(player, dt);
+        Update.Physics.Movement.wrap(player)
     }
 
     updateEntity(entity, dt, entities) {
@@ -31,22 +37,32 @@ export class Update {
         }
     }
 
-    physics(entities, projectiles, player, dt) {
-        this.getPhysicsDelta(entities, projectiles, player, dt);
+    handleInputs(engine, dt, entity) {
+        if (Input.mouseInputObject["2"]) {
+            Update.Physics.Movement.moveTowardsTarget(dt, entity, Helper.Cursor.mouseC, entity.speedScaling);
+        }
+        if (Input.mouseInputObject[0]) {
+            this.shootProjectile(entity, engine);
+        }
     }
 
+    physics(dt, engine, player, entities, projectiles) {
+        this.getPhysicsDelta(dt, engine, player, entities, projectiles);
+    }
 
-    getPhysicsDelta(entities, projectiles, player, dt) {
+    shootProjectile(player, engine) {
+        const mousePos = Helper.Cursor.mouseC;
+        const angle = Helper.Math.Trig.getAngleBetweenEntities(player, mousePos);
+        Spawner.spawnProjectile(engine, player.pos, angle);
+    }
+
+    getPhysicsDelta(dt, engine, player, entities, projectiles) {
         let pdt = 0.01;
         this.accumulator += dt;
         while (this.accumulator >= pdt) {
             this.accumulator -= pdt;
             this.detectEntityToEntitiesCollision(player, entities);
-            this.detectEntitiesToEntitiesCollisions(projectiles, entities);
-            this.updatePlayer(player, dt);
-            this.updateEntities(projectiles, dt);
-            this.updateEntities(entities, dt);
-
+            this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
         }
     }
 
@@ -78,7 +94,7 @@ export class Update {
         }
     }
 
-    detectEntitiesToEntitiesCollisions(entities1, entities2) {
+    detectEntitiesToEntitiesCollisions(engine, entities1, entities2) {
         if (entities2.length <= 0) {
             return 0;
         }
@@ -97,7 +113,7 @@ export class Update {
             }
             if (this.checkCircleCollision(entity1, closestEntity)) {
                 Update.EntityMethods.killEntity(entity1, entities1);
-                Engine.Spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
+                Spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
                 Update.EntityMethods.killEntity(closestEntity, entities2);
             }
         }
@@ -136,6 +152,12 @@ export class Update {
                 entity.pos.x += (speed * speedScaling * Math.cos(angle) * dt);
                 entity.pos.y += (speed * speedScaling * Math.sin(angle) * dt);
             }
+            static wrap(entity) {
+                const wrapDestination = Helper.EntityMethods.isOutsideCanvas(entity)
+                if (wrapDestination) {
+                    Helper.EntityMethods.wrapTo(entity, wrapDestination);
+                }
+            }
             static moveTowardsTarget(dt, entity, target, speedScaling) {
                 const distance = Helper.Math.Geometry.getDistanceBetweenEntities(entity, target);
                 const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
@@ -163,3 +185,4 @@ export class Update {
         }
     }
 }
+

@@ -1,14 +1,10 @@
 import { Engine } from "./Engine.js"
-import { Update } from "./Update.js";
 
-const asteroidAmount = 10;
-const physics = new Update(6);
-export const engine = new Engine(physics);
+export const engine = new Engine();
 
-Engine.Spawner.spawnPlayer(engine);
-Engine.Spawner.spawnAsteroids(engine, asteroidAmount);
+engine.initialize(6, 10);
 engine.start();
 
-
-
-
+window.addEventListener('keydown', e => {
+    engine.switchPauseState(e);
+});
