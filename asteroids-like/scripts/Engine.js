@@ -1,11 +1,11 @@
 import { Asteroid } from "./Asteroid.js";
 import { CanvasClass } from "./Canvas.js";
 import { Draw } from "./Draw.js";
-import { Helper } from "./HelperFunctions.js";
 import { Menu } from "./Menu.js";
 import { Player } from "./Player.js";
 import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
+import { Helper } from "./HelperFunctions.js";
 
 export class Engine {
     constructor(physics) {
