@@ -2,12 +2,14 @@ import { Asteroid } from "./Asteroid.js";
 import { CanvasClass } from "./Canvas.js";
 import { Draw } from "./Draw.js";
 import { Helper } from "./HelperFunctions.js";
+import { Menu } from "./Menu.js";
 import { Player } from "./Player.js";
 import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
 
 export class Engine {
     constructor(physics) {
+        this.menu = new Menu();
         this.physics = physics;
         this.entities = [];
         this.projectiles = [];
@@ -72,11 +74,14 @@ export class Engine {
     start() {
         function gameLoop() {
             if (this.paused) {
+                this.menu.pauseMsg = "Press P to resume the game";
+                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", this.menu, this.player, this.projectiles, this.entities);
                 return 0;
-            } else {
-                const player = this.player;                
-                this.physics.update(player, this.projectiles, this.entities);
-                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", player, this.projectiles, this.entities);
+            } else {           
+                this.physics.update(this.player, this.projectiles, this.entities);
+                this.menu.lives = this.player.lives;
+                this.menu.pauseMsg = "Press P to pause the game";
+                Draw.canvasMethods.drawScreen(CanvasClass.canvas, "black", this.menu, this.player, this.projectiles, this.entities);
                 requestAnimationFrame(gameLoop.bind(this));
             }
         }

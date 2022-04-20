@@ -9,18 +9,30 @@ body {
     background: #333;
 }
 
-#canvas-element {
+#canvas-game {
+    position: absolute;
     background: black;
-    width: 100vw;
-    height: 95vh;
+    width: 800;
+    height: 600;
     user-select: none;
+    z-index: 0;
+}
+#canvas-menu {
+    position: absolute;
+    background: black;
+    width: 800;
+    height: 600;
+    user-select: none;
+    z-index: 1;
+    background-color: transparent;
 }
 
-.container {
+.canvas-stack {
     display: flex;
     flex-direction: column;
 
     align-items: center;
+    justify-content: center;
     width: 100vw;
     height: 100vh;
     position: absolute;

@@ -1,7 +1,7 @@
 import { Engine } from "./Engine.js"
 import { Update } from "./Update.js";
 
-const asteroidAmount = 20;
+const asteroidAmount = 10;
 const physics = new Update(6);
 export const engine = new Engine(physics);
 

@@ -21,12 +21,15 @@ export class Player extends Geometry {
     update(dt) {
         Update.Physics.Movement.rotateShape(this, dt);
         Helper.Movement.wrap(this)
-        if (Input.getButton(2)) {
+        this.handleInputs(dt);
+    }
+
+    handleInputs(dt) {
+        if (Input.mouseInputObject["2"]) {
             Update.Physics.Movement.moveTowardsTarget(dt, this, Helper.Cursor.mouseC, this.speedScaling);
         }
-        if (Input.mouseBtnReleased === 0) {
+        if (Input.mouseInputObject[0]) {
             this.shootProjectile();
-            Input.mouseBtnReleased = undefined;
         }
     }
 
@@ -38,8 +41,18 @@ export class Player extends Geometry {
 
     onCollision() {
         
+        this.reduceLives();
+        
 
-        this.lives--;
+    }
 
+    reduceLives() {
+        if (this.lives > 0) {
+            this.lives--;
+        }
+
+        if (this.lives < 0) {
+            this.lives = 0;
+        }
     }
 }

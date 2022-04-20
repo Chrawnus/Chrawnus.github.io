@@ -1,7 +1,6 @@
 import { Engine } from "./Engine.js";
 import { engine } from "./app.js";
 import { Helper } from "./HelperFunctions.js";
-import { Input } from "./Input.js";
 
 export class Update {
     constructor(stepSize) {

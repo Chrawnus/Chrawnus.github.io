@@ -1,5 +1,6 @@
 import { engine } from "./app.js";
 
+
 export class Input {
     static keyInputObject = {
         "KeyP": false
@@ -13,12 +14,8 @@ export class Input {
         "4": false              // forward side button
     }
     static mouseButtonArray = [];
-    static getKey(code) {
-        return Input.keyArray.includes(code);
-    }
-    static getButton(button) {
-        return Input.mouseButtonArray.includes(button);
-    }
+
+
 
     static switchPauseState(e) {
         if (e.code !== "KeyP") {
@@ -38,15 +35,12 @@ export class Input {
 }
 
 window.addEventListener('keydown', e => {
-    const isKeyinObject = e.code in Input.keyInputObject;
-
     Input.keyInputObject[e.code] = true;
     console.log(Input.keyInputObject)
     Input.switchPauseState(e);
 });
 
 window.addEventListener('keyup', e => {
-    const isKeyinObject = e.code in Input.keyInputObject;
     Input.keyInputObject[e.code] = false;
     console.log(Input.keyInputObject)
 
@@ -54,13 +48,9 @@ window.addEventListener('keyup', e => {
 });
 
 window.addEventListener("mousedown", e => {
-    if (!Input.mouseButtonArray.includes(e.button)) {
-        Input.mouseButtonArray.push(e.button);
-    }
-    Input.mouseBtnPressed = e.button;
+    Input.mouseInputObject[e.button] = true;
 });
 
 window.addEventListener("mouseup", e => {
-    Input.mouseButtonArray.splice(Input.mouseButtonArray.indexOf(e.button), 1);
-    Input.mouseBtnReleased = e.button;
+    Input.mouseInputObject[e.button] = false;
 });
