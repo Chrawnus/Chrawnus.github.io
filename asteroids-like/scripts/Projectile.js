@@ -1,6 +1,5 @@
 import { Draw } from "./Draw.js";
 import { Geometry } from "./Geometry.js";
-import { Helper } from "./HelperFunctions.js";
 import { Update } from "./Update.js";
 
 export class Projectile extends Geometry{
@@ -21,7 +20,7 @@ export class Projectile extends Geometry{
 
     update(dt) {
         Update.EntityMethods.updateLifetime(dt, this);
-        Helper.Movement.wrap(this)
+        Update.Physics.Movement.wrap(this)
         Update.Physics.Movement.move(dt, this, this.speed, this.speedScaling, this.angle);
     }
 }
