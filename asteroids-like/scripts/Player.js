@@ -1,16 +1,15 @@
 import { Geometry } from "./Geometry.js";
-import { Helper } from "./HelperFunctions.js";
 
 export class Player extends Geometry {
-    constructor(pos, sideNumber, radius) {
-        super(pos, sideNumber, radius)
+    constructor(x, y, sideNumber, radius) {
+        super(x, y, sideNumber, radius)
         this.radius = radius;
         this.hitboxRadius = radius * 0.50;
         this.speed = 450;
         this.speedScaling = 10;
-        this.rotationAngle = Helper.Movement.getRotationAngle(this);
+        this.rotationAngle = 0;
         this.rotationSpeed = 0;
-        this.points = Helper.EntityMethods.getVertexPoints(this);
+        this.points = this.getVertexPoints();
         this.lives = 3;
     }
 

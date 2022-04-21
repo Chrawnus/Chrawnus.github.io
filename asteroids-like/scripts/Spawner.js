@@ -1,16 +1,14 @@
 import { Player } from "./Player.js";
-import { Point2d } from "./Point2d.js";
 import { Projectile } from "./Projectile.js";
 import { Helper } from "./HelperFunctions.js";
 import { Asteroid } from "./Asteroid.js";
-import { Draw } from "./Draw.js";
 
 export class Spawner {
     static spawnAsteroids(engine, count) {
         const radius = [15, 30, 60]
         for (let i = 0; i < count; i++) {
-            const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, Draw.Canvas.gameScreen.width)),
-                y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, Draw.Canvas.gameScreen.height)),
+            const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.width)),
+                y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.height)),
                 sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
                 angle = Math.floor(Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2));
             this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
@@ -38,21 +36,22 @@ export class Spawner {
     }
 
     static spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
-        const pos = new Point2d(x, y);
         const randomRadiiSelector = Helper.Math.Random.getRandomInt(0, radius.length);
-        const asteroid = new Asteroid(pos, sideNumber, radius[randomRadiiSelector], angle)
+        const asteroid = new Asteroid(x, y, sideNumber, radius[randomRadiiSelector], angle)
         engine.addEntity(asteroid);
     }
 
     static spawnPlayer(engine) {
-        const pos = new Point2d(Draw.Canvas.gameScreen.width / 2, Draw.Canvas.gameScreen.height / 2)
-        const player = new Player(pos, 3, 30)
+        const x = engine.canvas.width / 2;
+        const y = engine.canvas.height / 2;
+        const player = new Player(x, y, 3, 30)
         engine.player = player;
     }
 
     static spawnProjectile(engine, shooterPosition, shooterAngle) {
-        const position = new Point2d(shooterPosition.x, shooterPosition.y);
-        const bullet = new Projectile(position, shooterAngle);
+        const x = shooterPosition.x;
+        const y = shooterPosition.y;
+        const bullet = new Projectile(x, y, shooterAngle);
         engine.addProjectile(bullet);
     }
 }

@@ -15,8 +15,8 @@ export class Draw {
             menu.draw(UICtx);
             Draw.canvasMethods.clearCanvas(Draw.Canvas.gameScreen, gameCtx, backgroundColor);
             Draw.drawPlayer(gameCtx, player);
-            Draw.drawEntities(gameCtx, projectiles);
             Draw.drawEntities(gameCtx, entities);
+            Draw.drawProjectiles(gameCtx, projectiles);
             gameCtx.scale(Draw.Canvas.scaleX, Draw.Canvas.scaleY)
         }
 
@@ -38,12 +38,31 @@ export class Draw {
     static drawEntities(ctx, entities) {
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
-            entity.draw(ctx);
+            ctx.save();
+            Draw.canvasMethods.translateOriginToEntity(ctx, entity);
+            Draw.canvasMethods.rotateCanvasAroundEntity(ctx, entity);
+            Draw.Geometry.drawShape(ctx, entity.points, entity.strokeStyle);
+            ctx.restore();
+            Draw.Geometry.drawCircle(ctx, "red", 2, entity.pos, entity.hitboxRadius) //hitbox
         }
     }
 
+    static drawProjectiles(ctx, projectiles) {
+        for (let i = 0; i < projectiles.length; i++) {
+            const projectile = projectiles[i];
+            Draw.Geometry.drawCircle(ctx, "white", 1, projectile.pos, projectile.radius);
+        }
+    }
+
+    
+
     static drawPlayer(ctx, player) {
-        player.draw(ctx);
+        ctx.save();
+        Draw.canvasMethods.translateOriginToEntity(ctx, player);
+        Draw.canvasMethods.rotateCanvasAroundEntity(ctx, player);
+        Draw.Geometry.drawShape(ctx, player.points, player.strokeStyle);
+        ctx.restore();
+        Draw.Geometry.drawCircle(ctx, "red", 2, player.pos, player.hitboxRadius) //hitbox
     }
 
     static Geometry = class {

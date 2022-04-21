@@ -6,6 +6,8 @@ import { Spawner } from "./Spawner.js";
 
 export class Engine {
     constructor() {
+        this.canvas = Draw.Canvas.gameScreen;
+
         this.menu = new Menu();
         this.update = new Update(6);
         this.entities = [];
@@ -16,23 +18,26 @@ export class Engine {
     }
 
 
-    initialize(stepSize, asteroidAmount) {
+    initialize(stepSize, canvasWidth, canvasHeight, asteroidAmount) {
         this.update = new Update(stepSize);
+        this.canvas.width = canvasWidth;
+        this.canvas.height = canvasHeight;
         Spawner.spawnPlayer(this);
         Spawner.spawnAsteroids(this, asteroidAmount);
+
     }
 
     start() {
         function gameLoop() {
             if (this.paused) {
                 this.menu.pauseMsg = "Press P to resume the game";
-                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.projectiles, this.entities);
+                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
                 return 0;
             } else {           
                 this.update.update(this, this.player, this.entities, this.projectiles);
                 this.menu.lives = this.player.lives;
                 this.menu.pauseMsg = "Press P to pause the game";
-                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.projectiles, this.entities);
+                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
                 requestAnimationFrame(gameLoop.bind(this));
             }
         }

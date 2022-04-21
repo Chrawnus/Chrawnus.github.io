@@ -1,10 +1,9 @@
 import { Geometry } from "./Geometry.js";
 import { Helper } from "./HelperFunctions.js";
-import { Update } from "./Update.js";
 
 export class Asteroid extends Geometry {
-    constructor(pos, sideNumber, radius, angle) {
-        super(pos, sideNumber, radius);
+    constructor(x, y, sideNumber, radius, angle) {
+        super(x, y, sideNumber, radius);
         this.angle = angle;
         this.hitboxRadius = this.radius;
         this.offsets = this.addOffsets();
@@ -12,12 +11,6 @@ export class Asteroid extends Geometry {
         this.speedScaling = 1;
         this.rotationSpeed = Helper.Math.Random.getRandomArbitrary((Math.PI*2) * -1, Math.PI*2);
         this.rotationAngle = 0;
-        this.points = Helper.EntityMethods.getVertexPoints(this);
-    }
-
-    update(dt) {
-        Update.Physics.Movement.rotateShape(this, dt);
-        Update.Physics.Movement.wrap(this)
-        Update.Physics.Movement.move(dt, this, this.speed, this.speedScaling, this.angle); 
+        this.points = this.getVertexPoints();
     }
 }

@@ -11,35 +11,48 @@ export class Update {
     update(engine, player, entities, projectiles) {
         const dt = this.getDelta(this.stepSize)
         this.updatePlayer(engine, dt, player);
-        this.updateEntities(projectiles, dt);
-        this.updateEntities(entities, dt);
+        this.updateProjectiles(engine, dt, projectiles);
+        this.updateEntities(engine, entities, dt);
         this.physics(dt, engine, player, entities, projectiles)
 
     }
 
-    updateEntities(entities, dt) {
+    updateEntities(engine, entities, dt) {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            this.updateEntity(entity, dt, entities);
+            Update.Physics.Movement.rotateShape(entity, dt);
+            Update.Physics.Movement.wrap(engine.canvas, entity)
+            Update.Physics.Movement.move(dt, entity, entity.speed, entity.speedScaling, entity.angle); 
         }
     }
 
     updatePlayer(engine, dt, player) {
         this.handleInputs(engine, dt, player);
         Update.Physics.Movement.rotateShape(player, dt);
-        Update.Physics.Movement.wrap(player)
+        Update.Physics.Movement.wrap(engine.canvas, player)
     }
 
-    updateEntity(entity, dt, entities) {
-        entity.update(dt);
-        if (Update.EntityMethods.isOutOfLifetime(entity)) {
-            Update.EntityMethods.killEntity(entity, entities);
+    updateProjectiles(engine, dt, projectiles) {
+        for (let i = 0; i < projectiles.length; i++) {
+            const projectile = projectiles[i];
+            Update.EntityMethods.updateLifetime(dt, projectile);
+            if (Update.EntityMethods.isOutOfLifetime(projectile)) {
+                Update.EntityMethods.killEntity(projectile, projectiles);
+            }
+            Update.Physics.Movement.wrap(engine.canvas, projectile)
+            Update.Physics.Movement.move(dt, projectile, projectile.speed, projectile.speedScaling, projectile.angle);
         }
+
+    }
+
+    updateEntity(entity, dt) {
+        entity.update(dt);
+
     }
 
     handleInputs(engine, dt, entity) {
         if (Input.mouseInputObject["2"]) {
-            Update.Physics.Movement.moveTowardsTarget(dt, entity, Helper.Cursor.mouseC, entity.speedScaling);
+            Update.Physics.Movement.moveTowardsTarget(dt, entity, Input.Cursor.mouseC, entity.speedScaling);
         }
         if (Input.mouseInputObject[0]) {
             this.shootProjectile(entity, engine);
@@ -51,7 +64,7 @@ export class Update {
     }
 
     shootProjectile(player, engine) {
-        const mousePos = Helper.Cursor.mouseC;
+        const mousePos = Input.Cursor.mouseC;
         const angle = Helper.Math.Trig.getAngleBetweenEntities(player, mousePos);
         Spawner.spawnProjectile(engine, player.pos, angle);
     }
@@ -152,10 +165,10 @@ export class Update {
                 entity.pos.x += (speed * speedScaling * Math.cos(angle) * dt);
                 entity.pos.y += (speed * speedScaling * Math.sin(angle) * dt);
             }
-            static wrap(entity) {
-                const wrapDestination = Helper.EntityMethods.isOutsideCanvas(entity)
+            static wrap(canvas, entity) {
+                const wrapDestination = Helper.EntityMethods.isOutsideCanvas(canvas, entity)
                 if (wrapDestination) {
-                    Helper.EntityMethods.wrapTo(entity, wrapDestination);
+                    Helper.EntityMethods.wrapTo(canvas, entity, wrapDestination);
                 }
             }
             static moveTowardsTarget(dt, entity, target, speedScaling) {
@@ -167,7 +180,7 @@ export class Update {
                 if (shape.rotationSpeed) {
                     shape.rotationAngle += shape.rotationSpeed * dt;
                 } else {
-                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape);
+                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape, Input.Cursor.mouseC);
                 }
             }
         }

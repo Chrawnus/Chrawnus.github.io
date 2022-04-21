@@ -1,10 +1,10 @@
-import { Draw } from "./Draw.js";
 import { Helper } from "./HelperFunctions.js";
+import { Point2d } from "./Point2d.js";
 
 export class Geometry {
-    constructor(pos, sideNumber, radius) {
+    constructor(x, y, sideNumber, radius) {
         this.angle = 0;
-        this.pos = pos;
+        this.pos = new Point2d(x, y);
         this.sideNumber = sideNumber;
         this.offsets = new Array(this.sideNumber).fill(0);
         this.radius = radius;
@@ -21,16 +21,17 @@ export class Geometry {
         return offsetArr;
     }
 
-    update(dt) {
-
-    }
-
-    draw(ctx) {
-        ctx.save();
-        Draw.canvasMethods.translateOriginToEntity(ctx, this);
-        Draw.canvasMethods.rotateCanvasAroundEntity(ctx, this);
-        Draw.Geometry.drawShape(ctx, this.points, this.strokeStyle);
-        ctx.restore();
-        Draw.Geometry.drawCircle(ctx, "red", 2, this.pos, this.hitboxRadius) //hitbox
+    getVertexPoints() {
+        const pArr = [];
+        let angleTotal = Math.PI * 2;
+        for (let i = 0; i < this.sideNumber; i++) {
+            let angle = angleTotal * (i / this.sideNumber);
+            const r = this.radius + this.offsets[i];
+            const x = r * Math.cos(angle);
+            const y = r * Math.sin(angle);
+            const point = new Point2d(x, y)
+            pArr.push(point)
+        }
+        return pArr
     }
 }

@@ -1,6 +1,3 @@
-import { Draw } from "./Draw.js";
-import { Point2d } from "./Point2d.js";
-
 export class Helper {
     static ArrayFunctions = class {
         /*
@@ -27,36 +24,12 @@ export class Helper {
     }
     static Movement = class {
 
-        static getRotationAngle(entity) {
-            const mouseCoord = Helper.Cursor.mouseC;
-            return Helper.Math.Trig.getAngleBetweenEntities(entity, mouseCoord);
+        static getRotationAngle(entity, cursor) {
+            return Helper.Math.Trig.getAngleBetweenEntities(entity, cursor);
         }
     }
 
-    static Cursor = class {
-        static mouseC = {
-            pos: {
-                x: 0,
-                y: 0
-            }
-        };
 
-        static getCursorPos(evt) {
-            const rect = Draw.Canvas.gameScreen.getBoundingClientRect(), // abs. size of element
-                scaleX = Draw.Canvas.gameScreen.width / rect.width,    // relationship bitmap vs. element for x
-                scaleY = Draw.Canvas.gameScreen.height / rect.height;  // relationship bitmap vs. element for y
-            this.mouseC.pos.x = (evt.clientX - rect.left) * scaleX;
-            this.mouseC.pos.y = (evt.clientY - rect.top) * scaleY;
-        }
-
-        static getX() {
-            return this.mouseC.x;
-        }
-
-        static getY() {
-            return this.mouseC.y;
-        }
-    }
 
     static Math = class {
         static Geometry = class {
@@ -165,26 +138,10 @@ export class Helper {
     }
 
     static EntityMethods = class {
-        //Determine the endpoint of a line given an angle, length,
-        //and starting point [x, y]
-        static getVertexPoints(entity) {
-            const pArr = [];
-            let angleTotal = Math.PI * 2;
-            for (let i = 0; i < entity.sideNumber; i++) {
-                let angle = angleTotal * (i / entity.sideNumber);
-                const r = entity.radius + entity.offsets[i];
-                const x = r * Math.cos(angle);
-                const y = r * Math.sin(angle);
-                const point = new Point2d(x, y)
-                pArr.push(point)
-            }
-            return pArr
-        }
-
-        static isOutsideCanvas(entity) {
-            const isOutsideRightCanvasBoundary = entity.pos.x > Draw.Canvas.gameScreen.width + entity.radius;
+        static isOutsideCanvas(canvas, entity) {
+            const isOutsideRightCanvasBoundary = entity.pos.x > canvas.width + entity.radius;
             const isOutsideLeftCanvasBoundary = entity.pos.x < -entity.radius;
-            const isBelowCanvasBoundary = entity.pos.y > Draw.Canvas.gameScreen.height + entity.radius;
+            const isBelowCanvasBoundary = entity.pos.y > canvas.height + entity.radius;
             const isAboveCanvasBoundary = entity.pos.y < -entity.radius;
             if (isOutsideRightCanvasBoundary) {
                 return "left";
@@ -200,11 +157,11 @@ export class Helper {
             }
         };
         
-        static wrapTo(entity, boundary) {
+        static wrapTo(canvas, entity, boundary) {
             const leftOfCanvas = -entity.radius;
-            const RightOfCanvas = Draw.Canvas.gameScreen.width + entity.radius;
+            const RightOfCanvas = canvas.width + entity.radius;
             const aboveCanvas = -entity.radius;
-            const belowCanvas = Draw.Canvas.gameScreen.height + entity.radius;
+            const belowCanvas = canvas.height + entity.radius;
         
             if (boundary === "left") {
                 entity.pos.x = leftOfCanvas;
@@ -222,6 +179,4 @@ export class Helper {
 
 
 
-window.addEventListener("mousemove", function (e) {
-    Helper.Cursor.getCursorPos(e);
-});
+
