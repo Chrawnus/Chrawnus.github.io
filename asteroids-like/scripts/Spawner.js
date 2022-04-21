@@ -4,7 +4,10 @@ import { Helper } from "./HelperFunctions.js";
 import { Asteroid } from "./Asteroid.js";
 
 export class Spawner {
-    static spawnAsteroids(engine, count) {
+    constructor() {
+
+    }
+    spawnAsteroids(engine, count) {
         const radius = [15, 30, 60]
         for (let i = 0; i < count; i++) {
             const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.width)),
@@ -15,7 +18,7 @@ export class Spawner {
         }
     }
 
-    static spawnAsteroidsFromAsteroid(engine, asteroid) {
+    spawnAsteroidsFromAsteroid(engine, asteroid) {
         const allowedRadii = [15, 30, 60]
         for (let i = allowedRadii.length - 1; i >= 0; i--) {
             if (allowedRadii[i] >= asteroid.radius) {
@@ -35,20 +38,20 @@ export class Spawner {
         }
     }
 
-    static spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
+    spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
         const randomRadiiSelector = Helper.Math.Random.getRandomInt(0, radius.length);
         const asteroid = new Asteroid(x, y, sideNumber, radius[randomRadiiSelector], angle)
         engine.addEntity(asteroid);
     }
 
-    static spawnPlayer(engine) {
+    spawnPlayer(engine) {
         const x = engine.canvas.width / 2;
         const y = engine.canvas.height / 2;
         const player = new Player(x, y, 3, 30)
         engine.player = player;
     }
 
-    static spawnProjectile(engine, shooterPosition, shooterAngle) {
+    spawnProjectile(engine, shooterPosition, shooterAngle) {
         const x = shooterPosition.x;
         const y = shooterPosition.y;
         const bullet = new Projectile(x, y, shooterAngle);

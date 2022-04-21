@@ -7,9 +7,11 @@ import { Spawner } from "./Spawner.js";
 export class Engine {
     constructor() {
         this.canvas = Draw.Canvas.gameScreen;
-
         this.menu = new Menu();
         this.update = new Update(6);
+        this.input = new Input();
+        this.spawner = new Spawner();
+        console.log(this.spawner)
         this.entities = [];
         this.projectiles = [];
         this.player;
@@ -22,8 +24,8 @@ export class Engine {
         this.update = new Update(stepSize);
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
-        Spawner.spawnPlayer(this);
-        Spawner.spawnAsteroids(this, asteroidAmount);
+        this.spawner.spawnPlayer(this);
+        this.spawner.spawnAsteroids(this, asteroidAmount);
 
     }
 
@@ -56,13 +58,10 @@ export class Engine {
         if (e.code !== "KeyP") {
             return 0
         }
-
-        if (Input.keyInputObject["KeyP"] !== false) {
-            this.paused = !this.paused;
-            if (this.paused === false) {
-                this.dt = 0;
-                this.start();
-            }
+        this.paused = !this.paused;
+        if (this.paused === false) {
+            this.dt = 0;
+            this.start();
         }
     }
 }

@@ -1,6 +1,4 @@
-import { Spawner } from "./Spawner.js";
 import { Helper } from "./HelperFunctions.js";
-import { Input } from "./Input.js";
 
 export class Update {
     constructor(stepSize) {
@@ -20,7 +18,7 @@ export class Update {
     updateEntities(engine, entities, dt) {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            Update.Physics.Movement.rotateShape(entity, dt);
+            Update.Physics.Movement.rotateShape(engine, dt, entity);
             Update.Physics.Movement.wrap(engine.canvas, entity)
             Update.Physics.Movement.move(dt, entity, entity.speed, entity.speedScaling, entity.angle); 
         }
@@ -28,7 +26,7 @@ export class Update {
 
     updatePlayer(engine, dt, player) {
         this.handleInputs(engine, dt, player);
-        Update.Physics.Movement.rotateShape(player, dt);
+        Update.Physics.Movement.rotateShape(engine, dt, player);
         Update.Physics.Movement.wrap(engine.canvas, player)
     }
 
@@ -51,10 +49,10 @@ export class Update {
     }
 
     handleInputs(engine, dt, entity) {
-        if (Input.mouseInputObject["2"]) {
-            Update.Physics.Movement.moveTowardsTarget(dt, entity, Input.Cursor.mouseC, entity.speedScaling);
+        if (engine.input.mouseInputObject["2"]) {
+            Update.Physics.Movement.moveTowardsTarget(dt, entity, engine.input.Cursor.mouseC, entity.speedScaling);
         }
-        if (Input.mouseInputObject[0]) {
+        if (engine.input.mouseInputObject[0]) {
             this.shootProjectile(entity, engine);
         }
     }
@@ -64,9 +62,9 @@ export class Update {
     }
 
     shootProjectile(player, engine) {
-        const mousePos = Input.Cursor.mouseC;
+        const mousePos = engine.input.Cursor.mouseC;
         const angle = Helper.Math.Trig.getAngleBetweenEntities(player, mousePos);
-        Spawner.spawnProjectile(engine, player.pos, angle);
+        engine.spawner.spawnProjectile(engine, player.pos, angle);
     }
 
     getPhysicsDelta(dt, engine, player, entities, projectiles) {
@@ -126,7 +124,7 @@ export class Update {
             }
             if (this.checkCircleCollision(entity1, closestEntity)) {
                 Update.EntityMethods.killEntity(entity1, entities1);
-                Spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
+                engine.spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
                 Update.EntityMethods.killEntity(closestEntity, entities2);
             }
         }
@@ -176,11 +174,11 @@ export class Update {
                 const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
                 this.move(dt, entity, distance, speedScaling, angle);
             }
-            static rotateShape(shape, dt) {
+            static rotateShape(engine, dt, shape) {
                 if (shape.rotationSpeed) {
                     shape.rotationAngle += shape.rotationSpeed * dt;
                 } else {
-                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape, Input.Cursor.mouseC);
+                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape, engine.input.Cursor.mouseC);
                 }
             }
         }
