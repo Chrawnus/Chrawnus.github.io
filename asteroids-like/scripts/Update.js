@@ -8,11 +8,11 @@ export class Update {
 
     update(engine, player, entities, projectiles) {
         const dt = this.getDelta(this.stepSize)
+        this.detectEntityToEntitiesCollision(player, entities);
+        this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
         this.updatePlayer(engine, dt, player);
         this.updateProjectiles(engine, dt, projectiles);
         this.updateEntities(engine, entities, dt);
-        this.physics(dt, engine, player, entities, projectiles)
-
     }
 
     updateEntities(engine, entities, dt) {
@@ -45,36 +45,31 @@ export class Update {
 
     updateEntity(entity, dt) {
         entity.update(dt);
-
     }
 
     handleInputs(engine, dt, entity) {
+
         if (engine.input.mouseInputObject["2"]) {
             Update.Physics.Movement.moveTowardsTarget(dt, entity, engine.input.Cursor.mouseC, entity.speedScaling);
+            engine.input.rightButtonDelay = engine.input.mouseInputObject["0"] ? 0.02 : engine.input.rightButtonDelay;
         }
-        if (engine.input.mouseInputObject[0]) {
+        if (engine.input.mouseInputObject["0"] && engine.input.leftButtonDelay === 0) {
+            engine.input.leftButtonDelay = 0.3
             this.shootProjectile(entity, engine);
         }
-    }
 
-    physics(dt, engine, player, entities, projectiles) {
-        this.getPhysicsDelta(dt, engine, player, entities, projectiles);
+        if(engine.input.leftButtonDelay > 0) {
+            engine.input.leftButtonDelay -= dt;
+            if (engine.input.leftButtonDelay < 0) {
+                engine.input.leftButtonDelay = 0;
+            }
+        }
     }
 
     shootProjectile(player, engine) {
         const mousePos = engine.input.Cursor.mouseC;
         const angle = Helper.Math.Trig.getAngleBetweenEntities(player, mousePos);
         engine.spawner.spawnProjectile(engine, player.pos, angle);
-    }
-
-    getPhysicsDelta(dt, engine, player, entities, projectiles) {
-        let pdt = 0.01;
-        this.accumulator += dt;
-        while (this.accumulator >= pdt) {
-            this.accumulator -= pdt;
-            this.detectEntityToEntitiesCollision(player, entities);
-            this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
-        }
     }
 
     getDelta(now) {
@@ -172,7 +167,8 @@ export class Update {
             static moveTowardsTarget(dt, entity, target, speedScaling) {
                 const distance = Helper.Math.Geometry.getDistanceBetweenEntities(entity, target);
                 const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
-                this.move(dt, entity, distance, speedScaling, angle);
+                
+                this.move(dt, entity, entity.speed*distance*dt, speedScaling, angle);
             }
             static rotateShape(engine, dt, shape) {
                 if (shape.rotationSpeed) {

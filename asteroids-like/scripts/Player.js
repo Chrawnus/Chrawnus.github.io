@@ -5,7 +5,7 @@ export class Player extends Shape {
         super(x, y, sideNumber, radius)
         this.radius = radius;
         this.hitboxRadius = radius * 0.50;
-        this.speed = 450;
+        this.speed = 50;
         this.speedScaling = 10;
         this.rotationAngle = 0;
         this.rotationSpeed = 0;

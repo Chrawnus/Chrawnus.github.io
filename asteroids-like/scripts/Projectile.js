@@ -10,12 +10,4 @@ export class Projectile extends Shape{
         this.angle = angle;
         this.lifetime = 0.3;
     }
-
-    draw(ctx) {
-        
-    }
-
-    update(dt) {
-
-    }
 }

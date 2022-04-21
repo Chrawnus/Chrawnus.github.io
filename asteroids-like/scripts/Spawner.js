@@ -8,7 +8,7 @@ export class Spawner {
 
     }
     spawnAsteroids(engine, count) {
-        const radius = [15, 30, 60]
+        const radius = 60;
         for (let i = 0; i < count; i++) {
             const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.width)),
                 y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.height)),
@@ -34,11 +34,16 @@ export class Spawner {
                 y = asteroid.pos.y,
                 sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
                 angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
-            this.spawnAsteroid(engine, x, y, sideNumber, allowedRadii, angle);
+            this.spawnAsteroidFromAsteroid(engine, x, y, sideNumber, allowedRadii, angle);
         }
     }
 
     spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
+        const asteroid = new Asteroid(x, y, sideNumber, radius, angle)
+        engine.addEntity(asteroid);
+    }
+
+    spawnAsteroidFromAsteroid(engine, x, y, sideNumber, radius, angle) {
         const randomRadiiSelector = Helper.Math.Random.getRandomInt(0, radius.length);
         const asteroid = new Asteroid(x, y, sideNumber, radius[randomRadiiSelector], angle)
         engine.addEntity(asteroid);

@@ -11,6 +11,10 @@ export class Input {
             "3": false,             // back side button
             "4": false              // forward side button
         }
+
+        this.leftButtonDelay = 0;
+        this.rightButtonDelay = 0;
+        
         this.Cursor = class {
             static mouseC = {
                 pos: {
