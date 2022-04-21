@@ -41,15 +41,15 @@ export class Helper {
                 return { dx, dy };
             }
             static getDeltaX(entity1, entity2) {
-                const x1 = Math.floor(entity1.pos.x);
-                const x2 = Math.floor(entity2.pos.x);
+                const x1 = entity1.pos.x;
+                const x2 = entity2.pos.x;
                 const dx = x2 - x1
                 return dx;
             }
 
             static getDeltaY(entity1, entity2) {
-                const y1 = Math.floor(entity1.pos.y);
-                const y2 = Math.floor(entity2.pos.y);
+                const y1 = entity1.pos.y;
+                const y2 = entity2.pos.y;
                 const dy = y2 - y1
                 return dy;
             }
@@ -72,7 +72,7 @@ export class Helper {
         static Trig = class {
             static getAngleBetweenEntities(entity1, entity2) {
                 const { dx, dy } = Helper.Math.Geometry.getDeltas(entity1, entity2);
-                const angle = Math.atan2(dy, dx).toFixed(4);
+                const angle = Math.atan2(dy, dx);
                 return angle;
             }
         }
