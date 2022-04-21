@@ -178,7 +178,7 @@ export class Update {
                 if (shape.rotationSpeed) {
                     shape.rotationAngle += shape.rotationSpeed * dt;
                 } else {
-                    shape.rotationAngle = Helper.Movement.getRotationAngle(shape, engine.input.Cursor.mouseC);
+                    shape.rotationAngle = Helper.Math.Trig.getAngleBetweenEntities(shape, engine.input.Cursor.mouseC);
                 }
             }
         }
