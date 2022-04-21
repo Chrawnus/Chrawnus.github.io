@@ -11,7 +11,6 @@ export class Engine {
         this.update = new Update(6);
         this.input = new Input();
         this.spawner = new Spawner();
-        console.log(this.spawner)
         this.entities = [];
         this.projectiles = [];
         this.player;
