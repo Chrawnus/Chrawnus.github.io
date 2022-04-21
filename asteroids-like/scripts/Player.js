@@ -1,6 +1,6 @@
-import { Geometry } from "./Geometry.js";
+import { Shape } from "./Shape.js";
 
-export class Player extends Geometry {
+export class Player extends Shape {
     constructor(x, y, sideNumber, radius) {
         super(x, y, sideNumber, radius)
         this.radius = radius;

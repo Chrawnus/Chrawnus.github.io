@@ -17,7 +17,6 @@ export class Draw {
             Draw.drawPlayer(gameCtx, player);
             Draw.drawEntities(gameCtx, entities);
             Draw.drawProjectiles(gameCtx, projectiles);
-            gameCtx.scale(Draw.Canvas.scaleX, Draw.Canvas.scaleY)
         }
 
         static clearCanvas(canvas, ctx, fillStyle) {

@@ -1,7 +1,7 @@
-import { Geometry } from "./Geometry.js";
+import { Shape } from "./Shape.js";
 import { Helper } from "./HelperFunctions.js";
 
-export class Asteroid extends Geometry {
+export class Asteroid extends Shape {
     constructor(x, y, sideNumber, radius, angle) {
         super(x, y, sideNumber, radius);
         this.angle = angle;

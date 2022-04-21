@@ -1,7 +1,7 @@
 import { Helper } from "./HelperFunctions.js";
 import { Point2d } from "./Point2d.js";
 
-export class Geometry {
+export class Shape {
     constructor(x, y, sideNumber, radius) {
         this.angle = 0;
         this.pos = new Point2d(x, y);

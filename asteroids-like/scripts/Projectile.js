@@ -1,6 +1,6 @@
-import { Geometry } from "./Geometry.js";
+import { Shape } from "./Shape.js";
 
-export class Projectile extends Geometry{
+export class Projectile extends Shape{
     constructor(x, y, angle){
         super(x, y)
         this.radius = 4;
