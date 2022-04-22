@@ -10,66 +10,16 @@ export class Update {
         const dt = this.getDelta(this.stepSize)
         this.detectEntityToEntitiesCollision(player, entities);
         this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
-        this.updatePlayer(engine, dt, player);
-        this.updateProjectiles(engine, dt, projectiles);
-        this.updateEntities(engine, entities, dt);
+        player.update(dt, engine, engine.canvas)
+        this.updateEntities(engine, dt, projectiles);
+        this.updateEntities(engine, dt, entities);
     }
 
-    updateEntities(engine, entities, dt) {
+    updateEntities(engine, dt, entities) {
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            Update.Physics.Movement.rotateShape(engine, dt, entity);
-            Update.Physics.Movement.wrap(engine.canvas, entity)
-            Update.Physics.Movement.move(dt, entity, entity.speed, entity.speedScaling, entity.angle); 
+            entity.update(engine.canvas, dt, entities) 
         }
-    }
-
-    updatePlayer(engine, dt, player) {
-        this.handleInputs(engine, dt, player);
-        Update.Physics.Movement.rotateShape(engine, dt, player);
-        Update.Physics.Movement.wrap(engine.canvas, player)
-    }
-
-    updateProjectiles(engine, dt, projectiles) {
-        for (let i = 0; i < projectiles.length; i++) {
-            const projectile = projectiles[i];
-            Update.EntityMethods.updateLifetime(dt, projectile);
-            if (Update.EntityMethods.isOutOfLifetime(projectile)) {
-                Update.EntityMethods.killEntity(projectile, projectiles);
-            }
-            Update.Physics.Movement.wrap(engine.canvas, projectile)
-            Update.Physics.Movement.move(dt, projectile, projectile.speed, projectile.speedScaling, projectile.angle);
-        }
-
-    }
-
-    updateEntity(entity, dt) {
-        entity.update(dt);
-    }
-
-    handleInputs(engine, dt, entity) {
-
-        if (engine.input.mouseInputObject["2"]) {
-            Update.Physics.Movement.moveTowardsTarget(dt, entity, engine.input.Cursor.mouseC, entity.speedScaling);
-            engine.input.rightButtonDelay = engine.input.mouseInputObject["0"] ? 0.02 : engine.input.rightButtonDelay;
-        }
-        if (engine.input.mouseInputObject["0"] && engine.input.leftButtonDelay === 0) {
-            engine.input.leftButtonDelay = 0.3
-            this.shootProjectile(entity, engine);
-        }
-
-        if(engine.input.leftButtonDelay > 0) {
-            engine.input.leftButtonDelay -= dt;
-            if (engine.input.leftButtonDelay < 0) {
-                engine.input.leftButtonDelay = 0;
-            }
-        }
-    }
-
-    shootProjectile(player, engine) {
-        const mousePos = engine.input.Cursor.mouseC;
-        const angle = Helper.Math.Trig.getAngleBetweenEntities(player, mousePos);
-        engine.spawner.spawnProjectile(engine, player.pos, angle);
     }
 
     getDelta(now) {
@@ -85,7 +35,7 @@ export class Update {
         let dist;
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
-            const currDist = Helper.Math.Geometry.getDistanceBetweenEntities(player, entity);
+            const currDist = player.getDistanceToEntity(entity);
             if (i === entities.length - 1) {
                 ({ dist, closestEntity } = this.setClosestDistanceAndEntity(dist, currDist, closestEntity, entity));
             } else if (currDist < dist) {
@@ -110,7 +60,7 @@ export class Update {
             const entity1 = entities1[i];
             for (let j = entities2.length - 1; j >= 0; j--) {
                 const entity2 = entities2[j];
-                const currDist = Helper.Math.Geometry.getDistanceBetweenEntities(entity1, entity2);
+                const currDist = entity1.getDistanceToEntity(entity2);
                 if (j === entities2.length - 1) {
                     ({ dist, closestEntity } = this.setClosestDistanceAndEntity(dist, currDist, closestEntity, entity2));
                 } else if (currDist < dist) {
@@ -118,9 +68,9 @@ export class Update {
                 }
             }
             if (this.checkCircleCollision(entity1, closestEntity)) {
-                Update.EntityMethods.killEntity(entity1, entities1);
+                entity1.killEntity(entities1);
                 engine.spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
-                Update.EntityMethods.killEntity(closestEntity, entities2);
+                closestEntity.killEntity(entities2);
             }
         }
     }
@@ -149,46 +99,6 @@ export class Update {
             return true;
         } else {
             return false;
-        }
-    }
-
-    static Physics = class {
-        static Movement = class {
-            static move(dt, entity, speed, speedScaling, angle) {
-                entity.pos.x += (speed * speedScaling * Math.cos(angle) * dt);
-                entity.pos.y += (speed * speedScaling * Math.sin(angle) * dt);
-            }
-            static wrap(canvas, entity) {
-                const wrapDestination = Helper.EntityMethods.isOutsideCanvas(canvas, entity)
-                if (wrapDestination) {
-                    Helper.EntityMethods.wrapTo(canvas, entity, wrapDestination);
-                }
-            }
-            static moveTowardsTarget(dt, entity, target, speedScaling) {
-                const distance = Helper.Math.Geometry.getDistanceBetweenEntities(entity, target);
-                const angle = Helper.Math.Trig.getAngleBetweenEntities(entity, target);
-                
-                this.move(dt, entity, entity.speed*distance*dt, speedScaling, angle);
-            }
-            static rotateShape(engine, dt, shape) {
-                if (shape.rotationSpeed) {
-                    shape.rotationAngle += shape.rotationSpeed * dt;
-                } else {
-                    shape.rotationAngle = Helper.Math.Trig.getAngleBetweenEntities(shape, engine.input.Cursor.mouseC);
-                }
-            }
-        }
-    }
-
-    static EntityMethods = class {
-        static updateLifetime(dt, entity) {
-            entity.lifetime -= dt;
-        }
-        static isOutOfLifetime(entity) {
-            return (entity.lifetime !== undefined && entity.lifetime <= 0)
-        }
-        static killEntity(entity, entities) {
-            entities.splice(entities.indexOf(entity), 1);
         }
     }
 }

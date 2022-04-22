@@ -13,4 +13,8 @@ export class Asteroid extends Shape {
         this.rotationAngle = 0;
         this.points = this.getVertexPoints();
     }
+
+    onCollision(entities) {
+        this.killEntity(entities);
+    }
 }

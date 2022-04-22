@@ -10,4 +10,21 @@ export class Projectile extends Shape{
         this.angle = angle;
         this.lifetime = 0.3;
     }
+
+    update(canvas, dt, projectiles) {
+        this.updateLifetime(dt);
+        if (this.isOutOfLifetime()) {
+            this.killEntity(projectiles);
+        }
+        this.move(dt);
+        this.wrap(canvas);
+    }
+
+    updateLifetime(dt) {
+        this.lifetime -= dt;
+    }
+    isOutOfLifetime() {
+        return (this.lifetime !== undefined && this.lifetime <= 0)
+    }
+
 }
