@@ -1,5 +1,3 @@
-import { Helper } from "./HelperFunctions.js";
-
 export class Update {
     constructor(stepSize) {
         this.stepSize = stepSize;
@@ -82,8 +80,8 @@ export class Update {
     }
 
     entityPushback(entity1, entity2) {
-        let {dx, dy} = Helper.Math.Geometry.getDeltas(entity1, entity2);
-        const length = Helper.Math.Geometry.getDistanceBetweenEntities(entity1, entity2);
+        let {dx, dy} = entity1.getDeltas(entity2);
+        const length = entity1.getDistanceToEntity(entity2);
         const step = entity1.radius + entity2.radius - length;
         if (step > 0) {
             dx /= length; dy /= length;
@@ -93,7 +91,7 @@ export class Update {
     }
 
     checkCircleCollision(entity, collisionEntity) {
-        const {dx, dy} = Helper.Math.Geometry.getDeltas(entity, collisionEntity);
+        const {dx, dy} = entity.getDeltas(collisionEntity);
         const radii = entity.hitboxRadius + collisionEntity.hitboxRadius;
         if ( ( dx * dx ) + (dy * dy ) < radii * radii) {
             return true;

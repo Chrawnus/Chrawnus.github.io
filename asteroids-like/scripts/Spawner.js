@@ -11,10 +11,9 @@ export class Spawner {
         const radius = 60;
         for (let i = 0; i < count; i++) {
             const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.width)),
-                y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.height)),
-                sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
-                angle = Math.floor(Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2));
-            this.spawnAsteroid(engine, x, y, sideNumber, radius, angle);
+                y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.height));
+            const { sideNumber, angle, speed, rotationSpeed } = this.getAsteroidValues();
+            this.spawnAsteroid(engine, x, y, sideNumber, radius, angle, speed, rotationSpeed);
         }
     }
 
@@ -31,21 +30,25 @@ export class Spawner {
         }
         for (let i = 0; i < 3; i++) {
             const x = asteroid.pos.x,
-                y = asteroid.pos.y,
-                sideNumber = Math.floor(Helper.Math.Random.getRandomArbitrary(5, 15)),
-                angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2);
-            this.spawnAsteroidFromAsteroid(engine, x, y, sideNumber, allowedRadii, angle);
+                y = asteroid.pos.y;
+            const { sideNumber, angle, speed, rotationSpeed } = this.getAsteroidValues();
+            this.spawnAsteroidFromAsteroid(engine, x, y, sideNumber, allowedRadii, angle, speed, rotationSpeed);
         }
     }
+    
+    getAsteroidValues() {
+        const sideNumber = Helper.Math.Random.getRandomInt(5, 16), angle = Helper.Math.Random.getRandomArbitrary(0, Math.PI * 2), speed = Helper.Math.Random.getRandomInt(150, 201), rotationSpeed = Helper.Math.Random.getRandomArbitrary((Math.PI * 2) * -1, Math.PI * 2);
+        return { sideNumber, angle, speed, rotationSpeed };
+    }
 
-    spawnAsteroid(engine, x, y, sideNumber, radius, angle) {
-        const asteroid = new Asteroid(x, y, sideNumber, radius, angle)
+    spawnAsteroid(engine, x, y, sideNumber, radius, angle, speed, rotationSpeed) {
+        const asteroid = new Asteroid(x, y, sideNumber, radius, angle, speed, rotationSpeed);
         engine.addEntity(asteroid);
     }
 
-    spawnAsteroidFromAsteroid(engine, x, y, sideNumber, radius, angle) {
+    spawnAsteroidFromAsteroid(engine, x, y, sideNumber, radius, angle, speed, rotationSpeed) {
         const randomRadiiSelector = Helper.Math.Random.getRandomInt(0, radius.length);
-        const asteroid = new Asteroid(x, y, sideNumber, radius[randomRadiiSelector], angle)
+        const asteroid = new Asteroid(x, y, sideNumber, radius[randomRadiiSelector], angle, speed, rotationSpeed)
         engine.addEntity(asteroid);
     }
 
