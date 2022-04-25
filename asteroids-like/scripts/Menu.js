@@ -3,11 +3,12 @@ export class Menu{
         this.pauseMsg = "Press P to pause the game";
         this.lives;
         this.hearts = "🤍";
+        this.score = 0;
 
     }
 
     draw(ctx) {
-        this.drawText(ctx) 
+        this.drawUI(ctx) 
     }
 
     getHearts() {
@@ -18,11 +19,29 @@ export class Menu{
             this.hearts += heart;
         }
     }
-    drawText(ctx) {
-        ctx.fillStyle = "white"
-        ctx.font = "18px serif"
-        ctx.fillText(this.pauseMsg, 580, 45)
+    drawUI(ctx) {
+        this.drawLives(ctx);
+        this.drawScore(ctx);
+        this.drawPauseMsg(ctx);
+    }
+
+    drawLives(ctx) {
+        ctx.fillStyle = "white";
+        ctx.font = "18px serif";
         this.getHearts();
-        ctx.fillText(`${this.hearts} `, 30, 45)
+        ctx.fillText(`${this.hearts} `, 25, 35);
+    }
+
+    drawScore(ctx) {
+        ctx.fillStyle = "white";
+        ctx.font = "18px serif";
+        ctx.fillText(`${this.score} `, 30, 65);
+
+    }
+
+    drawPauseMsg(ctx) {
+        ctx.fillStyle = "white";
+        ctx.font = "18px serif";
+        ctx.fillText(this.pauseMsg, 580, 45);
     }
 }

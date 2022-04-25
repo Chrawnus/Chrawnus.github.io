@@ -2,6 +2,8 @@ export class Update {
     constructor(stepSize) {
         this.stepSize = stepSize;
         this.accumulator = 0;
+        this.clearCount = 0;
+
     }
 
     update(engine, player, entities, projectiles) {
@@ -11,6 +13,15 @@ export class Update {
         player.update(dt, engine, engine.canvas)
         this.updateEntities(engine, dt, projectiles);
         this.updateEntities(engine, dt, entities);
+        this.checkEntitiesLeft(engine, entities);
+    }
+
+    checkEntitiesLeft(engine, entities) {
+        if (entities.length <= 0) {
+            this.clearCount++;
+            engine.menu.score += 100 * this.clearCount;
+            engine.spawner.spawnAsteroids(engine, engine.spawner.baseAsteroidAmount + this.clearCount);
+        }
     }
 
     updateEntities(engine, dt, entities) {
@@ -68,7 +79,9 @@ export class Update {
             if (this.checkCircleCollision(entity1, closestEntity)) {
                 entity1.killEntity(entities1);
                 engine.spawner.spawnAsteroidsFromAsteroid(engine, closestEntity)
+                engine.menu.score += closestEntity.radius;
                 closestEntity.killEntity(entities2);
+                
             }
         }
     }

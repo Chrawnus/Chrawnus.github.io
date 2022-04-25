@@ -11,13 +11,17 @@ export class Player extends Shape {
         this.rotationSpeed = 0;
         this.points = this.getVertexPoints();
         this.lives = 3;
+        this.fireDelay = 0;
+        this.fireDelayTime = 0.4;
+        this.invincibility = 0;
+        this.invincibilityTime = 1;
     }
 
     update(dt, engine, canvas) {
         this.handleInputs(engine, dt);
         this.rotateShape(engine); 
         this.wrap(canvas);
-
+        this.reduceDelay(dt);
     }
 
     onCollision() {
@@ -25,11 +29,9 @@ export class Player extends Shape {
     }
 
     reduceLives() {
-        if (this.lives > 0) {
+        if (this.invincibility <= 0 && this.lives > 0) {
             this.lives--;
-        }
-        if (this.lives < 0) {
-            this.lives = 0;
+            this.invincibility = this.invincibilityTime;
         }
     }
 
@@ -46,17 +48,28 @@ export class Player extends Shape {
     handleInputs(engine, dt) {
         if (engine.input.mouseInputObject["2"]) {
             this.moveTowardsCursor(dt, engine.input.Cursor.mouseC);
-            engine.input.rightButtonDelay = engine.input.mouseInputObject["0"] ? 0.02 : engine.input.rightButtonDelay;
-        }
-        if (engine.input.mouseInputObject["0"] && engine.input.leftButtonDelay === 0) {
-            engine.input.leftButtonDelay = 0.3
-            this.shootProjectile(engine);
         }
 
-        if(engine.input.leftButtonDelay > 0) {
-            engine.input.leftButtonDelay -= dt;
-            if (engine.input.leftButtonDelay < 0) {
-                engine.input.leftButtonDelay = 0;
+        if (engine.input.mouseInputObject["0"] && this.fireDelay === 0) {
+            this.fireDelay = this.fireDelayTime;
+            this.shootProjectile(engine);
+        }
+    }
+
+    reduceDelay(dt) {
+        if (this.fireDelay > 0) {
+            this.fireDelay -= dt;
+            if (this.fireDelay < 0) {
+                this.fireDelay = 0;
+            }
+        }
+
+        if (this.invincibility > 0) {
+            this.strokeStyle = "red";
+            this.invincibility -= dt;
+            if (this.invincibility < 0) {
+                this.invincibility = 0;
+                this.strokeStyle = "white";
             }
         }
     }
@@ -68,8 +81,8 @@ export class Player extends Shape {
     }
 
     move(dt, distance, angle) {
-        this.pos.x += ((this.speed*distance*this.speedScaling) * Math.cos(angle) *dt**2);
-        this.pos.y += ((this.speed*distance*this.speedScaling) * Math.sin(angle) *dt**2);
+        this.pos.x += ((this.speed*distance*this.speedScaling) * Math.cos(angle) * dt ** 2);
+        this.pos.y += ((this.speed*distance*this.speedScaling) * Math.sin(angle) * dt ** 2);
     }
 
     shootProjectile(engine) {

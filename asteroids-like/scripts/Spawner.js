@@ -5,17 +5,23 @@ import { Asteroid } from "./Asteroid.js";
 
 export class Spawner {
     constructor() {
-
+        this.baseAsteroidAmount = 3;
     }
     spawnAsteroids(engine, count) {
-        const radius = 60;
+        const radiusArray = [15, 30, 60]
+        let radius;
+
+
         for (let i = 0; i < count; i++) {
-            const x = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.width)),
-                y = Math.floor(Helper.Math.Random.getRandomArbitrary(0, engine.canvas.height));
+            const x = Math.floor(Helper.Math.Random.getRandomOfTwoRanges(-60, 0, engine.canvas.width, engine.canvas.width + 60)),
+                y = Math.floor(Helper.Math.Random.getRandomOfTwoRanges(-60, 0, engine.canvas.height, engine.canvas.height + 60));
+            radius = radiusArray[i%3];
             const { sideNumber, angle, speed, rotationSpeed } = this.getAsteroidValues();
             this.spawnAsteroid(engine, x, y, sideNumber, radius, angle, speed, rotationSpeed);
         }
     }
+
+    
 
     spawnAsteroidsFromAsteroid(engine, asteroid) {
         const allowedRadii = [15, 30, 60]
