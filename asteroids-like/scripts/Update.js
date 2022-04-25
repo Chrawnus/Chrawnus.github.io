@@ -8,12 +8,60 @@ export class Update {
 
     update(engine, player, entities, projectiles) {
         const dt = this.getDelta(this.stepSize)
-        this.detectEntityToEntitiesCollision(player, entities);
-        this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
-        player.update(dt, engine, engine.canvas)
-        this.updateEntities(engine, dt, projectiles);
-        this.updateEntities(engine, dt, entities);
-        this.checkEntitiesLeft(engine, entities);
+        if (this.gameOverCheck(player) === false) {
+            this.detectEntityToEntitiesCollision(player, entities);
+            this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
+            player.update(dt, engine, engine.canvas)
+            this.updateEntities(engine, dt, projectiles);
+            this.updateEntities(engine, dt, entities);
+            this.checkEntitiesLeft(engine, entities);
+        } else {
+            this.clearCount = 0;
+            entities.length = 0;
+            if (engine.input.keyInputObject["Enter"]) {
+                this.updateHighScore(engine);
+                this.saveHighScoreToLocalStorage(engine.menu.highScore);
+                console.log(engine.menu.highScore);
+                engine.restart(engine, engine.spawner.baseAsteroidAmount);
+            }
+        }
+    }
+
+    updateHighScore(engine) {
+        this.addScoreToHighScore(engine.menu.score, engine.menu.highScore);
+        // sort highscore list from greatest to least.
+        const sortedHighScore = this.sortHighScore(engine);
+        engine.menu.highScore = sortedHighScore;
+    }
+
+    sortHighScore(engine) {
+        return Object.fromEntries(
+            Object.entries(engine.menu.highScore).sort(([, a], [, b]) => b - a)
+        );
+    }
+
+    addScoreToHighScore(score, highScore) {
+        const playerName = window.prompt("Please enter your name to submit your score to your local highscore board, or leave blank to skip.");
+        if (playerName === "") {
+            return 0;
+        }
+        highScore[playerName] = score;
+
+
+
+    }
+
+    saveHighScoreToLocalStorage(highScore) {
+        console.log("saving highscore to local storage")
+    }
+
+    gameOverCheck(player) {
+        if (player.lives > 0) {
+            return false;
+        }
+        if (player.lives <= 0) {
+            return true;
+        }
     }
 
     checkEntitiesLeft(engine, entities) {

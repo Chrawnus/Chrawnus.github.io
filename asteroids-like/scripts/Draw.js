@@ -1,18 +1,30 @@
-export class Draw {
+// fetch custom font and add it to document so it can be used on canvas.
+const customFont = new FontFace("PressStart2P", 'url(./assets/fonts/PressStart2P-regular.ttf');
+customFont.load().then(function(font) {
+    document.fonts.add(font);
+})
 
+export class Draw {
     static Canvas = class {
         static gameScreen = document.querySelector('#canvas-game');
+
         static UI = document.querySelector('#canvas-menu');
         static gameCtx = this.gameScreen.getContext("2d");
         static UICtx = this.UI.getContext("2d");
     }
+
 
     static canvasMethods = class {
         static drawScreen(backgroundColor, menu, player, entities, projectiles) {
             const gameCtx = Draw.Canvas.gameCtx;
             const UICtx = Draw.Canvas.UICtx;
             Draw.canvasMethods.clearCanvas(Draw.Canvas.UI, UICtx, "transparent")
-            menu.draw(UICtx);
+            if (player.lives > 0) {
+                menu.drawUI(UICtx);
+            } else {
+                menu.drawUIGameOver(UICtx);
+            }
+            
             Draw.canvasMethods.clearCanvas(Draw.Canvas.gameScreen, gameCtx, backgroundColor);
             Draw.drawPlayer(gameCtx, player);
             Draw.drawEntities(gameCtx, entities);

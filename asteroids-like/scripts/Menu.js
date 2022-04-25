@@ -4,11 +4,12 @@ export class Menu{
         this.lives;
         this.hearts = "🤍";
         this.score = 0;
+        this.textColor = "white";
+        this.font = "PressStart2P"
+        this.gameOverMsg = "You lost! \nPress Enter to play again!"
+        this.highScore = {
 
-    }
-
-    draw(ctx) {
-        this.drawUI(ctx) 
+        }
     }
 
     getHearts() {
@@ -25,23 +26,35 @@ export class Menu{
         this.drawPauseMsg(ctx);
     }
 
+    drawUIGameOver(ctx) {
+        this.drawScore(ctx);
+        this.drawGameOverMsg(ctx);
+    }
+
     drawLives(ctx) {
-        ctx.fillStyle = "white";
-        ctx.font = "18px serif";
+        this.setTextStyling(ctx, 16, this.font);
         this.getHearts();
         ctx.fillText(`${this.hearts} `, 25, 35);
     }
 
     drawScore(ctx) {
-        ctx.fillStyle = "white";
-        ctx.font = "18px serif";
+        this.setTextStyling(ctx, 16, this.font);
         ctx.fillText(`${this.score} `, 30, 65);
 
     }
 
     drawPauseMsg(ctx) {
-        ctx.fillStyle = "white";
-        ctx.font = "18px serif";
+        this.setTextStyling(ctx, 8, this.font);
         ctx.fillText(this.pauseMsg, 580, 45);
+    }
+
+    drawGameOverMsg(ctx) {
+        this.setTextStyling(ctx, 16, this.font);
+        ctx.fillText(this.gameOverMsg, 104, 300);
+    }
+
+    setTextStyling(ctx, fontSize, font) {
+        ctx.fillStyle = this.textColor;
+        ctx.font = `${fontSize}px ${font}`;
     }
 }

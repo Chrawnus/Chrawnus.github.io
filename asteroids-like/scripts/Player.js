@@ -50,7 +50,7 @@ export class Player extends Shape {
             this.moveTowardsCursor(dt, engine.input.Cursor.mouseC);
         }
 
-        if (engine.input.mouseInputObject["0"] && this.fireDelay === 0) {
+        if ((engine.input.mouseInputObject["0"] || engine.input.keyInputObject["Space"]) && this.fireDelay === 0) {
             this.fireDelay = this.fireDelayTime;
             this.shootProjectile(engine);
         }

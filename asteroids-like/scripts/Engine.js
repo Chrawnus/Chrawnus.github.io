@@ -25,7 +25,12 @@ export class Engine {
         this.canvas.height = canvasHeight;
         this.spawner.spawnPlayer(this);
         this.spawner.spawnAsteroids(this, asteroidAmount);
+    }
 
+    restart(engine, asteroidAmount) {
+        this.player.lives = 3;
+        this.menu.score = 0;
+        this.spawner.spawnAsteroids(engine, asteroidAmount);
     }
 
     start() {
