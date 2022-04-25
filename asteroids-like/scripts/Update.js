@@ -41,10 +41,19 @@ export class Update {
     }
 
     addScoreToHighScore(score, highScore) {
-        const playerName = window.prompt("Please enter your name to submit your score to your local highscore board, or leave blank to skip.");
-        if (playerName === "") {
-            return 0;
+
+        // score should at least be 0 before letting the player submit their score.
+        if (score <= 0) {
+            return;
         }
+        const playerName = window.prompt("Please enter your name to submit your score local highscore, or leave blank to skip.");
+
+        // If the player does not wish to submit their score, exit function without doing anything.
+        if (playerName === "") {
+            return;
+        }
+
+        // Add score to highscore object with playerName as key. 
         highScore[playerName] = score;
 
 
