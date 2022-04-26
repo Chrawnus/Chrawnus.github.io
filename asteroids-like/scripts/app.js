@@ -2,7 +2,7 @@ import { Engine } from "./Engine.js"
 
 export const engine = new Engine();
 
-engine.initialize(6, 800, 600, engine.spawner.baseAsteroidAmount);
+engine.initialize(6, 1280, 720, engine.spawner.baseAsteroidAmount);
 engine.start();
 
 

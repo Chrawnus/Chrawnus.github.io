@@ -1,5 +1,7 @@
 export class Menu{
-    constructor() {
+    constructor(canvasWidth, canvasHeight) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.pauseMsg = "Press P to pause the game";
         this.lives;
         this.hearts = "🤍";
@@ -32,25 +34,27 @@ export class Menu{
     }
 
     drawLives(ctx) {
-        this.setTextStyling(ctx, 16, this.font);
+        this.setTextStyling(ctx, 24, this.font);
         this.getHearts();
-        ctx.fillText(`${this.hearts} `, 25, 35);
+        ctx.fillText(`${this.hearts} `, this.canvasWidth*0.033, this.canvasHeight*0.09);
     }
 
     drawScore(ctx) {
-        this.setTextStyling(ctx, 16, this.font);
-        ctx.fillText(`${this.score} `, 30, 65);
+        this.setTextStyling(ctx, 24, this.font);
+        ctx.fillText(`${this.score} `, this.canvasWidth*0.036, this.canvasHeight*0.20);
 
     }
 
     drawPauseMsg(ctx) {
-        this.setTextStyling(ctx, 8, this.font);
-        ctx.fillText(this.pauseMsg, 580, 45);
+        this.setTextStyling(ctx, 16, this.font);
+        ctx.fillText(this.pauseMsg, this.canvasWidth*0.66, this.canvasHeight*0.09);
     }
 
     drawGameOverMsg(ctx) {
         this.setTextStyling(ctx, 16, this.font);
-        ctx.fillText(this.gameOverMsg, 104, 300);
+        const textWidth = ctx.measureText(this.gameOverMsg).width;
+        const xPos = (this.canvasWidth - textWidth) / 2;
+        ctx.fillText(this.gameOverMsg, xPos, this.canvasHeight*0.5);
     }
 
     setTextStyling(ctx, fontSize, font) {

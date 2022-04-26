@@ -7,7 +7,7 @@ import { Spawner } from "./Spawner.js";
 export class Engine {
     constructor() {
         this.canvas = Draw.Canvas.gameScreen;
-        this.menu = new Menu();
+        this.menu = new Menu(this.canvas.width, this.canvas.height);
         this.update = new Update(6);
         this.input = new Input();
         this.spawner = new Spawner();

@@ -21,7 +21,6 @@ export class Update {
             if (engine.input.keyInputObject["Enter"]) {
                 this.updateHighScore(engine);
                 this.saveHighScoreToLocalStorage(engine.menu.highScore);
-                console.log(engine.menu.highScore);
                 engine.restart(engine, engine.spawner.baseAsteroidAmount);
             }
         }
@@ -61,7 +60,7 @@ export class Update {
     }
 
     saveHighScoreToLocalStorage(highScore) {
-        console.log("saving highscore to local storage")
+
     }
 
     gameOverCheck(player) {
