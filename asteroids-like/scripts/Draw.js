@@ -1,5 +1,5 @@
 // fetch custom font and add it to document so it can be used on canvas.
-const customFont = new FontFace("PressStart2P", 'url(./assets/fonts/PressStart2P-regular.ttf');
+const customFont = new FontFace("PressStart2P", 'url(/assets/fonts/PressStart2P-regular.ttf');
 customFont.load().then(function(font) {
     document.fonts.add(font);
 })
