@@ -1,3 +1,5 @@
+import { HighScore } from "./HighScore.js";
+
 export class Update {
     constructor(stepSize) {
         this.stepSize = stepSize;
@@ -16,51 +18,24 @@ export class Update {
             this.updateEntities(engine, dt, entities);
             this.checkEntitiesLeft(engine, entities);
         } else {
-            this.clearCount = 0;
-            entities.length = 0;
-            if (engine.input.keyInputObject["Enter"]) {
-                this.updateHighScore(engine);
-                this.saveHighScoreToLocalStorage(engine.menu.highScore);
-                engine.restart(engine, engine.spawner.baseAsteroidAmount);
-            }
+            this.gameOver(entities, engine);
         }
     }
 
-    updateHighScore(engine) {
-        this.addScoreToHighScore(engine.menu.score, engine.menu.highScore);
-        // sort highscore list from greatest to least.
-        const sortedHighScore = this.sortHighScore(engine);
-        engine.menu.highScore = sortedHighScore;
-    }
+    gameOver(entities, engine) {
+        this.clearCount = 0;
+        entities.length = 0;
+        if (engine.input.keyInputObject["Enter"]) {
+            HighScore.addScoreToHighScore(engine.menu.score, HighScore.highScores);
+            
+            // get highscores from local storage in order to display them on screen
 
-    sortHighScore(engine) {
-        return Object.fromEntries(
-            Object.entries(engine.menu.highScore).sort(([, a], [, b]) => b - a)
-        );
-    }
+            engine.menu.highScores = HighScore.retrieveHighscores();
 
-    addScoreToHighScore(score, highScore) {
+            console.log(engine.menu.highScores)
 
-        // score should at least be 0 before letting the player submit their score.
-        if (score <= 0) {
-            return;
+            engine.restart(engine, engine.spawner.baseAsteroidAmount);
         }
-        const playerName = window.prompt("Please enter your name to submit your score local highscore, or leave blank to skip.");
-
-        // If the player does not wish to submit their score, exit function without doing anything.
-        if (playerName === "") {
-            return;
-        }
-
-        // Add score to highscore object with playerName as key. 
-        highScore[playerName] = score;
-
-
-
-    }
-
-    saveHighScoreToLocalStorage(highScore) {
-
     }
 
     gameOverCheck(player) {

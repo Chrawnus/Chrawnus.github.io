@@ -3,6 +3,7 @@ import { Menu } from "./Menu.js";
 import { Update } from "./Update.js";
 import { Input } from "./Input.js";
 import { Spawner } from "./Spawner.js";
+import { HighScore } from "./HighScore.js";
 
 export class Engine {
     constructor() {
@@ -23,6 +24,8 @@ export class Engine {
         this.update = new Update(stepSize);
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
+        this.menu.highScores = HighScore.retrieveHighscores();
+        console.log(this.menu.highScores)
         this.spawner.spawnPlayer(this);
         this.spawner.spawnAsteroids(this, asteroidAmount);
     }
