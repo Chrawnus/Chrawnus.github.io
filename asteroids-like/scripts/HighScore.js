@@ -19,7 +19,7 @@ export class HighScore {
 
             // sort highscores from highest to lowest.
             HighScore.sortHighscores(highScores);
-            
+
             highScores.splice((HighScore.highScoreMax));
             
             HighScore.saveHighScoreToLocalStorage(highScores)
@@ -31,7 +31,6 @@ export class HighScore {
     }
 
     static saveHighScoreToLocalStorage(highScores) {
-        console.log(highScores)
         localStorage.setItem(HighScore.highScores, JSON.stringify(highScores));
     }
 

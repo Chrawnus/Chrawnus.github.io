@@ -32,8 +32,6 @@ export class Update {
 
             engine.menu.highScores = HighScore.retrieveHighscores();
 
-            console.log(engine.menu.highScores)
-
             engine.restart(engine, engine.spawner.baseAsteroidAmount);
         }
     }

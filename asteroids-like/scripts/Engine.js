@@ -25,7 +25,6 @@ export class Engine {
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
         this.menu.highScores = HighScore.retrieveHighscores();
-        console.log(this.menu.highScores)
         this.spawner.spawnPlayer(this);
         this.spawner.spawnAsteroids(this, asteroidAmount);
     }

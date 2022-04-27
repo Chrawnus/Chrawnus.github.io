@@ -58,7 +58,6 @@ export class Menu{
         ctx.fillText(`local highscores:`, this.canvasWidth*0.5, this.canvasHeight*0.08)
         let yPos = this.canvasHeight*0.22;
         for (let i = 0; i < this.highScores.length; i++) {
-            console.log(yPos);
             const entry = this.highScores[i];
             ctx.fillText(`${entry.playerName}: ${entry.score}`, this.canvasWidth*0.5, yPos)
             yPos += this.canvasHeight*0.05;
