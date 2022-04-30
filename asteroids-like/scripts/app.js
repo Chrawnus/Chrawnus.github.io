@@ -2,15 +2,11 @@ import { Engine } from "./Engine.js"
 
 // Initialize and start the game engine with the given step size (ms), 
 // and width and height of the canvas element in pixels
-const engine = new Engine();
-engine.initialize(6, 1280, 720);
+const engine = new Engine(6);
+engine.initialize(1280, 720);
 engine.start();
 
 // various event listeners for reading key presses and mouse movement.
-window.addEventListener('keydown', e => {
-    engine.switchPauseState(e);
-});
-
 window.addEventListener('keydown', e => {
     engine.input.keyInputObject[e.code] = true;
 });
@@ -30,3 +26,8 @@ window.addEventListener("mouseup", e => {
 window.addEventListener("mousemove", function (e) {
     engine.input.Cursor.getCursorPos(e, engine);
 });
+
+// Prevent context menu from appearing when right clicking page.
+document.oncontextmenu = function (e) {
+    e.preventDefault();
+};

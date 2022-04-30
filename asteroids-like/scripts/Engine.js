@@ -1,27 +1,31 @@
 import { Draw } from "./Draw.js";
 import { Menu } from "./Menu.js";
-import { Update } from "./Update.js";
+import { Physics } from "./Physics.js";
 import { Input } from "./Input.js";
 import { Spawner } from "./Spawner.js";
 import { HighScore } from "./HighScore.js";
 
 export class Engine {
-    constructor() {
+    constructor(stepSize) {
+        this.prevTime = 0;
+        this.stepSize = stepSize / 1000;
+        this.accumulator = 0;
+
         this.canvas = Draw.Canvas.gameScreen;
         this.menu = new Menu(this.canvas.width, this.canvas.height);
-        this.update = new Update(6);
+        this.physics = new Physics(6);
         this.input = new Input();
         this.spawner = new Spawner();
         this.entities = [];
         this.projectiles = [];
         this.player;
-        this.paused = false;
+
         this.dt = 0;
     }
 
 
-    initialize(stepSize, canvasWidth, canvasHeight) {
-        this.update = new Update(stepSize);
+    initialize(canvasWidth, canvasHeight) {
+        this.physics = new Physics();
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
         this.menu.highScores = HighScore.retrieveHighscores();
@@ -37,19 +41,25 @@ export class Engine {
 
     start() {
         function gameLoop() {
-            if (this.paused) {
-                this.menu.pauseMsg = "Press P to resume the game";
-                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
-                return 0;
-            } else {           
-                this.update.update(this, this.player, this.entities, this.projectiles);
-                this.menu.lives = this.player.lives;
-                this.menu.pauseMsg = "Press P to pause the game";
-                Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
-                requestAnimationFrame(gameLoop.bind(this));
-            }
+            const now = performance.now();
+            const dt = this.getDelta(now)
+            
+            this.getUpdateDelta(dt);
+            console.log(this.accumulator)
+            this.menu.lives = this.player.lives;
+            Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
+            requestAnimationFrame(gameLoop.bind(this));
+
         }
         requestAnimationFrame(gameLoop.bind(this));
+    }
+
+    getUpdateDelta(dt) {
+        this.accumulator += dt;
+        while (this.accumulator >= this.stepSize) {
+            this.physics.update(this.stepSize, this, this.player, this.entities, this.projectiles);
+            this.accumulator -= this.stepSize;
+        }
     }
 
     addEntity(entity) {
@@ -60,15 +70,11 @@ export class Engine {
         this.projectiles.push(projectile);
     }
 
-    switchPauseState(e) {
-        if (e.code !== "KeyP") {
-            return 0
-        }
-        this.paused = !this.paused;
-        if (this.paused === false) {
-            this.dt = 0;
-            this.start();
-        }
+    getDelta(now) {
+        if (!this.prevTime) { this.prevTime = now; }
+        let dt = (now - this.prevTime) / 1000;
+        this.prevTime = now;
+        return dt;
     }
 }
 

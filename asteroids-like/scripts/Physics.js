@@ -1,22 +1,18 @@
 import { HighScore } from "./HighScore.js";
 
-export class Update {
-    constructor(stepSize) {
-        this.stepSize = stepSize;
-        this.accumulator = 0;
+export class Physics {
+    constructor() {
         this.clearCount = 0;
-
     }
 
-    update(engine, player, entities, projectiles) {
-        const dt = this.getDelta(this.stepSize)
+    update(dt, engine, player, entities, projectiles) {
         if (this.gameOverCheck(player) === false) {
             this.detectEntityToEntitiesCollision(player, entities);
             this.detectEntitiesToEntitiesCollisions(engine, projectiles, entities);
             player.update(dt, engine, engine.canvas)
             this.updateEntities(engine, dt, projectiles);
             this.updateEntities(engine, dt, entities);
-            this.checkEntitiesLeft(engine, entities);
+            this.checkScreenCleared(engine, entities);
         } else {
             this.gameOver(entities, engine);
         }
@@ -28,8 +24,6 @@ export class Update {
         if (engine.input.keyInputObject["Enter"]) {
             HighScore.addScoreToHighScore(engine.menu.score, HighScore.highScores);
             
-            // get highscores from local storage in order to display them on screen
-
             engine.menu.highScores = HighScore.retrieveHighscores();
 
             engine.restart(engine, engine.spawner.baseAsteroidAmount);
@@ -45,7 +39,7 @@ export class Update {
         }
     }
 
-    checkEntitiesLeft(engine, entities) {
+    checkScreenCleared(engine, entities, player) {
         if (entities.length <= 0) {
             this.clearCount++;
             engine.menu.score += 100 * this.clearCount;
@@ -58,11 +52,6 @@ export class Update {
             const entity = entities[i];
             entity.update(engine.canvas, dt, entities) 
         }
-    }
-
-    getDelta(now) {
-        let dt = (now) / 1000;
-        return dt;
     }
 
     detectEntityToEntitiesCollision(player, entities) {

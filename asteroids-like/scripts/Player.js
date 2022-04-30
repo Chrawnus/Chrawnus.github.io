@@ -13,6 +13,7 @@ export class Player extends Shape {
         this.lives = 3;
         this.fireDelay = 0;
         this.fireDelayTime = 0.4;
+        this.minfireDelay = 0.05;
         this.invincibility = 0;
         this.invincibilityTime = 1;
     }
@@ -88,5 +89,9 @@ export class Player extends Shape {
     shootProjectile(engine) {
         const angle = this.rotationAngle;
         engine.spawner.spawnProjectile(engine, this.pos, angle);
+    }
+
+    upgrade() {
+
     }
 }

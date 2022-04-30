@@ -2,7 +2,6 @@ export class Menu{
     constructor(canvasWidth, canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
-        this.pauseMsg = "Press P to pause the game";
         this.lives;
         this.hearts = "🤍";
         this.score = 0;
@@ -23,7 +22,6 @@ export class Menu{
     drawUI(ctx) {
         this.drawLives(ctx);
         this.drawScore(ctx);
-        this.drawPauseMsg(ctx);
     }
 
     drawUIGameOver(ctx) {
@@ -41,11 +39,6 @@ export class Menu{
         this.setTextStyling(ctx, 24, this.font, "left");
         ctx.fillText(`${this.score} `, this.canvasWidth*0.036, this.canvasHeight*0.20);
 
-    }
-
-    drawPauseMsg(ctx) {
-        this.setTextStyling(ctx, 16, this.font, "center");
-        ctx.fillText(this.pauseMsg, this.canvasWidth*0.5, this.canvasHeight*0.09);
     }
 
     drawGameOverMsg(ctx) {

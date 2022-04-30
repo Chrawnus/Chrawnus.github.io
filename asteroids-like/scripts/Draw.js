@@ -7,7 +7,6 @@ customFont.load().then(function(font) {
 export class Draw {
     static Canvas = class {
         static gameScreen = document.querySelector('#canvas-game');
-
         static UI = document.querySelector('#canvas-menu');
         static gameCtx = this.gameScreen.getContext("2d");
         static UICtx = this.UI.getContext("2d");
@@ -24,7 +23,6 @@ export class Draw {
             } else {
                 menu.drawUIGameOver(UICtx);
             }
-            
             Draw.canvasMethods.clearCanvas(Draw.Canvas.gameScreen, gameCtx, backgroundColor);
             Draw.drawPlayer(gameCtx, player);
             Draw.drawEntities(gameCtx, entities);
@@ -54,7 +52,6 @@ export class Draw {
             Draw.canvasMethods.rotateCanvasAroundEntity(ctx, entity);
             Draw.Geometry.drawShape(ctx, entity.points, entity.strokeStyle);
             ctx.restore();
-            Draw.Geometry.drawCircle(ctx, "red", 2, entity.pos, entity.hitboxRadius) //hitbox
         }
     }
 
@@ -66,14 +63,12 @@ export class Draw {
     }
 
     
-
     static drawPlayer(ctx, player) {
         ctx.save();
         Draw.canvasMethods.translateOriginToEntity(ctx, player);
         Draw.canvasMethods.rotateCanvasAroundEntity(ctx, player);
         Draw.Geometry.drawShape(ctx, player.points, player.strokeStyle);
         ctx.restore();
-        Draw.Geometry.drawCircle(ctx, "red", 2, player.pos, player.hitboxRadius) //hitbox
     }
 
     static Geometry = class {
@@ -112,27 +107,5 @@ export class Draw {
             ctx.stroke();
             ctx.closePath;
         }
-
-        static drawLine(ctx, strokeStyle, points) {
-            ctx.strokeStyle = strokeStyle;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            for (let i = 0; i < points.length; i++) {
-                ctx.lineTo(points[i].x, points[i].y);
-            }
-            //ctx.lineTo(points[0].x, points[0].y);
-            ctx.stroke();
-            ctx.closePath();
-        }
     }
 }
-
-// Prevent context menu from appearing when right clicking canvas.
-Draw.Canvas.gameScreen.oncontextmenu = function (e) {
-    e.preventDefault();
-};
-
-Draw.Canvas.UI.oncontextmenu = function (e) {
-    e.preventDefault();
-};
