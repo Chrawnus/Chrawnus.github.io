@@ -20,13 +20,13 @@ export class Engine {
     }
 
 
-    initialize(stepSize, canvasWidth, canvasHeight, asteroidAmount) {
+    initialize(stepSize, canvasWidth, canvasHeight) {
         this.update = new Update(stepSize);
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
         this.menu.highScores = HighScore.retrieveHighscores();
         this.spawner.spawnPlayer(this);
-        this.spawner.spawnAsteroids(this, asteroidAmount);
+        this.spawner.spawnAsteroids(this, this.spawner.baseAsteroidAmount);
     }
 
     restart(engine, asteroidAmount) {
