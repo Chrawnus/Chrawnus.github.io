@@ -13,9 +13,10 @@ export class Player extends Shape {
         this.lives = 3;
         this.fireDelay = 0;
         this.fireDelayTime = 0.4;
-        this.minfireDelay = 0.05;
+        this.maxFireDelay = 0.4
+        this.minFireDelay = 0.05;
         this.invincibility = 0;
-        this.invincibilityTime = 1;
+        this.invincibilityTime = 0.5;
     }
 
     update(dt, engine, canvas) {
@@ -92,6 +93,6 @@ export class Player extends Shape {
     }
 
     upgrade() {
-
+        
     }
 }

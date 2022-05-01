@@ -39,7 +39,7 @@ export class Physics {
         }
     }
 
-    checkScreenCleared(engine, entities, player) {
+    checkScreenCleared(engine, entities) {
         if (entities.length <= 0) {
             this.clearCount++;
             engine.menu.score += 100 * this.clearCount;
