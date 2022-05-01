@@ -13,7 +13,8 @@ export class Asteroid extends Shape {
         this.points = this.getVertexPoints();
     }
 
-    onCollision(entities) {
+    onCollision(entities, engine) {
+        engine.spawner.spawnAsteroidsFromAsteroid(engine, this)
         this.killEntity(entities);
     }
 }

@@ -128,4 +128,15 @@ export class Shape {
         const dy = y2 - y1
         return dy;
     }
+
+    pushback(entity1, entity2) {
+        let {dx, dy} = entity1.getDeltas(entity2);
+        const length = entity1.getDistanceToEntity(entity2);
+        const step = entity1.radius + entity2.radius - length;
+        if (step > 0) {
+            dx /= length; dy /= length;
+            entity1.pos.x -= dx*step/2; entity1.pos.y -= dy*step/2;
+            entity2.pos.x += dx*step/2; entity2.pos.y += dy*step/2;
+        }
+    }
 }
