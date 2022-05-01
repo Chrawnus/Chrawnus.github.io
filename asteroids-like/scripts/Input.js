@@ -1,9 +1,20 @@
+/*
+Class for handling input related events.
+*/
 export class Input {
     constructor() {
+
+        // Holds key-value pairs representing
+        // keys on the keyboard and whether they're
+        //currently being held down or not.
         this.keyInputObject = {
             "KeyP": false
         };
-    
+        
+
+        // Holds key-value pairs representing
+        // buttons on the mouse and whether they're
+        // currently being pressed or not.
         this.mouseInputObject = {
             "0": false,             // left mouse button
             "1": false,             // middle mouse button
@@ -12,17 +23,24 @@ export class Input {
             "4": false              // forward side button
         }
 
-        this.leftButtonDelay = 0;
-        this.rightButtonDelay = 0;
-        
+        /*
+        Class for handling events related to 
+        the cursor and it's position on canvas.
+        */
         this.Cursor = class {
+            // Mouse position object
             static mouseC = {
                 pos: {
                     x: 0,
                     y: 0
                 }
             };
-    
+            
+
+            /*
+            Updates the x and y values of the
+            mouse position object.
+            */
             static getCursorPos(evt, engine) {
                 const rect = engine.canvas.getBoundingClientRect(), // abs. size of element
                     scaleX = engine.canvas.width / rect.width,    // relationship bitmap vs. element for x

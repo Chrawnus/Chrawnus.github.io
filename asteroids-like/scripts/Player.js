@@ -151,7 +151,6 @@ export class Player extends Shape {
         // multiply minFireDelay by 2 to reduce the amount needed
         // to get fireDelayTime down to min.
         const reduction = this.fireDelayTime * (this.minFireDelay * 2);
-        console.log(reduction)
         this.fireDelayTime -= reduction; 
     }
 }

@@ -1,35 +1,50 @@
+/*
+Class to handle fetching, storing, 
+updating and sorting a highscore list.
+*/
+
 export class HighScore {
     static highScoreMax = 10; //max number of entries in the list.
     static highScores = 'highScores';
     static highScoreArray;
 
 
-    static addScoreToHighScore(score) {   
-        if (HighScore.isScoreValid(score)) {
-            const playerName = window.prompt("Enter a name to submit your score to the local highscore, leave blank to skip.");
+    static addScoreToHighScore(score) {
 
-            // If the player does not wish to submit their score, exit function without doing anything.
+        // check if score to be submitted is at least higher
+        // than the current lowest score in the Highscore list.
+        if (HighScore.isScoreValid(score)) {
+
+            // prompt the player for a name.
+            const playerName = window.prompt("Please enter a name for Local Highscore");
+
+            // If player does not enter name, give a default name
             if (playerName === "") {
-                return;
+                playerName = "Unnamed";
             }
-            // create object to save name and score in the highscore array 
+
+            // Create object to save name and score in the highscore array.
             const newScore = { score, playerName };
             const highScores = HighScore.highScoreArray;
             highScores.push(newScore);
 
-            // sort highscores from highest to lowest.
+
             HighScore.sortHighscores(highScores);
 
+            // Remove last entry in the highscore array.
             highScores.splice((HighScore.highScoreMax));
-            
+
+
             HighScore.saveHighScoreToLocalStorage(highScores)
         }
     }
 
+    // Sort highscores from highest to lowest.
     static sortHighscores(highScores) {
         highScores.sort((a, b) => b.score - a.score);
     }
 
+    // Save highscore list back local storage.
     static saveHighScoreToLocalStorage(highScores) {
         localStorage.setItem(HighScore.highScores, JSON.stringify(highScores));
     }
@@ -41,12 +56,12 @@ export class HighScore {
 
         return score > lowestScore;
     }
-    // get the lowest score on the list, if there are less entries than highScoreMax, return 0;
+    // Get the lowest score on the list, if there are less entries than highScoreMax, return 0;
     static getLowestScore(highScores) {
         return highScores[HighScore.highScoreMax - 1]?.score ?? 0;
     }
 
-    // get highscores from local storage, or empty array if there are no entries yet.
+    // Get highscores from local storage, or empty array if there are no entries yet.
     static retrieveHighscores() {
         const highScores = JSON.parse(localStorage.getItem(HighScore.highScores)) ?? [];
         HighScore.highScoreArray = highScores;
