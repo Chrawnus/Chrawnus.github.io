@@ -12,7 +12,7 @@ export class Physics {
             player.update(dt, engine, engine.canvas)
             this.updateEntities(engine, dt, projectiles);
             this.updateEntities(engine, dt, entities);
-            this.checkScreenCleared(engine, entities);
+            this.checkScreenCleared(engine, entities, player);
         } else {
             this.gameOver(entities, engine);
         }
@@ -39,11 +39,12 @@ export class Physics {
         }
     }
 
-    checkScreenCleared(engine, entities) {
+    checkScreenCleared(engine, entities, player) {
         if (entities.length <= 0) {
             this.clearCount++;
             engine.menu.score += 100 * this.clearCount;
             engine.spawner.spawnAsteroids(engine, engine.spawner.baseAsteroidAmount + this.clearCount);
+            player.upgrade();
         }
     }
 
