@@ -19,11 +19,12 @@ export class Engine {
         this.entities = [];
         this.projectiles = [];
         this.player;
-
+        this.pauseState = false;
         this.dt = 0;
     }
 
-
+    // Initial setup of the different parts 
+    // of the engine. 
     initialize(canvasWidth, canvasHeight) {
         this.physics = new Physics();
         this.canvas.width = canvasWidth;
@@ -33,19 +34,35 @@ export class Engine {
         this.spawner.spawnAsteroids(this, this.spawner.baseAsteroidAmount);
     }
 
+    // restarts the engine and resets everything back to default when the player dies. 
     restart(engine, asteroidAmount) {
-        this.player.lives = 3;
-        this.menu.score = 0;
+        this.resetPlayer();
+        this.resetMenu();
+        console.log(this.physics.clearCount)
         this.spawner.spawnAsteroids(engine, asteroidAmount);
     }
 
+    resetMenu() {
+        this.menu.score = 0;
+    }
+
+    resetPlayer() {
+        this.player.lives = 3;
+        this.player.fireDelayTime = this.player.maxFireDelay;
+    }
+
     start() {
-        function gameLoop() {
-            const now = performance.now();
+        function gameLoop(now) {
+            if (this.pauseState) {
+                // set prevTime to 0 to make sure dt 
+                // doesn't grow while the game is paused.
+                this.prevTime = 0; 
+                return;
+            }
+            //const now = performance.now();
             const dt = this.getDelta(now)
+            this.handleUpdate(dt);
             
-            this.getUpdateDelta(dt);
-            console.log(this.accumulator)
             this.menu.lives = this.player.lives;
             Draw.canvasMethods.drawScreen("black", this.menu, this.player, this.entities, this.projectiles);
             requestAnimationFrame(gameLoop.bind(this));
@@ -54,7 +71,12 @@ export class Engine {
         requestAnimationFrame(gameLoop.bind(this));
     }
 
-    getUpdateDelta(dt) {
+    /* function that handles the rate
+       of "physics" updates to try and
+       ensure the game runs at the same
+       speed regardless of the monitor 
+       refresh rate.*/
+    handleUpdate(dt) {
         this.accumulator += dt;
         while (this.accumulator >= this.stepSize) {
             this.physics.update(this.stepSize, this, this.player, this.entities, this.projectiles);
