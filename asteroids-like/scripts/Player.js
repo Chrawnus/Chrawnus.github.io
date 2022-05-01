@@ -12,7 +12,7 @@ export class Player extends Shape {
         this.points = this.getVertexPoints();
         this.lives = 3;
         this.fireDelay = 0;
-        this.fireDelayTime = 0.05;
+        this.fireDelayTime = 0.4;
         this.maxFireDelay = 0.4
         this.minFireDelay = 0.05;
         this.invincibility = 0;
