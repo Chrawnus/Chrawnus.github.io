@@ -56,14 +56,14 @@ export class Engine {
             if (this.pauseState) {
                 // set prevTime to 0 to make sure dt 
                 // doesn't grow while the game is paused.
-                this.prevTime = 0; 
-                Draw.canvasMethods.drawScreen("black",this, this.menu, this.player, this.entities, this.projectiles);
+                this.prevTime = 0;
+                Draw.canvasMethods.drawScreen("black", this, this.menu, this.player, this.entities, this.projectiles);
                 return;
             }
             //const now = performance.now();
             const dt = this.getDelta(now)
             this.handleUpdate(dt);
-            
+
             this.menu.lives = this.player.lives;
             Draw.canvasMethods.drawScreen("black", this, this.menu, this.player, this.entities, this.projectiles);
             requestAnimationFrame(gameLoop.bind(this));

@@ -1,6 +1,6 @@
 // fetch custom font and add it to document so it can be used on canvas.
 const customFont = new FontFace("PressStart2P", 'url(assets/fonts/PressStart2P-Regular.ttf');
-customFont.load().then(function(font) {
+customFont.load().then(function (font) {
     document.fonts.add(font);
 })
 
@@ -19,7 +19,7 @@ export class Draw {
             const UICtx = Draw.Canvas.UICtx;
             Draw.canvasMethods.clearCanvas(Draw.Canvas.UI, UICtx, "transparent")
             if (player.lives > 0) {
-                if(engine.pauseState === false) {
+                if (engine.pauseState === false) {
                     menu.drawUI(UICtx);
                 } else {
                     menu.drawPauseUI(UICtx);
@@ -67,7 +67,7 @@ export class Draw {
         }
     }
 
-    
+
     static drawPlayer(ctx, player) {
         ctx.save();
         Draw.canvasMethods.translateOriginToEntity(ctx, player);

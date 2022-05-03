@@ -18,13 +18,13 @@ export class Spawner {
 
         // spawn [count] number of asteroids
         for (let i = 0; i < count; i++) {
-            
+
             // get random position just outside of canvas boundary, to decrease
             // chances of a asteroid randomly spawning on and unfairly removing a life
             // from the player.  
             const x = Math.floor(Helper.Math.Random.getRandomOfTwoRanges(-60, 0, engine.canvas.width, engine.canvas.width + 60)),
                 y = Math.floor(Helper.Math.Random.getRandomOfTwoRanges(-60, 0, engine.canvas.height, engine.canvas.height + 60));
-            
+
             // Get a radius value from the radius array. 
             radius = radiusArray[i % 3];
 

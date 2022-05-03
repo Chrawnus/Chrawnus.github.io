@@ -10,7 +10,7 @@ export class Input {
         this.keyInputObject = {
             "KeyP": false
         };
-        
+
 
         // Holds key-value pairs representing
         // buttons on the mouse and whether they're
@@ -35,7 +35,7 @@ export class Input {
                     y: 0
                 }
             };
-            
+
 
             /*
             Updates the x and y values of the
@@ -48,11 +48,11 @@ export class Input {
                 this.mouseC.pos.x = (evt.clientX - rect.left) * scaleX;
                 this.mouseC.pos.y = (evt.clientY - rect.top) * scaleY;
             }
-    
+
             static getX() {
                 return this.mouseC.x;
             }
-    
+
             static getY() {
                 return this.mouseC.y;
             }

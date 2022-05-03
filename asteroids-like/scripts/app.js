@@ -6,6 +6,7 @@ const engine = new Engine(6);
 engine.initialize(1280, 720);
 engine.start();
 
+
 // various event listeners for reading key presses and mouse movement.
 window.addEventListener('keydown', e => {
     engine.input.keyInputObject[e.code] = true;

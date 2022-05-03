@@ -36,7 +36,7 @@ export class Shape {
     // in order to create "asteroid-looking" shapes. 
     addOffsets() {
         const offsetArr = []
-        
+
         // create [this.sideNumber] number of random values between 
         // -10 and 10 and add them to offsetArr.
         for (let i = 0; i < this.sideNumber; i++) {
@@ -58,7 +58,7 @@ export class Shape {
         for (let i = 0; i < this.sideNumber; i++) {
             // divide up angleTotal in [this.sideNumber]
             // number of equal angles, and give the [i]th angle. 
-            let angle = (angleTotal/this.sideNumber) * (i);
+            let angle = (angleTotal / this.sideNumber) * (i);
 
             // offset current vertex distance from [this.radius]
             // by [this.offsets[i]].
@@ -104,7 +104,7 @@ export class Shape {
             return "below";
         }
     };
-    
+
     /*
     wraps the shape to the opposite edge of the canvas
     when it goes outside of the canvas.
@@ -126,7 +126,7 @@ export class Shape {
         const RightOfCanvas = canvas.width + this.radius;
         const aboveCanvas = -this.radius;
         const belowCanvas = canvas.height + this.radius;
-    
+
         if (edge === "left") {
             this.pos.x = leftOfCanvas;
         } else if (edge === "right") {
@@ -188,13 +188,13 @@ export class Shape {
     clip through each other when colliding. 
     */
     pushback(entity1, entity2) {
-        let {dx, dy} = entity1.getDeltas(entity2);
+        let { dx, dy } = entity1.getDeltas(entity2);
         const length = entity1.getDistanceToEntity(entity2);
         const step = entity1.radius + entity2.radius - length;
         if (step > 0) {
             dx /= length; dy /= length;
-            entity1.pos.x -= dx*step/2; entity1.pos.y -= dy*step/2;
-            entity2.pos.x += dx*step/2; entity2.pos.y += dy*step/2;
+            entity1.pos.x -= dx * step / 2; entity1.pos.y -= dy * step / 2;
+            entity2.pos.x += dx * step / 2; entity2.pos.y += dy * step / 2;
         }
     }
 }

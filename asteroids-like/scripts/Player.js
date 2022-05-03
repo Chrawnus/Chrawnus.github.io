@@ -21,7 +21,7 @@ export class Player extends Shape {
 
     update(dt, engine, canvas) {
         this.handleInputs(engine, dt);
-        this.rotateShape(engine); 
+        this.rotateShape(engine);
         this.wrap(canvas);
         this.reduceDelay(dt);
     }
@@ -77,7 +77,7 @@ export class Player extends Shape {
     /* 
     function that handles reducing 
     different types of delay and cooldowns
-    */ 
+    */
     reduceDelay(dt) {
         this.reduceFireDelay(dt);
         this.reduceInvincibilityTime(dt);
@@ -130,8 +130,8 @@ export class Player extends Shape {
     the quicker the player moves towards the cursor.
     */
     move(dt, distance, angle) {
-        this.pos.x += ((this.speed*distance*this.speedScaling) * Math.cos(angle) * dt ** 2);
-        this.pos.y += ((this.speed*distance*this.speedScaling) * Math.sin(angle) * dt ** 2);
+        this.pos.x += ((this.speed * distance * this.speedScaling) * Math.cos(angle) * dt ** 2);
+        this.pos.y += ((this.speed * distance * this.speedScaling) * Math.sin(angle) * dt ** 2);
     }
 
     // spawns a projectile at the position of the player entity,
@@ -151,6 +151,6 @@ export class Player extends Shape {
         // multiply minFireDelay by 2 to reduce the amount needed
         // to get fireDelayTime down to min.
         const reduction = this.fireDelayTime * (this.minFireDelay * 2);
-        this.fireDelayTime -= reduction; 
+        this.fireDelayTime -= reduction;
     }
 }
