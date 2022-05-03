@@ -16,7 +16,7 @@ export class HighScore {
         if (HighScore.isScoreValid(score)) {
 
             // prompt the player for a name.
-            const playerName = window.prompt("Please enter a name for Local Highscore");
+            const playerName = window.prompt("Please enter a name");
 
             // If player does not enter name, give a default name
             if (playerName === "") {

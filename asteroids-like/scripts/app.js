@@ -13,10 +13,8 @@ window.addEventListener('keydown', e => {
 
 window.addEventListener('keyup', e => {
     engine.input.keyInputObject[e.code] = false;
-
     if (e.code === "KeyP") {
         engine.pauseState = !engine.pauseState;
-        console.log(engine.pauseState)
         if (engine.pauseState === false) {
             engine.start();
         }

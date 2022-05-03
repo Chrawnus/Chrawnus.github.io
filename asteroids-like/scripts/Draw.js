@@ -14,12 +14,17 @@ export class Draw {
 
 
     static canvasMethods = class {
-        static drawScreen(backgroundColor, menu, player, entities, projectiles) {
+        static drawScreen(backgroundColor, engine, menu, player, entities, projectiles) {
             const gameCtx = Draw.Canvas.gameCtx;
             const UICtx = Draw.Canvas.UICtx;
             Draw.canvasMethods.clearCanvas(Draw.Canvas.UI, UICtx, "transparent")
             if (player.lives > 0) {
-                menu.drawUI(UICtx);
+                if(engine.pauseState === false) {
+                    menu.drawUI(UICtx);
+                } else {
+                    menu.drawPauseUI(UICtx);
+                }
+
             } else {
                 menu.drawUIGameOver(UICtx);
             }
