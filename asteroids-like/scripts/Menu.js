@@ -42,14 +42,14 @@ export class Menu{
 
     // Draw pause instructions on screen.
     drawPauseMsg(ctx) {
-        this.setTextStyling(ctx, 16, this.font, "center");
-        ctx.fillText(`${this.pauseMsg} `, this.canvasWidth*0.5, this.canvasHeight*0.09);
+        this.setTextStyling(ctx, 12, this.font, "center");
+        ctx.fillText(`${this.pauseMsg} `, this.canvasWidth * 0.80, this.canvasHeight*0.09);
     }
 
     // Draw resume instructions on screen.
     drawResumeMsg(ctx) {
-        this.setTextStyling(ctx, 16, this.font, "center");
-        ctx.fillText(`${this.resumeMsg} `, this.canvasWidth * 0.5, this.canvasHeight * 0.09);
+        this.setTextStyling(ctx, 12, this.font, "center");
+        ctx.fillText(`${this.resumeMsg} `, this.canvasWidth * 0.85, this.canvasHeight * 0.09);
     }
 
     drawInstructions(ctx) {
