@@ -124,12 +124,6 @@ export class Physics {
             if (currDist < distanceToClosest) {
                 ({ dist: distanceToClosest, closestEntity } = this.setClosestDistanceAndEntity(distanceToClosest, currDist, closestEntity, entity));
             }
-            if (entity !== closestEntity) {
-                entity.strokeStyle = "white"
-            } else {
-                closestEntity.strokeStyle = "red"
-            }
-
         }
 
         // check if loneEntity and closestEntity are colliding
