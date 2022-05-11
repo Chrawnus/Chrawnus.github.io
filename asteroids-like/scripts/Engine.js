@@ -38,7 +38,6 @@ export class Engine {
     restart(engine, asteroidAmount) {
         this.resetPlayer();
         this.resetMenu();
-        console.log(this.physics.clearCount)
         this.spawner.spawnAsteroids(engine, asteroidAmount);
     }
 

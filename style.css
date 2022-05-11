@@ -4,9 +4,28 @@ body {
 }
 
 .wrapper {
+    background-color: #454545;
+    color: lightgrey;
     display: flex;
     flex-direction: column;
     height: 100vh;
     align-items: center;
     justify-content: center;
+}
+
+.wrapper img {
+    width: 50%;
+    height: auto;
+}
+
+.wrapper a {
+    text-decoration: none;
+}
+
+.wrapper a:visited {
+    color:lightgrey;
+}
+
+.wrapper a:hover {
+    text-decoration: underline;
 }
